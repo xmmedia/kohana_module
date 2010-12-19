@@ -1,8 +1,0 @@
-XM Media Kohana Module
-
-To add this to a project, do the following:
-
-<code>
-git submodule add git@github.com:darrylhein/xmmedia_kohana_module.git modules/xmmedia
-git submodule init
-</code>

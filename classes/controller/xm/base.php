@@ -11,4 +11,13 @@ class Controller_XM_Base extends Controller_cl4_Base {
 		if ( ! isset($this->template->meta_tags['author'])) $this->template->meta_tags['author'] = '';
 		if ( ! isset($this->template->meta_tags['viewport'])) $this->template->meta_tags['viewport'] = 'maximum-scale=1.0;';
 	} // function set_template_meta
+
+	/**
+	* Adds the CSS for cl4admin
+	*/
+	protected function add_admin_css() {
+		if ($this->auto_render) {
+			$this->template->styles['css/admin.css'] = 'screen';
+		}
+	} // function add_admin_css
 }

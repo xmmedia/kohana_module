@@ -409,4 +409,107 @@ class XM_ORM extends cl4_ORM {
 			// or the value does not match the original
 			|| $this->_original[$column] != $this->_object[$column]);
 	}
+
+	public function get_list($columns = NULL, $order_by = NULL) {
+		if (empty($columns)) {
+			$columns = Database::instance()->quote_identifier($this->_table_name . '.' . $this->_primary_val);
+		}
+
+		if (empty($order_by)) {
+			$order_by = array($this->_sorting);
+		}
+		if ( ! empty($order_by)) {
+			$sort = array();
+			foreach ($this->_sorting as $column => $direction) {
+				if ( ! empty($direction)) {
+					// Make the direction uppercase
+					$direction = ' ' . strtoupper($direction);
+				}
+
+				if (strpos($column, '.') === FALSE) {
+					$column = $this->_table_name . '.' . $column;
+				}
+
+				$sort[] = Database::instance()->quote_identifier($column) . $direction;
+			}
+
+			$order_by = 'ORDER BY '.implode(', ', $sort);
+		} else {
+			$order_by = '';
+		}
+
+		$query = $this->select(DB::expr("GROUP_CONCAT(DISTINCT {$columns} {$order_by} SEPARATOR ', ') AS group_concat"))
+			->find();
+
+		return $query->group_concat;
+	}
+
+	/**
+	 * Loads a database result, either as a new object for this model, or as
+	 * an iterator for multiple rows.
+	 *
+	 * @chainable
+	 * @param   boolean       return an iterator or load a single row
+	 * @return  ORM           for single rows
+	 * @return  ORM_Iterator  for multiple rows
+	 */
+	protected function _load_result($multiple = FALSE)
+	{
+		$this->_db_builder->from($this->_table_name);
+
+		if ($multiple === FALSE)
+		{
+			// Only fetch 1 record
+			$this->_db_builder->limit(1);
+		}
+
+		if ( ! isset($this->_db_applied['select'])) {
+			// Select all columns by default
+			$this->_db_builder->select($this->_table_name.'.*');
+		}
+
+		if ( ! isset($this->_db_applied['order_by']) AND ! empty($this->_sorting))
+		{
+			foreach ($this->_sorting as $column => $direction)
+			{
+				if (strpos($column, '.') === FALSE)
+				{
+					// Sorting column for use in JOINs
+					$column = $this->_table_name.'.'.$column;
+				}
+
+				$this->_db_builder->order_by($column, $direction);
+			}
+		}
+
+		if ($multiple === TRUE)
+		{
+			// Return database iterator casting to this object type
+			$result = $this->_db_builder->as_object(get_class($this))->execute($this->_db);
+
+			$this->reset();
+
+			return $result;
+		}
+		else
+		{
+			// Load the result as an associative array
+			$result = $this->_db_builder->as_assoc()->execute($this->_db);
+
+			$this->reset();
+
+			if ($result->count() === 1)
+			{
+				// Load object values
+				$this->_load_values($result->current());
+			}
+			else
+			{
+				// Clear the object, nothing was found
+				$this->clear();
+			}
+
+			return $this;
+		}
+	}
 } // class ORM

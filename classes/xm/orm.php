@@ -399,15 +399,34 @@ class XM_ORM extends cl4_ORM {
 
 	/**
 	*
-	* @return   bool   true if the value has changed
+	* @return  bool  true if the value has changed
 	*/
 	protected function column_changed($column) {
 		// if the column does not existing in the original record
-		return ( ! array_key_exists($column, $this->_original)
+		$changed = ( ! array_key_exists($column, $this->_original)
 			// or the original value is NULL and the new value is NULL
 			|| ($this->_original[$column] === NULL && $this->_object[$column] !== NULL)
 			// or the value does not match the original
 			|| $this->_original[$column] != $this->_object[$column]);
+
+		if ($changed && $this->table_column_exists($column)) {
+			switch ($this->_table_columns[$column]['field_type']) {
+				case 'phone' :
+					// original was empty (never set) and the value in the object the dashes returned by ORM_Phone
+					if ($this->_original[$column] == '' && $this->_object[$column] == '----') {
+						$changed = FALSE;
+					}
+					break;
+				case 'date' :
+					// the original value has not date and user did not submit a date
+					if ($this->_original[$column] == '0000-00-00' && $this->_object[$column] == '') {
+						$changed = FALSE;
+					}
+					break;
+			} // switch
+		} // if
+
+		return $changed;
 	}
 
 	/**

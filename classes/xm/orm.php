@@ -3,23 +3,29 @@
 class XM_ORM extends cl4_ORM {
 	/**
 	* The default layout for get_field_layout()
-	* @var string
+	* @var  string
 	*/
 	public static $_default_layout;
 
 	/**
-    *   Returns the HTML for displaying the field with a label tag, classes from object and errors, the field label and the actual field
-    * This will recreate the label tag if the label class is passed
-    *
-    *   @param  string  $column_name      The field name of the field
-    *   @param  string  $label_class     A custom class for the label for the field; if not set, the default in the class will be used
-    *   @param  string  $layout_type     The type of layout needed for the field
-    *       defualt (empty string): <label>Field Name</label> <field html />
-    *       checkbox: <field html /><label>&nbsp;Field Name</label>
-    *       table_row: <tr><td><label>Field Name</label></td><td><field html /></td></tr>
-    *
-    *   @return string      The HTML for displaying the field
-    */
+	* Used in get_field_layout when the layout is table_row to keep track of the current row and add the row classes
+	* @var  int
+	*/
+	protected $_current_table_row;
+
+	/**
+	*   Returns the HTML for displaying the field with a label tag, classes from object and errors, the field label and the actual field
+	* This will recreate the label tag if the label class is passed
+	*
+	*   @param   string  $column_name  The field name of the field
+	*   @param   string  $label_class  A custom class for the label for the field; if not set, the default in the class will be used
+	*   @param   string  $layout_type  The type of layout needed for the field
+	*       default (empty string): <label>Field Name</label> <field html />
+	*       checkbox: <field html /><label>&nbsp;Field Name</label>
+	*       table_row: <tr><td><label>Field Name</label></td><td><field html /></td></tr>
+	*
+	*   @return  string  The HTML for displaying the field
+	*/
 	public function get_field_layout($column_name, $label_class = NULL, $layout_type = NULL) {
 		$regenerate_field = FALSE;
 
@@ -53,23 +59,28 @@ class XM_ORM extends cl4_ORM {
 
 		if ($layout_type === NULL) $layout_type = ORM::$_default_layout;
 
-        switch ($layout_type) {
-            case 'checkbox' :
-            	return $this->_field_html[$column_name]['field'] . $label_html . EOL;
-                break;
+		switch ($layout_type) {
+			case 'checkbox' :
+				return $this->_field_html[$column_name]['field'] . $label_html . EOL;
+				break;
 
-            case 'table_row' :
-            	return '<tr><td>' . $label_html . '</td><td>' . $this->_field_html[$column_name]['field'] . '</td></tr>' . EOL;
-                break;
+			case 'table_row' :
+				if ($this->_current_table_row === NULL) {
+					$this->_current_table_row = 0;
+				} else {
+					++ $this->_current_table_row;
+				}
+				return '<tr class="row' . $this->_current_table_row . ' ' . ($this->_current_table_row % 2 ? 'odd' : 'even') . '">' . "\n\t" . '<td class="column0">' . $label_html . '</td>' . "\n\t" . '<td class="column1">' . $this->_field_html[$column_name]['field'] . '</td>' . EOL . '</tr>' . EOL;
+				break;
 
-            default :
-        		return $label_html . $this->_field_html[$column_name]['field'] . EOL;
-                break;
+			default :
+				return $label_html . $this->_field_html[$column_name]['field'] . EOL;
+				break;
         } // switch
 	} // function get_field_layout
 
 	public function field_has_error($column_name) {
-        // check to see if there is an error on the field
+		// check to see if there is an error on the field
 		// add a class to the field and the label
 		if ( ! empty($this->_validate)) {
 			$errors = $this->_validate->errors();
@@ -197,6 +208,8 @@ class XM_ORM extends cl4_ORM {
 	protected $_was_updated;
 	// by default, log any changes
 	protected $_log = TRUE;
+	public $_was_insert;
+	public $_was_update;
 
 	/**
 	 * Finds and loads a single database row into the object.
@@ -258,6 +271,8 @@ class XM_ORM extends cl4_ORM {
 			if ( ! $this->empty_pk() AND ! isset($this->_changed[$this->_primary_key])) {
 				// Primary key isn't empty and hasn't been changed so do an update
 				$query_type = 'UPDATE';
+				$this->_was_insert = FALSE;
+				$this->_was_update = TRUE;
 
 				if (is_array($this->_updated_column)) {
 					// Fill the updated column
@@ -278,6 +293,8 @@ class XM_ORM extends cl4_ORM {
 			} else {
 				// primary key isn't set and hasn't changed, so insert
 				$query_type = 'INSERT';
+				$this->_was_insert = TRUE;
+				$this->_was_update = FALSE;
 
 				if (is_array($this->_created_column)) {
 					// Fill the created column
@@ -330,6 +347,10 @@ class XM_ORM extends cl4_ORM {
 
 			// All changes have been saved
 			$this->_changed = array();
+
+			// since changes as empty, we can assume that we didn't add a new record and it must have been a existing record that didn't need an update
+			$this->_was_insert = FALSE;
+			$this->_was_update = TRUE;
 		}
 
 		if ($this->_saved) {
@@ -473,7 +494,7 @@ class XM_ORM extends cl4_ORM {
 	/**
 	 * Loads a database result, either as a new object for this model, or as
 	 * an iterator for multiple rows.
-	 * Same as Kohana_ORM::_load_result but checks to see if there is a current select
+	 * Same as Kohana_ORM::_load_result but checks to see if there is a current select and if there is, doesn't add the select *
 	 *
 	 * @chainable
 	 * @param   boolean       return an iterator or load a single row

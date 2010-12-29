@@ -169,7 +169,7 @@ class Model_XM_Change_Log extends ORM {
 			if (is_array($data['changed']) && $this->_max_changed_length !== NULL) {
 				foreach ($data['changed'] as $column => $value) {
 					if (strlen($value) > $this->_max_changed_length) {
-						$data['changed'][$column] = English::ellipsis($value, $this->_max_changed_length);
+						$data['changed'][$column] = Text::limit_chars($value, $this->_max_changed_length);
 					}
 				} // foreach
 			} // if

@@ -352,7 +352,7 @@ class XM_ORM extends cl4_ORM {
 			$this->_was_insert = FALSE;
 			$this->_was_update = TRUE;
 		}
-
+/*
 		if ($this->_saved) {
 			// check for has_many relationships and associated changes (adds / deletes)
 			// todo: should we add some of this to check() ?
@@ -410,9 +410,9 @@ class XM_ORM extends cl4_ORM {
 				} // if
 			} // foreach
 		} // if
-
+*/
 		return $this;
-	}
+	} // function save
 
 	protected function parent_save() {
 		return Kohana_ORM::save();

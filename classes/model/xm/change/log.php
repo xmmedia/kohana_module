@@ -49,7 +49,6 @@ class Model_XM_Change_Log extends ORM {
 		'id' => array(
 			'field_type' => 'hidden',
 			'edit_flag' => TRUE,
-			'display_order' => 10,
 		),
 		'event_timestamp' => array(
 			'field_type' => 'datetime',
@@ -57,7 +56,6 @@ class Model_XM_Change_Log extends ORM {
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
-			'display_order' => 20,
 		),
 		'user_id' => array(
 			'field_type' => 'select',
@@ -65,7 +63,6 @@ class Model_XM_Change_Log extends ORM {
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
-			'display_order' => 30,
 			'field_options' => array(
 				'source' => array(
 					'source' => 'model',
@@ -79,7 +76,6 @@ class Model_XM_Change_Log extends ORM {
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
-			'display_order' => 40,
 			'field_attributes' => array(
 				'maxlength' => 64,
 			),
@@ -90,7 +86,6 @@ class Model_XM_Change_Log extends ORM {
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
-			'display_order' => 50,
 			'field_attributes' => array(
 				'maxlength' => 11,
 				'size' => 11,
@@ -102,7 +97,6 @@ class Model_XM_Change_Log extends ORM {
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
-			'display_order' => 60,
 			'field_attributes' => array(
 				'maxlength' => 12,
 				'size' => 12,
@@ -114,7 +108,6 @@ class Model_XM_Change_Log extends ORM {
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
-			'display_order' => 70,
 			'field_attributes' => array(
 				'maxlength' => 11,
 				'size' => 11,
@@ -126,7 +119,6 @@ class Model_XM_Change_Log extends ORM {
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
-			'display_order' => 80,
 			'field_attributes' => array(
 				'maxlength' => 'unknown',
 				'size' => 'unknown',
@@ -138,7 +130,6 @@ class Model_XM_Change_Log extends ORM {
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
-			'display_order' => 90,
 			'field_attributes' => array(
 				'maxlength' => 15000,
 			),
@@ -149,7 +140,6 @@ class Model_XM_Change_Log extends ORM {
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
-			'display_order' => 100,
 			'field_attributes' => array(
 				'maxlength' => 5000,
 			),

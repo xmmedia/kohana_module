@@ -36,7 +36,6 @@ class Model_XM_List extends ORM {
 		'id' => array(
 			'field_type' => 'hidden',
 			'edit_flag' => TRUE,
-			'display_order' => 10,
 			'is_nullable' => FALSE,
 		),
 		'name' => array(
@@ -45,7 +44,6 @@ class Model_XM_List extends ORM {
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
-			'display_order' => 20,
 			'is_nullable' => FALSE,
 			'field_attributes' => array(
 				'maxlength' => 50,
@@ -57,7 +55,6 @@ class Model_XM_List extends ORM {
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
-			'display_order' => 30,
 			'is_nullable' => FALSE,
 			'field_attributes' => array(
 				'maxlength' => 6,

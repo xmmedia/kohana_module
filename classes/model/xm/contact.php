@@ -49,7 +49,6 @@ class Model_XM_Contact extends ORM {
 		'id' => array(
 			'field_type' => 'hidden',
 			'edit_flag' => TRUE,
-			'display_order' => 10,
 			'is_nullable' => FALSE,
 		),
 		'name' => array(
@@ -58,7 +57,6 @@ class Model_XM_Contact extends ORM {
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
-			'display_order' => 20,
 			'is_nullable' => FALSE,
 			'field_attributes' => array(
 				'maxlength' => 100,
@@ -70,7 +68,6 @@ class Model_XM_Contact extends ORM {
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
-			'display_order' => 30,
 			'is_nullable' => FALSE,
 			'field_attributes' => array(
 				'maxlength' => 100,
@@ -82,7 +79,6 @@ class Model_XM_Contact extends ORM {
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
-			'display_order' => 40,
 			'is_nullable' => FALSE,
 			'field_attributes' => array(
 				'maxlength' => 15,
@@ -95,7 +91,6 @@ class Model_XM_Contact extends ORM {
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
-			'display_order' => 50,
 			'is_nullable' => FALSE,
 		),
 		'date_submitted' => array(
@@ -103,7 +98,6 @@ class Model_XM_Contact extends ORM {
 			'list_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
-			'display_order' => 60,
 			'is_nullable' => FALSE,
 		),
 		'ip_address' => array(
@@ -111,7 +105,6 @@ class Model_XM_Contact extends ORM {
 			'list_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
-			'display_order' => 70,
 			'is_nullable' => FALSE,
 			'field_attributes' => array(
 				'maxlength' => 15,

@@ -242,7 +242,7 @@ class XM_ORM extends cl4_ORM {
 	/**
 	 * Loads a database result, either as a new object for this model, or as
 	 * an iterator for multiple rows.
-	 * Same as Kohana_ORM::_load_result but checks to see if there is a current select and if there is, doesn't add the select *
+	 * Also stores the record in _original incase a save is run later for single records.
 	 *
 	 * @chainable
 	 * @param   boolean       return an iterator or load a single row
@@ -287,6 +287,8 @@ class XM_ORM extends cl4_ORM {
 			$this->reset();
 
 			if ($result->count() === 1) {
+				// store the database record in the original param
+				$this->_original = $result->current();
 				// Load object values
 				$this->_load_values($result->current());
 			} else {

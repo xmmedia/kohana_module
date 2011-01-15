@@ -13,4 +13,27 @@ class XM_Form extends cl4_Form {
 
 		return Form::select($name, $months, $selected, $attributes, $options);
 	} // function month
+
+	public static function weekday($name, $selected, $attributes, $options) {
+		$options += array(
+			'include_day_number' => FALSE,
+			'begins_on_sunday' => TRUE,
+		);
+
+		$days = array(
+			2 => __('Monday'),
+			3 => __('Tuesday'),
+			4 => __('Wednesday'),
+			5 => __('Thursday'),
+			6 => __('Friday'),
+			7 => __('Saturay'),
+		);
+		if ($options['begins_on_sunday']) {
+			$days = Arr::unshift($days, 1, __('Sunday'));
+		} else {
+			$days[1] = __('Sunday');
+		}
+
+		return Form::select($name, $days, $selected, $attributes, $options);
+	} // function weekday
 } // class XM_Form

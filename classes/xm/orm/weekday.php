@@ -14,12 +14,11 @@ class XM_ORM_Weekday extends ORM_Select {
 	public static function edit($column_name, $html_name, $selected, array $attributes = NULL, array $options = array(), ORM $orm_model = NULL) {
 		// the default options are everything off, except for the None
 		// this will ensure there is the ability to set something to none or not set
-		$default_options = array(
+		$options += array(
 			'select_one' => FALSE,
 			'select_all' => FALSE,
 			'select_none' => TRUE,
 		);
-		$options = array_merge($default_options, $options);
 
 		return Form::weekday($html_name, $selected, $attributes, $options);
 	} // function edit
@@ -31,12 +30,11 @@ class XM_ORM_Weekday extends ORM_Select {
 
 		// the default options are no select one, but add all and none
 		// this will allow someone to search for anything and ones that aren't set
-		$default_options = array(
+		$options += array(
 			'select_one' => FALSE,
 			'select_all' => TRUE,
 			'select_none' => TRUE,
 		);
-		$options = array_merge($default_options, $options);
 
 		if ( ! array_key_exists('multiple', $attributes)) {
 			$attributes['multiple'] = TRUE;

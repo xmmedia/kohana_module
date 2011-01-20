@@ -373,3 +373,8 @@ INSERT INTO `state` VALUES(66, '0000-00-00 00:00:00', 226, 'Wisconsin', 'WI', ''
 INSERT INTO `state` VALUES(67, '0000-00-00 00:00:00', 226, 'West Virginia', 'WV', '', 100);
 INSERT INTO `state` VALUES(68, '0000-00-00 00:00:00', 226, 'Wyoming', 'WY', '', 100);
 INSERT INTO `state` VALUES(69, '0000-00-00 00:00:00', 38, 'Yukon', 'YT', '', 10);
+
+
+-- Permissions for the dbchange controller
+INSERT INTO `permission` VALUES(14, 'dbchange/index', 'DB Change', 'Allows the user to run SQL commands across multiple databases.');
+INSERT INTO `group_permission` VALUES(25, 1, 14);

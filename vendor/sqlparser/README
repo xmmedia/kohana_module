@@ -1,0 +1,5 @@
+All of the files in this folder are apart of phpMyAdmin (http://www.phpmyadmin.net) and we claim no rights.
+They have only been modified slightly to make them work as a module for Kohana.
+
+Not all functionality will work, but we may add more later.
+If you want more functionality that is apart of phpMyAdmin, either install the full version

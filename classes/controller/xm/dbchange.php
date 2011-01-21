@@ -139,14 +139,16 @@ EOA
 
 							if ($successful) {
 								switch ($type) {
-									case 'UPDATE' :
 									case 'INSERT' :
+										$message .= ' -- ' . $result[1] . ' row' . Text::s($result[1]) . ' affected';
+										break;
+									case 'UPDATE' :
 									case 'DELETE' :
 									case 'ALTER' :
-										$message .= ' -- ' . $result . ' rows affected';
+										$message .= ' -- ' . $result . ' row' . Text::s($result) . ' affected';
 										break;
 									case 'SELECT' :
-										$message .= ' -- ' . count($result) . ' rows found';
+										$message .= ' -- ' . count($result) . ' row' . Text::s(count($result)) . ' found';
 										break;
 								}
 							} // if

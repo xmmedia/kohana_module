@@ -60,7 +60,7 @@ EOA
 			} else {
 				$db_change_sql = $_POST['sql'];
 
-				require_once(Kohana::find_file('vendor', 'sqlparser/sqlparser.lib'));
+				Kohana::load(Kohana::find_file('vendor', 'sqlparser/sqlparser.lib'));
 
 				$parsed_queries = PMA_SQP_parse($db_change_sql);
 				if (empty($parsed_queries)) {

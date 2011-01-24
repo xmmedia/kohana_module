@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die ('No direct script access.');
 
 return array(
-	'sent' => 'Thank you for contact us. We will contact you soon.',
+	'sent' => 'Thank you for contacting us. We will contact you soon.',
 	'problem_sending' => 'There was a problem sending your submission. Please try again or contact us directly.',
 	'recaptcha' => 'The reCAPTCHA wasn\'t entered correctly. Please try it again.',
 	'name' => array(

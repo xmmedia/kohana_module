@@ -189,10 +189,6 @@ class Model_XM_Contact extends ORM {
 						->set_view_options_for_email()
 						->get_view();
 
-					$table = new HTMLTable(array(
-						'is_email' => TRUE,
-					));
-
 					$mail->Send();
 
 					// clear the object because it's been sent

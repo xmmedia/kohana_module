@@ -249,67 +249,6 @@ class XM_ORM extends cl4_ORM {
 	} // function group_concat
 
 	/**
-	 * Loads a database result, either as a new object for this model, or as
-	 * an iterator for multiple rows.
-	 * Also stores the record in _original incase a save is run later for single records.
-	 *
-	 * @chainable
-	 * @param   boolean       return an iterator or load a single row
-	 * @return  ORM           for single rows
-	 * @return  ORM_Iterator  for multiple rows
-	 */
-	protected function _load_result($multiple = FALSE) {
-		$this->_db_builder->from($this->_table_name);
-
-		if ($multiple === FALSE) {
-			// Only fetch 1 record
-			$this->_db_builder->limit(1);
-		}
-
-		if ( ! isset($this->_db_applied['select'])) {
-			// Select all columns by default
-			$this->_db_builder->select($this->_table_name.'.*');
-		}
-
-		if ( ! isset($this->_db_applied['order_by']) AND ! empty($this->_sorting)) {
-			foreach ($this->_sorting as $column => $direction) {
-				if (strpos($column, '.') === FALSE) {
-					// Sorting column for use in JOINs
-					$column = $this->_table_name.'.'.$column;
-				}
-
-				$this->_db_builder->order_by($column, $direction);
-			}
-		}
-
-		if ($multiple === TRUE) {
-			// Return database iterator casting to this object type
-			$result = $this->_db_builder->as_object(get_class($this))->execute($this->_db);
-
-			$this->reset();
-
-			return $result;
-		} else {
-			// Load the result as an associative array
-			$result = $this->_db_builder->as_assoc()->execute($this->_db);
-
-			$this->reset();
-
-			if ($result->count() === 1) {
-				// store the database record in the original param
-				$this->_original = $result->current();
-				// Load object values
-				$this->_load_values($result->current());
-			} else {
-				// Clear the object, nothing was found
-				$this->clear();
-			}
-
-			return $this;
-		}
-	} // function _load_result
-
-	/**
 	* Saves a related record that is either there or removed
 	* Currently only supports has_many relationships with through table, for example:
 	*

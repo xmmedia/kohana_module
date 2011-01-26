@@ -15,6 +15,15 @@ if ( ! isset($lang_options)) {
 
 $routes = Kohana::config('xm.routes');
 
+if ($routes['useradmin']) {
+	Route::set('useradmin', '(<lang>/)useradmin(/<action>(/<id>))', array('lang' => $lang_options))
+		->defaults(array(
+			'controller' => 'useradmin',
+			'lang' => DEFAULT_LANG,
+			'action' => NULL,
+	));
+}
+
 if ($routes['dbchange']) {
 	Route::set('dbchange', '(<lang>/)dbchange(/<action>)', array('lang' => $lang_options))
 		->defaults(array(

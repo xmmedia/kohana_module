@@ -142,6 +142,11 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			'class' => 'cl4_add',
 		));
 
+		$first_col .= HTML::anchor(Request::instance()->uri(array('action' => 'email_password', 'id' => $id)), '&nbsp;', array(
+			'title' => __('Email a new random password to this user'),
+			'class' => 'cl4_mail',
+		));
+
 		return $first_col;
 	}
 
@@ -226,6 +231,10 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			$validation = $user->save_values()->check();
 
 			if ($validation === TRUE) {
+				$new_password = cl4::get_param_array(array('c_record', 'user', 0, 'password'), FALSE);
+				$new_password = (empty($new_password) ? FALSE : $new_password);
+				$new_user = ! ($user->id > 0); // false if this is not a new user
+
 				// save the record
 				if ($user->save()->saved()) {
 					$this->user_additional_save($user);
@@ -234,6 +243,28 @@ class Controller_XM_UserAdmin extends Controller_Base {
 					foreach ($this->additional_user_info as $_additional) {
 						$save_method = $_additional['save_method'];
 						$user->$save_method($_additional['alias'], str_replace('[]', '', $_additional['field_name']));
+					}
+
+					$send_email = cl4::get_param('send_email', FALSE);
+					if ($send_email) {
+						$mail = new Mail();
+						$mail->IsHTML();
+						$mail->add_user($user->id);
+						$mail->Subject = LONG_NAME . ' Login Information';
+
+						// provide a link to the user including their username
+						$url = URL::site(Route::get('login')->uri(), TRUE) . '?' . http_build_query(array('username' => $user->username));
+
+						$mail->Body = View::factory('useradmin/' . ($new_user ? 'new_account_email' : 'account_update_email'))
+							->set('app_name', LONG_NAME)
+							->set('username', $user->username)
+							->set('password', $new_password)
+							->set('url', $url)
+							->set('admin_email', ADMIN_EMAIL);
+
+						$mail->Send();
+
+						Message::add(__(Kohana::message('useradmin', 'email_account_info')), Message::$notice);
 					}
 
 					Message::message('cl4admin', 'item_saved', NULL, Message::$notice);
@@ -255,6 +286,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 
 	/**
 	* Run inside save_user() after the user record is saved, allowing for saving additional information quickly
+	* By default, nothing extra is saved
 	*
 	* @param mixed $user
 	*/
@@ -304,6 +336,52 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			if ( ! cl4::is_dev()) $this->redirect_to_index();
 		}
 	} // function action_delete
+
+	public function action_email_password() {
+		try {
+			if ( ! ($this->id > 0)) {
+				Message::message('cl4admin', 'no_id', NULL, Message::$error);
+				$this->redirect_to_index();
+			} // if
+
+			$new_password = cl4_Auth::generate_password();
+
+			$user = ORM::factory('user', $this->id)
+				->values(array(
+					'password' => $new_password,
+					'force_update_password_flag' => 1,
+					'failed_login_count' => 0,
+					'last_failed_login' => 0,
+				))
+				->save();
+
+			$mail = new Mail();
+			$mail->IsHTML();
+			$mail->add_user($user->id);
+			$mail->Subject = LONG_NAME . ' Login Information';
+
+			// provide a link to the user including their username
+			$url = URL::site(Route::get('login')->uri(), TRUE) . '?' . http_build_query(array('username' => $user->username));
+
+			$mail->Body = View::factory('useradmin/login_information_email')
+				->set('app_name', LONG_NAME)
+				->set('username', $user->username)
+				->set('password', $new_password)
+				->set('url', $url)
+				->set('admin_email', ADMIN_EMAIL);
+
+			$mail->Send();
+
+			Message::add(__(Kohana::message('useradmin', 'email_password_sent')), Message::$notice);
+
+			$this->redirect_to_index();
+
+		} catch (Exception $e) {
+			cl4::exception_handler($e);
+			Message::message('useradmin', 'error_preparing_email', NULL, Message::$error);
+			if ( ! cl4::is_dev()) $this->redirect_to_index();
+		}
+	}
 
 	/**
 	* Cancel the current action by redirecting back to the index action

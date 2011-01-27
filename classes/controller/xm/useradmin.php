@@ -250,7 +250,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 						$mail = new Mail();
 						$mail->IsHTML();
 						$mail->add_user($user->id);
-						$mail->Subject = LONG_NAME . ' Login Information';
+						$mail->Subject = SHORT_NAME . ' Login Information';
 
 						// provide a link to the user including their username
 						$url = URL::site(Route::get('login')->uri(), TRUE) . '?' . http_build_query(array('username' => $user->username));
@@ -358,7 +358,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			$mail = new Mail();
 			$mail->IsHTML();
 			$mail->add_user($user->id);
-			$mail->Subject = LONG_NAME . ' Login Information';
+			$mail->Subject = SHORT_NAME . ' Login Information';
 
 			// provide a link to the user including their username
 			$url = URL::site(Route::get('login')->uri(), TRUE) . '?' . http_build_query(array('username' => $user->username));

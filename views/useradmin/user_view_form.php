@@ -15,8 +15,10 @@ if ($any_visible) {
 		}
 	} // foreach
 
-	$table->add_row(array('Teams', $model->team->group_concat(NULL, NULL, '<br>')));
-	$table->add_row(array('Permission Groups', $model->group->group_concat(NULL, NULL, '<br>')));
+	foreach ($additional_view_data['additional_user_info'] as $_additional) {
+		$relationship = $_additional['relationship'];
+		$table->add_row(array($_additional['name'], $model->$relationship->group_concat(NULL, NULL, '<br>')));
+	}
 
 	// the table html
 	echo $table->get_html();

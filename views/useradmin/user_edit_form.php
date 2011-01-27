@@ -25,6 +25,17 @@ if ($any_visible) {
 		}
 	} // foreach
 
+	foreach ($additional_view_data['additional_user_info'] as $_additional) {
+		$relationship = $_additional['relationship'];
+
+		$current = $model->$relationship->find_all()->as_array(NULL, 'id');
+		$list = ORM::factory($_additional['model'])->find_all()->as_array('id', 'name');
+		$table->add_row(array($_additional['name'], Form::checkboxes($_additional['field_name'], $list, $current, array(), array('orientation' => 'vertical'))));
+
+
+		//$table->add_row(array($_additional['name'], $model->$relationship->group_concat(NULL, NULL, '<br>')));
+	}
+/*
 	$current_teams = $model->team->find_all()->as_array(NULL, 'id');
 	$teams = ORM::factory('team')->find_all()->as_array('id', 'name');
 	$table->add_row(array('Teams', Form::checkboxes('team_id[]', $teams, $current_teams, array(), array('orientation' => 'vertical'))));
@@ -32,7 +43,7 @@ if ($any_visible) {
 	$current_groups = $model->group->find_all()->as_array(NULL, 'id');
 	$groups = ORM::factory('group')->find_all()->as_array('id', 'name');
 	$table->add_row(array('Permission Groups', Form::checkboxes('group_id[]', $groups, $current_groups, array(), array('orientation' => 'vertical'))));
-
+*/
 	// the table html
 	echo $table->get_html();
 

@@ -15,6 +15,27 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	protected $page_offset;
 	protected $user_admin_session;
 
+	protected $list_headings = array(
+		'',
+		'Active',
+		'Global',
+		'Email (Username)',
+		'Name',
+		'Permission Groups',
+		'Login Count',
+		'Last Login',
+	);
+	protected $additional_user_info = array(
+		array(
+			'name' => 'Permission Groups',
+			'relationship' => 'group',
+			'alias' => 'group',
+			'model' => 'group',
+			'field_name' => 'group_id[]',
+			'save_method' => 'save_through',
+		),
+	);
+
 	public function before() {
 		parent::before();
 
@@ -46,7 +67,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			--$offset;
 		}
 
-		$user = ORM::factory('useradmin')
+		$user = ORM::factory('user_admin')
 			->set_options(array('mode' => 'view'))
 			->limit($page_max_rows)
 			->offset($offset * $page_max_rows);
@@ -70,64 +91,59 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			'table_attributes' => array(
 				'class' => 'cl4_content',
 			),
-			'heading' => array(
-				'',
-				'Active',
-				'Employee',
-				'Global',
-				'Email (Username)',
-				'Name',
-				'Teams',
-				'Permission Groups',
-				'Login Count',
-				'Last Login',
-			),
+			'heading' => $this->list_headings,
 		);
 
 		$table = new HTMLTable($table_options);
 
 		foreach ($users as $user) {
 			$user->set_mode('view');
-			$id = $user->id;
-
-			$first_col = HTML::anchor(Request::instance()->uri(array('action' => 'view', 'id' => $id)), '&nbsp;', array(
-				'title' => __('View this user'),
-				'class' => 'cl4_view',
-			));
-
-			$first_col .= HTML::anchor(Request::instance()->uri(array('action' => 'edit', 'id' => $id)), '&nbsp;', array(
-				'title' => __('Edit this user'),
-				'class' => 'cl4_edit',
-			));
-
-			$first_col .= HTML::anchor(Request::instance()->uri(array('action' => 'delete', 'id' => $id)), '&nbsp;', array(
-				'title' => __('Delete this user'),
-				'class' => 'cl4_delete',
-			));
-
-			$first_col .= HTML::anchor(Request::instance()->uri(array('action' => 'add', 'id' => $id)), '&nbsp;', array(
-				'title' => __('Copy this user'),
-				'class' => 'cl4_add',
-			));
-
-			$table->add_row(array(
-				$first_col,
-				$user->get_field('active_flag'),
-				$user->get_field('employee_flag'),
-				$user->get_field('global_flag'),
-				$user->get_field('username'),
-				$user->get_field('first_name') . ' ' . $user->get_field('last_name'),
-				$user->team->group_concat(),
-				$user->group->group_concat(),
-				$user->get_field('login_count'),
-				$user->get_field('last_login'),
-			));
+			$table->add_row($this->get_list_row($user));
 		} // foreach
 
 		$this->template->body_html = View::factory('useradmin/user_list')
 			->set('user_list', $table->get_html())
 			->set('nav_html', $pagination->render());
 	} // function action_index
+
+	protected function get_list_row($user) {
+		return array(
+			$this->get_list_row_links($user),
+			$user->get_field('active_flag'),
+			$user->get_field('global_flag'),
+			$user->get_field('username'),
+			$user->get_field('first_name') . ' ' . $user->get_field('last_name'),
+			$user->group->group_concat(),
+			$user->get_field('login_count'),
+			$user->get_field('last_login'),
+		);
+	}
+
+	protected function get_list_row_links($user) {
+		$id = $user->id;
+
+		$first_col = HTML::anchor(Request::instance()->uri(array('action' => 'view', 'id' => $id)), '&nbsp;', array(
+			'title' => __('View this user'),
+			'class' => 'cl4_view',
+		));
+
+		$first_col .= HTML::anchor(Request::instance()->uri(array('action' => 'edit', 'id' => $id)), '&nbsp;', array(
+			'title' => __('Edit this user'),
+			'class' => 'cl4_edit',
+		));
+
+		$first_col .= HTML::anchor(Request::instance()->uri(array('action' => 'delete', 'id' => $id)), '&nbsp;', array(
+			'title' => __('Delete this user'),
+			'class' => 'cl4_delete',
+		));
+
+		$first_col .= HTML::anchor(Request::instance()->uri(array('action' => 'add', 'id' => $id)), '&nbsp;', array(
+			'title' => __('Copy this user'),
+			'class' => 'cl4_add',
+		));
+
+		return $first_col;
+	}
 
 	public function action_view() {
 		try {
@@ -140,7 +156,8 @@ class Controller_XM_UserAdmin extends Controller_Base {
 
 			$user = ORM::factory('user_admin', $this->id)
 				->set_mode('view')
-				->set_option('get_view_view_file', 'useradmin/user_view_form');
+				->set_option('get_view_view_file', 'useradmin/user_view_form')
+				->set_option('additional_view_data', array('additional_user_info' => $this->additional_user_info));
 		} catch (Exception $e) {
 			cl4::exception_handler($e);
 			Message::message('useradmin', 'error_viewing', NULL, Message::$error);
@@ -155,7 +172,8 @@ class Controller_XM_UserAdmin extends Controller_Base {
 		try {
 			$user = ORM::factory('user_admin', $this->id)
 				->set_mode('add')
-				->set_option('get_form_view_file', 'useradmin/user_edit_form');
+				->set_option('get_form_view_file', 'useradmin/user_edit_form')
+				->set_option('additional_view_data', array('additional_user_info' => $this->additional_user_info));
 
 			if ( ! empty($_POST)) {
 				$this->save_user($user);
@@ -181,7 +199,8 @@ class Controller_XM_UserAdmin extends Controller_Base {
 		try {
 			$user = ORM::factory('user_admin', $this->id)
 				->set_mode('edit')
-				->set_option('get_form_view_file', 'useradmin/user_edit_form');
+				->set_option('get_form_view_file', 'useradmin/user_edit_form')
+				->set_option('additional_view_data', array('additional_user_info' => $this->additional_user_info));
 
 			if ( ! empty($_POST)) {
 				$this->save_user($user);
@@ -208,10 +227,14 @@ class Controller_XM_UserAdmin extends Controller_Base {
 
 			if ($validation === TRUE) {
 				// save the record
-				if ($user->save()->update_global_users()->saved()) {
-					// now save teams and groups
-					$user->save_through('team', 'team_id');
-					$user->save_through('group', 'group_id');
+				if ($user->save()->saved()) {
+					$this->user_additional_save($user);
+
+					// now save the additional information
+					foreach ($this->additional_user_info as $_additional) {
+						$save_method = $_additional['save_method'];
+						$user->$save_method($_additional['alias'], str_replace('[]', '', $_additional['field_name']));
+					}
 
 					Message::message('cl4admin', 'item_saved', NULL, Message::$notice);
 					$this->redirect_to_index();
@@ -229,6 +252,13 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			if ( ! cl4::is_dev()) $this->redirect_to_index();
 		} // try
 	} // function save_user
+
+	/**
+	* Run inside save_user() after the user record is saved, allowing for saving additional information quickly
+	*
+	* @param mixed $user
+	*/
+	protected function user_additional_save($user) { }
 
 	/**
 	* Delete a record with a confirm first

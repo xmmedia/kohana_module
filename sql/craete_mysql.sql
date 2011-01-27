@@ -375,6 +375,9 @@ INSERT INTO `state` VALUES(68, '0000-00-00 00:00:00', 226, 'Wyoming', 'WY', '', 
 INSERT INTO `state` VALUES(69, '0000-00-00 00:00:00', 38, 'Yukon', 'YT', '', 10);
 
 
--- Permissions for the dbchange controller
-INSERT INTO `permission` VALUES(14, 'dbchange/index', 'DB Change', 'Allows the user to run SQL commands across multiple databases.');
-INSERT INTO `group_permission` VALUES(25, 1, 14);
+-- Permissions for the DB Change (dbchange controller)
+INSERT INTO `permission` VALUES(NULL, 'dbchange/index', 'DB Change', 'Allows the user to run SQL commands across multiple databases.');
+
+
+-- Permission for User Admin (useradmin controller)
+INSERT INTO `permission` VALUES(NULL, 'useradmin/index', 'User Admin', 'Gives access to all User Admin functionality.');

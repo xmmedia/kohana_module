@@ -25,16 +25,6 @@ class Controller_XM_UserAdmin extends Controller_Base {
 		'Login Count',
 		'Last Login',
 	);
-	protected $additional_user_info = array(
-		array(
-			'name' => 'Permission Groups',
-			'relationship' => 'group',
-			'alias' => 'group',
-			'model' => 'group',
-			'field_name' => 'group_id[]',
-			'save_method' => 'save_through',
-		),
-	);
 
 	public function before() {
 		parent::before();
@@ -161,8 +151,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 
 			$user = ORM::factory('user_admin', $this->id)
 				->set_mode('view')
-				->set_option('get_view_view_file', 'useradmin/user_view_form')
-				->set_option('additional_view_data', array('additional_user_info' => $this->additional_user_info));
+				->set_option('get_view_view_file', 'useradmin/user_view_form');
 		} catch (Exception $e) {
 			cl4::exception_handler($e);
 			Message::message('useradmin', 'error_viewing', NULL, Message::$error);
@@ -177,8 +166,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 		try {
 			$user = ORM::factory('user_admin', $this->id)
 				->set_mode('add')
-				->set_option('get_form_view_file', 'useradmin/user_edit_form')
-				->set_option('additional_view_data', array('additional_user_info' => $this->additional_user_info));
+				->set_option('get_form_view_file', 'useradmin/user_edit_form');
 
 			if ( ! empty($_POST)) {
 				$this->save_user($user);
@@ -204,8 +192,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 		try {
 			$user = ORM::factory('user_admin', $this->id)
 				->set_mode('edit')
-				->set_option('get_form_view_file', 'useradmin/user_edit_form')
-				->set_option('additional_view_data', array('additional_user_info' => $this->additional_user_info));
+				->set_option('get_form_view_file', 'useradmin/user_edit_form');
 
 			if ( ! empty($_POST)) {
 				$this->save_user($user);
@@ -238,12 +225,6 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				// save the record
 				if ($user->save()->saved()) {
 					$this->user_additional_save($user);
-
-					// now save the additional information
-					foreach ($this->additional_user_info as $_additional) {
-						$save_method = $_additional['save_method'];
-						$user->$save_method($_additional['alias'], str_replace('[]', '', $_additional['field_name']));
-					}
 
 					$send_email = cl4::get_param('send_email', FALSE);
 					if ($send_email) {

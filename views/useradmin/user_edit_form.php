@@ -25,14 +25,6 @@ if ($any_visible) {
 		}
 	} // foreach
 
-	foreach ($additional_view_data['additional_user_info'] as $_additional) {
-		$relationship = $_additional['relationship'];
-
-		$current = $model->$relationship->find_all()->as_array(NULL, 'id');
-		$list = ORM::factory($_additional['model'])->find_all()->as_array('id', 'name');
-		$table->add_row(array($_additional['name'], Form::checkboxes($_additional['field_name'], $list, $current, array(), array('orientation' => 'vertical'))));
-	}
-
 	$table->add_row(array(
 		'<label for="send_email">Send Email to User</label>',
 		Form::checkbox('send_email', 1, (empty($model->id) ? TRUE : FALSE), array('id' => 'send_email')) . '<div class="cl4_field_help cl4_field_help_edit" data-cl4_field="c_record[user][0][send_email]">Checking this will send the user an email containing their login information after the user is saved.</div>',

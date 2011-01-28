@@ -42,11 +42,18 @@ class Controller_XM_UserAdmin extends Controller_Base {
 		if ($page_offset !== NULL) $this->user_admin_session['page_offset'] = intval($page_offset);
 		$this->page_offset = $this->user_admin_session['page_offset'];
 
+		$this->add_admin_css();
+	} // function before
+
+	/**
+	* Adds the CSS for cl4admin
+	*/
+	protected function add_admin_css() {
 		if ($this->auto_render) {
 			$this->template->styles['css/admin.css'] = 'screen';
 			$this->template->styles['css/dbadmin.css'] = 'screen';
 		}
-	} // function before
+	} // function add_admin_css
 
 	public function action_index() {
 		$page_max_rows = 20;

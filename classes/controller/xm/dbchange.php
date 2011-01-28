@@ -7,6 +7,22 @@ class Controller_XM_DBChange extends Controller_Base {
 		'index' => 'dbchange/index',
 	);
 
+	public function before() {
+		parent::before();
+
+		$this->add_admin_css();
+	}
+
+	/**
+	* Adds the CSS for cl4admin
+	*/
+	protected function add_admin_css() {
+		if ($this->auto_render) {
+			$this->template->styles['css/admin.css'] = 'screen';
+			$this->template->styles['css/dbadmin.css'] = 'screen';
+		}
+	} // function add_admin_css
+
 	public function action_index() {
 		$this->template->body_html = View::factory('dbchange/index')
 			->bind('db_change_sql', $db_change_sql)

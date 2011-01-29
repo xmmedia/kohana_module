@@ -74,8 +74,19 @@ class Controller_XM_UserAdmin extends Controller_Base {
 		if ($this->auto_render) {
 			$this->template->styles['css/admin.css'] = 'screen';
 			$this->template->styles['css/dbadmin.css'] = 'screen';
+			$this->template->styles['css/useradmin.css'] = 'screen';
 		}
+
+		return $this;
 	} // function add_admin_css
+
+	public function add_template_js() {
+		parent::add_template_js();
+
+		$this->template->scripts['useradmin'] = 'js/useradmin.js';
+
+		return $this;
+	}
 
 	public function action_index() {
 		$page_max_rows = 20;
@@ -563,7 +574,41 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	}
 
 	public function action_group_permissions() {
+		if ( ! empty($_POST)) {
+			try {
+				ORM::factory('group', $this->id)
+					->save_through('permission', 'current_permissions', $save_through_counts);
+
+				// generate a message for the user regarding the permissions that were removed, added and kept
+				$count_msg = '';
+				if ($save_through_counts['removed'] > 0) {
+					$count_msg .= $save_through_counts['removed'] . ' permission' . Text::s($save_through_counts['removed']) . ' removed';
+				}
+				if ($save_through_counts['added'] > 0) {
+					$count_msg .= ( ! empty($count_msg) ? ', ' : '') . $save_through_counts['added'] . ' permission' . Text::s($save_through_counts['added']) . ' added';
+				}
+				if ($save_through_counts['kept'] > 0) {
+					$count_msg .= ( ! empty($count_msg) ? ', ' : '') . $save_through_counts['kept'] . ' permission' . Text::s($save_through_counts['kept']) . ' stayed the same';
+				}
+				if ( ! empty($count_msg)) {
+					$count_msg = ': ' . $count_msg . '.';
+				} else {
+					$count_msg = '.';
+				}
+
+				Message::add('The permissions for the group were updated' . $count_msg, Message::$notice);
+				$this->redirect_to_group_list();
+
+			} catch (Exception $e) {
+				cl4::exception_handler($e);
+				Message::message('cl4admin', 'problem_saving', NULL, Message::$error);
+				if ( ! cl4::is_dev()) $this->redirect_to_group_list();
+			} // try
+		} // if
+
 		try {
+			$group = ORM::factory('group', $this->id);
+
 			$select_perm_id = 'permission.id';
 			$select_perm_name = array(DB::expr("CONCAT_WS('', permission.name, ' (', permission.permission, ')')"), 'permission_name');
 
@@ -580,6 +625,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				->find_all()
 				->as_array('id', 'permission_name');
 
+			// remove all the current permissions from the all list
 			foreach ($current_permissions as $perm_id => $perm_name) {
 				if (isset($all_permissions[$perm_id])) {
 					unset($all_permissions[$perm_id]);
@@ -587,17 +633,18 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			}
 
 			$available_perms_select = Form::select('available_permissions[]', $all_permissions, array(), array(
-				'multiple',
 				'size' => 10,
+				'class' => 'xm_available_permissions',
 			));
 			$current_perms_select = Form::select('current_permissions[]', $current_permissions, array(), array(
-				'multiple',
 				'size' => 10,
+				'class' => 'xm_current_permissions xm_include_in_save',
 			));
 
 			$this->template->body_html = View::factory('useradmin/group_permission_edit')
-				->set('available_perms_select', $available_perms_select)
-				->set('current_perms_select', $current_perms_select);
+				->bind('group', $group)
+				->bind('available_perms_select', $available_perms_select)
+				->bind('current_perms_select', $current_perms_select);
 
 		} catch (Exception $e) {
 			cl4::exception_handler($e);

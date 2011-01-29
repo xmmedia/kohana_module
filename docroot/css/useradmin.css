@@ -1,0 +1,6 @@
+/** user admin **/
+.group_perm_edit { margin:0 auto; width:960px; }
+.group_perm_edit .perm_available { float:left; }
+.group_perm_edit .perm_buttons { float:left; width:90px; text-align:center; padding-top:75px; line-height:2.5em; }
+.group_perm_edit .perm_current { float:left; }
+.xm_available_permissions, .xm_current_permissions { width:435px; }

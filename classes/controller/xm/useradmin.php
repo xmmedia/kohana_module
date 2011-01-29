@@ -8,6 +8,10 @@ class Controller_XM_UserAdmin extends Controller_Base {
 		'edit' => 'useradmin/index',
 		'delete' => 'useradmin/index',
 		'view' => 'useradmin/index',
+		'groups' => 'useradmin/index',
+		'add_group' => 'useradmin/index',
+		'edit_group' => 'useradmin/index',
+		'cancel_group' => 'useradmin/index',
 	);
 	public $page = 'admin';
 
@@ -24,6 +28,11 @@ class Controller_XM_UserAdmin extends Controller_Base {
 		'Permission Groups',
 		'Login Count',
 		'Last Login',
+	);
+	protected $group_list_headings = array(
+		'',
+		'Name',
+		'Description',
 	);
 
 	public function before() {
@@ -43,6 +52,19 @@ class Controller_XM_UserAdmin extends Controller_Base {
 		$this->page_offset = $this->user_admin_session['page_offset'];
 
 		$this->add_admin_css();
+
+		if ($this->request->action == 'groups') {
+			$page_title = 'Groups';
+		} else if ($this->request->action == 'index') {
+			$page_title = 'Users';
+		} else {
+			$page_title = NULL;
+		}
+
+		if ( ! empty($page_title)) {
+			$this->template->pre_message = View::factory('useradmin/menu')
+				->set('page_title', $page_title);
+		}
 	} // function before
 
 	/**
@@ -369,7 +391,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			Message::message('useradmin', 'error_preparing_email', NULL, Message::$error);
 			if ( ! cl4::is_dev()) $this->redirect_to_index();
 		}
-	}
+	} // function action_email_password
 
 	/**
 	* Cancel the current action by redirecting back to the index action
@@ -382,6 +404,205 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	} // function
 
 	public function redirect_to_index() {
-		Request::instance()->redirect('/' . Route::get(Route::name(Request::instance()->route))->uri());
+		Request::instance()->redirect(Route::get(Route::name(Request::instance()->route))->uri());
 	}
+
+	public function action_groups() {
+		$group = ORM::factory('group')
+			->set_options(array('mode' => 'view'));
+		$groups = $group->find_all();
+		$group_count = $group->count_all();
+
+		$table_options = array(
+			'table_attributes' => array(
+				'class' => 'cl4_content',
+			),
+			'heading' => $this->group_list_headings,
+		);
+
+		$table = new HTMLTable($table_options);
+
+		foreach ($groups as $group) {
+			$group->set_mode('view');
+			$table->add_row($this->get_group_list_row($group));
+		} // foreach
+
+		$this->template->body_html = View::factory('useradmin/group_list')
+			->set('group_list', $table->get_html())
+			->set('group_count', $group_count);
+	} // function action_groups
+
+	protected function get_group_list_row($group) {
+		return array(
+			$this->get_group_list_row_links($group),
+			$group->get_field('name'),
+			$group->get_field('description'),
+		);
+	}
+
+	protected function get_group_list_row_links($group) {
+		$id = $group->id;
+
+		$first_col = HTML::anchor(Request::instance()->uri(array('action' => 'edit_group', 'id' => $id)), '&nbsp;', array(
+			'title' => __('Edit this group'),
+			'class' => 'cl4_edit',
+		));
+
+		$first_col .= HTML::anchor(Request::instance()->uri(array('action' => 'delete_group', 'id' => $id)), '&nbsp;', array(
+			'title' => __('Delete this group'),
+			'class' => 'cl4_delete',
+		));
+
+		$first_col .= HTML::anchor(Request::instance()->uri(array('action' => 'add_group', 'id' => $id)), '&nbsp;', array(
+			'title' => __('Copy this group'),
+			'class' => 'cl4_add',
+		));
+
+		$first_col .= HTML::anchor(Request::instance()->uri(array('action' => 'group_permissions', 'id' => $id)), '&nbsp;', array(
+			'title' => __('Edit the permissions for this group'),
+			'class' => 'cl4_lock',
+		));
+
+		return $first_col;
+	}
+
+	/**
+	* Display an add form or add (save) a new record
+	*/
+	public function action_add_group() {
+		try {
+			$group = ORM::factory('group', $this->id)
+				->set_mode('add')
+				->set_option('cancel_button_attributes', array(
+					'data-cl4_link' => URL::site(Route::get('useradmin')->uri(array('action' => 'cancel_group'))),
+				));
+
+			if ( ! empty($_POST)) {
+				$this->save_group($group);
+			}
+
+			if ( ! empty($this->id)) {
+				$group->set_option('form_action', URL::site(Request::current()->uri(array('id' => NULL))) . URL::query());
+			}
+
+			$this->template->body_html = View::factory('useradmin/group_edit')
+				->bind('group', $group);
+		} catch (Exception $e) {
+			cl4::exception_handler($e);
+			Message::message('cl4admin', 'error_preparing_add', NULL, Message::$error);
+			if ( ! cl4::is_dev()) $this->redirect_to_group_list();
+		}
+	} // function action_add
+
+	/**
+	* Display an edit form for a record or update (save) an existing record
+	*/
+	public function action_edit_group() {
+		try {
+			$group = ORM::factory('group', $this->id)
+				->set_mode('edit')
+				->set_option('cancel_button_attributes', array(
+					'data-cl4_link' => URL::site(Route::get('useradmin')->uri(array('action' => 'cancel_group'))),
+				));
+
+			if ( ! empty($_POST)) {
+				$this->save_group($group);
+			} // if
+
+			$this->template->body_html = View::factory('useradmin/group_edit')
+				->bind('group', $group);
+		} catch (Exception $e) {
+			cl4::exception_handler($e);
+			Message::message('cl4admin', 'error_preparing_edit', NULL, Message::$error);
+			if ( ! cl4::is_dev()) $this->redirect_to_group_list();
+		} // try
+	} // function action_edit
+
+	/**
+	* Saves the user record, including teams and permission groups
+	*
+	* @param  ORM  $user
+	*/
+	protected function save_group($group) {
+		try {
+			// validate the post data against the model
+			$validation = $group->save_values()->check();
+
+			if ($validation === TRUE) {
+				// save the record
+				if ($group->save()->saved()) {
+					Message::message('cl4admin', 'item_saved', NULL, Message::$notice);
+					$this->redirect_to_group_list();
+				} else {
+					Message::message('cl4admin', 'item_may_have_not_saved', NULL, Message::$error);
+				} // if
+			} else {
+				Message::message('cl4admin', 'values_not_valid', array(
+					':validate_errors' => Message::add_validate_errors($group->validate(), 'user')
+				), Message::$error);
+			}
+		} catch (Exception $e) {
+			cl4::exception_handler($e);
+			Message::message('cl4admin', 'problem_saving', NULL, Message::$error);
+			if ( ! cl4::is_dev()) $this->redirect_to_group_list();
+		} // try
+	} // function save_user
+
+	/**
+	* Cancel the current action by redirecting back to the groups action
+	*/
+	public function action_cancel_group() {
+		// add a notice to be displayed
+		Message::message('cl4admin', 'action_cancelled', NULL, Message::$notice);
+		// redirect to the index
+		$this->redirect_to_group_list();
+	} // function
+
+	public function redirect_to_group_list() {
+		Request::instance()->redirect(Route::get(Route::name(Request::instance()->route))->uri(array('action' => 'groups')));
+	}
+
+	public function action_group_permissions() {
+		try {
+			$select_perm_id = 'permission.id';
+			$select_perm_name = array(DB::expr("CONCAT_WS('', permission.name, ' (', permission.permission, ')')"), 'permission_name');
+
+			$all_permissions = ORM::factory('permission')
+				->select($select_perm_id)
+				->select($select_perm_name)
+				->find_all()
+				->as_array('id', 'permission_name');
+
+			$current_permissions = ORM::factory('group', $this->id)
+				->permission
+				->select($select_perm_id)
+				->select($select_perm_name)
+				->find_all()
+				->as_array('id', 'permission_name');
+
+			foreach ($current_permissions as $perm_id => $perm_name) {
+				if (isset($all_permissions[$perm_id])) {
+					unset($all_permissions[$perm_id]);
+				}
+			}
+
+			$available_perms_select = Form::select('available_permissions[]', $all_permissions, array(), array(
+				'multiple',
+				'size' => 10,
+			));
+			$current_perms_select = Form::select('current_permissions[]', $current_permissions, array(), array(
+				'multiple',
+				'size' => 10,
+			));
+
+			$this->template->body_html = View::factory('useradmin/group_permission_edit')
+				->set('available_perms_select', $available_perms_select)
+				->set('current_perms_select', $current_perms_select);
+
+		} catch (Exception $e) {
+			cl4::exception_handler($e);
+			Message::message('cl4admin', 'error_preparing_edit', NULL, Message::$error);
+			if ( ! cl4::is_dev()) $this->redirect_to_group_list();
+		} // try
+	} // function action_group_permissions
 } // class Controller_UserAdmin

@@ -641,10 +641,37 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				'class' => 'xm_current_permissions xm_include_in_save',
 			));
 
+			// now attempt to generate the permission group drop downs
+			try {
+				$permission_groups = ORM::factory('permission_group')
+					->find_all();
+
+				if (count($permission_groups) > 0) {
+					$perm_group_data = array();
+					foreach ($permission_groups as $permission_group) {
+						$permission_ids = $permission_group
+							->permission_id
+							->select('permission_group_permission.id')
+							->find_all()
+							->as_array(NULL, 'id');
+
+						$perm_group_data[implode(',', $permission_ids)] = $permission_group->name;
+					}
+
+					$perm_group_select_add = Form::select('add_group_select', $perm_group_data, NULL, array(), array('select_one' => TRUE));
+					$perm_group_select_remove = Form::select('remove_group_select', $perm_group_data, NULL, array(), array('select_one' => TRUE));
+				} // if
+
+			} catch (Exeception $e) {
+				// don't do anything because it's likely the permission_group model doesn't exist and therefore the functionality isn't available
+			}
+
 			$this->template->body_html = View::factory('useradmin/group_permission_edit')
 				->bind('group', $group)
 				->bind('available_perms_select', $available_perms_select)
-				->bind('current_perms_select', $current_perms_select);
+				->bind('current_perms_select', $current_perms_select)
+				->bind('permission_group_select_add', $perm_group_select_add)
+				->bind('permission_group_select_remove', $perm_group_select_remove);
 
 		} catch (Exception $e) {
 			cl4::exception_handler($e);

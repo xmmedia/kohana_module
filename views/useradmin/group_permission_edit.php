@@ -27,6 +27,33 @@
 </div>
 <div class="clear"></div>
 
+<?php if ( ! empty($permission_group_select_add)) { ?>
+<div class="permission_groups">
+<div class="perm_available">
+	Add a group of permissions:<br>
+	<?php echo $permission_group_select_add; ?>
+	<?php echo Form::input_button(NULL, 'Add »', array(
+		'class' => 'move_multiple_select_options',
+		'data-xm_perm_group_select' => 'add_group_select',
+		'data-xm_from_select' => 'available_permissions[]',
+		'data-xm_to_select' => 'current_permissions[]',
+	)); ?>
+</div>
+<div class="perm_buttons"></div>
+<div class="perm_current">
+	Remove a group of permissions:<br>
+	<?php echo Form::input_button(NULL, '« Remove', array(
+		'class' => 'move_multiple_select_options',
+		'data-xm_perm_group_select' => 'remove_group_select',
+		'data-xm_from_select' => 'current_permissions[]',
+		'data-xm_to_select' => 'available_permissions[]',
+	)); ?>
+	<?php echo $permission_group_select_remove; ?>
+</div>
+<div class="clear"></div>
+</div>
+<?php } ?>
+
 <div class="cl4_buttons">
 	<?php echo Form::submit(NULL, 'Save', array('class' => 'permission_form_save')); ?>
 	<?php echo Form::input_button(NULL, 'Reset', array(

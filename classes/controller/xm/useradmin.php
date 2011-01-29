@@ -474,6 +474,11 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			'class' => 'cl4_lock',
 		));
 
+		$first_col .= HTML::anchor(Request::instance()->uri(array('action' => 'group_users', 'id' => $id)), '&nbsp;', array(
+			'title' => __('Edit the users that have this permission group'),
+			'class' => 'cl4_contact2',
+		));
+
 		return $first_col;
 	}
 
@@ -579,24 +584,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				ORM::factory('group', $this->id)
 					->save_through('permission', 'current_permissions', $save_through_counts);
 
-				// generate a message for the user regarding the permissions that were removed, added and kept
-				$count_msg = '';
-				if ($save_through_counts['removed'] > 0) {
-					$count_msg .= $save_through_counts['removed'] . ' permission' . Text::s($save_through_counts['removed']) . ' removed';
-				}
-				if ($save_through_counts['added'] > 0) {
-					$count_msg .= ( ! empty($count_msg) ? ', ' : '') . $save_through_counts['added'] . ' permission' . Text::s($save_through_counts['added']) . ' added';
-				}
-				if ($save_through_counts['kept'] > 0) {
-					$count_msg .= ( ! empty($count_msg) ? ', ' : '') . $save_through_counts['kept'] . ' permission' . Text::s($save_through_counts['kept']) . ' stayed the same';
-				}
-				if ( ! empty($count_msg)) {
-					$count_msg = ': ' . $count_msg . '.';
-				} else {
-					$count_msg = '.';
-				}
-
-				Message::add('The permissions for the group were updated' . $count_msg, Message::$notice);
+				Message::add('The permissions for the group were updated' . $this->get_count_msg('permission', $save_through_counts), Message::$notice);
 				$this->redirect_to_group_list();
 
 			} catch (Exception $e) {
@@ -634,11 +622,11 @@ class Controller_XM_UserAdmin extends Controller_Base {
 
 			$available_perms_select = Form::select('available_permissions[]', $all_permissions, array(), array(
 				'size' => 10,
-				'class' => 'xm_available_permissions',
+				'class' => 'xm_permission_edit_select',
 			));
 			$current_perms_select = Form::select('current_permissions[]', $current_permissions, array(), array(
 				'size' => 10,
-				'class' => 'xm_current_permissions xm_include_in_save',
+				'class' => 'xm_permission_edit_select xm_include_in_save',
 			));
 
 			// now attempt to generate the permission group drop downs
@@ -679,4 +667,95 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			if ( ! cl4::is_dev()) $this->redirect_to_group_list();
 		} // try
 	} // function action_group_permissions
+
+	public function action_group_users() {
+		if ( ! empty($_POST)) {
+			try {
+				ORM::factory('group', $this->id)
+					->save_through('user', 'current_users', $save_through_counts);
+
+				Message::add('The users in the group were updated' . $this->get_count_msg('user', $save_through_counts), Message::$notice);
+				$this->redirect_to_group_list();
+
+			} catch (Exception $e) {
+				cl4::exception_handler($e);
+				Message::message('cl4admin', 'problem_saving', NULL, Message::$error);
+				if ( ! cl4::is_dev()) $this->redirect_to_group_list();
+			} // try
+		} // if
+
+		try {
+			$group = ORM::factory('group', $this->id);
+
+			$select_user_id = 'user.id';
+			$select_user_name = array(DB::expr("CONCAT_WS('', user.first_name, ' ', user.last_name)"), 'name');
+
+			$all_users = ORM::factory('user')
+				->select($select_user_id)
+				->select($select_user_name)
+				->find_all()
+				->as_array('id', 'name');
+
+			$current_users = ORM::factory('group', $this->id)
+				->user
+				->select($select_user_id)
+				->select($select_user_name)
+				->find_all()
+				->as_array('id', 'name');
+
+			// remove all the current permissions from the all list
+			foreach ($current_users as $user_id => $user_name) {
+				if (isset($all_users[$user_id])) {
+					unset($all_users[$user_id]);
+				}
+			}
+
+			$available_users_select = Form::select('available_users[]', $all_users, array(), array(
+				'size' => 10,
+				'class' => 'xm_permission_edit_select',
+			));
+			$current_users_select = Form::select('current_users[]', $current_users, array(), array(
+				'size' => 10,
+				'class' => 'xm_permission_edit_select xm_include_in_save',
+			));
+
+			$this->template->body_html = View::factory('useradmin/group_user_edit')
+				->bind('group', $group)
+				->bind('available_users_select', $available_users_select)
+				->bind('current_users_select', $current_users_select);
+
+		} catch (Exception $e) {
+			cl4::exception_handler($e);
+			Message::message('cl4admin', 'error_preparing_edit', NULL, Message::$error);
+			if ( ! cl4::is_dev()) $this->redirect_to_group_list();
+		} // try
+	} // function action_group_users
+
+	/**
+	* Generate a message for the user regarding the records that were removed, added and kept
+	*
+	* @param  string  $name
+	* @param  array   $counts
+	*
+	* @return  string
+	*/
+	protected function get_count_msg($name, $counts) {
+		$count_msg = '';
+		if ($counts['removed'] > 0) {
+			$count_msg .= $counts['removed'] . ' user' . Text::s($counts['removed']) . ' removed';
+		}
+		if ($counts['added'] > 0) {
+			$count_msg .= ( ! empty($count_msg) ? ', ' : '') . $counts['added'] . ' user' . Text::s($counts['added']) . ' added';
+		}
+		if ($counts['kept'] > 0) {
+			$count_msg .= ( ! empty($count_msg) ? ', ' : '') . $counts['kept'] . ' user' . Text::s($counts['kept']) . ' stayed the same';
+		}
+		if ( ! empty($count_msg)) {
+			$count_msg = ': ' . $count_msg . '.';
+		} else {
+			$count_msg = '.';
+		}
+
+		return $count_msg;
+	} // function get_count_msg
 } // class Controller_UserAdmin

@@ -6,4 +6,4 @@
 .group_perm_edit .permission_groups { margin:5px 0 5px 0; }
 .group_perm_edit .permission_groups .perm_buttons { padding-top:0; height:1em; }
 .group_perm_edit .permission_groups .perm_current { text-align:right; }
-.xm_available_permissions, .xm_current_permissions { width:435px; }
+.xm_permission_edit_select { width:435px; }

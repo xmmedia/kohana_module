@@ -6,7 +6,7 @@
 <?php echo Form::open(); ?>
 
 <div class="perm_available">
-	<h4>Users not in the group</h4>
+	<h4>Users <em>Not</em> in the Group</h4>
 	<?php echo $available_users_select; ?>
 </div>
 <div class="perm_buttons">
@@ -22,7 +22,7 @@
 	)); ?>
 </div>
 <div class="perm_current">
-	<h4>Users in the group</h4>
+	<h4>Users in the Group</h4>
 	<?php echo $current_users_select; ?>
 </div>
 <div class="clear"></div>

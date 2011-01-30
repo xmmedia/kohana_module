@@ -6,7 +6,7 @@
 <?php echo Form::open(); ?>
 
 <div class="perm_available">
-	<h4>The available permissions</h4>
+	<h4>Available Permissions</h4>
 	<?php echo $available_perms_select; ?>
 </div>
 <div class="perm_buttons">
@@ -22,7 +22,7 @@
 	)); ?>
 </div>
 <div class="perm_current">
-	<h4>The current permissions</h4>
+	<h4>Current Permissions</h4>
 	<?php echo $current_perms_select; ?>
 </div>
 <div class="clear"></div>

@@ -17,11 +17,11 @@
 			<nav class="main_nav logged_in_nav">
 				<ul>
 					<?php if ($logged_in) { ?>
-					<li class="logout"><?php echo HTML::anchor(Route::get('login')->uri(array('action' => 'logout')), '<img src="/images/icon-logout.gif" width="12" height="12" alt="' . HTML::chars(__('Logout')) . '"> ' . HTML::chars(__('Logout'))); ?></li>
+					<li class="logout"><?php echo HTML::anchor(Route::get('login')->uri(array('action' => 'logout')), '<img src="/images/nav/logout.gif" width="12" height="12" alt="' . HTML::chars(__('Logout')) . '"> ' . HTML::chars(__('Logout'))); ?></li>
 					<li class="nav_divider"></li>
-					<li class="account"><?php echo HTML::anchor(Route::get('account')->uri(array('action' => 'profile')), '<img src="/images/icon-my_account.gif" width="10" height="13" alt="' . HTML::chars(__('My Account')) . '"> ' . HTML::chars(__('My Account'))); ?></li>
+					<li class="account"><?php echo HTML::anchor(Route::get('account')->uri(array('action' => 'profile')), '<img src="/images/nav/my_account.gif" width="10" height="13" alt="' . HTML::chars(__('My Account')) . '"> ' . HTML::chars(__('My Account'))); ?></li>
 					<?php } else { ?>
-					<li class="login"><?php echo HTML::anchor(Route::get('login')->uri(), '<img src="/images/nav/logout.gif" width="10" height="13" alt="' . HTML::chars(__('Login')) . '"> ' . HTML::chars(__('Login')) . '</a>'); ?></li>
+					<li class="login"><?php echo HTML::anchor(Route::get('login')->uri(), '<img src="/images/nav/logout.gif" width="10" height="13" alt="' . HTML::chars(__('Login')) . '"> ' . HTML::chars(__('Login'))); ?></li>
 					<?php } // if logged in ?>
 					<li class="nav_divider"></li>
 				</ul>
@@ -30,7 +30,7 @@
 				<ul>
 					<li class="home"><?php echo HTML::anchor('', __('Home')); ?></li>
 					<li class="nav_divider"></li>
-					<li class="aboutus"><?php echo HTML::anchor(Route::get('pages')->uri(array('page' => 'aboutus')), __('About Us')); ?></a>
+					<li class="aboutus"><?php echo HTML::anchor(Route::get('pages')->uri(array('page' => 'aboutus')), __('About Us')); ?>
 						<ul class="sub_nav">
 							<li class="ourpeople"><?php echo HTML::anchor(Route::get('pages_section')->uri(array('section' => 'aboutus', 'page' => 'ourpeople')), __('Our People')); ?></li>
 						</ul>

@@ -72,9 +72,9 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	*/
 	protected function add_admin_css() {
 		if ($this->auto_render) {
-			$this->template->styles['css/admin.css'] = 'screen';
-			$this->template->styles['css/dbadmin.css'] = 'screen';
-			$this->template->styles['css/useradmin.css'] = 'screen';
+			$this->template->styles['css/admin.css'] = NULL;
+			$this->template->styles['css/dbadmin.css'] = NULL;
+			$this->template->styles['css/useradmin.css'] = NULL;
 		}
 
 		return $this;

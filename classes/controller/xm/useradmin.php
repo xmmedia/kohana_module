@@ -739,13 +739,13 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	protected function get_count_msg($name, $counts) {
 		$count_msg = '';
 		if ($counts['removed'] > 0) {
-			$count_msg .= $counts['removed'] . ' user' . Text::s($counts['removed']) . ' removed';
+			$count_msg .= $counts['removed'] . ' ' . $name . Text::s($counts['removed']) . ' removed';
 		}
 		if ($counts['added'] > 0) {
-			$count_msg .= ( ! empty($count_msg) ? ', ' : '') . $counts['added'] . ' user' . Text::s($counts['added']) . ' added';
+			$count_msg .= ( ! empty($count_msg) ? ', ' : '') . $counts['added'] . ' ' . $name . Text::s($counts['added']) . ' added';
 		}
 		if ($counts['kept'] > 0) {
-			$count_msg .= ( ! empty($count_msg) ? ', ' : '') . $counts['kept'] . ' user' . Text::s($counts['kept']) . ' stayed the same';
+			$count_msg .= ( ! empty($count_msg) ? ', ' : '') . $counts['kept'] . ' ' . $name . Text::s($counts['kept']) . ' stayed the same';
 		}
 		if ( ! empty($count_msg)) {
 			$count_msg = ': ' . $count_msg . '.';

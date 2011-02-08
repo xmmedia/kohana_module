@@ -179,7 +179,6 @@ class Model_XM_Contact extends ORM {
 					$mail = new Mail();
 					$mail->AddAddress($to, $to_name);
 					$mail->add_log_bcc();
-					$mail->AddReplyTo($this->email, $this->name);
 					$mail->Subject = 'Website Contact Us Submission - ' . date('Y-m-d H:m');
 					$mail->IsHTML(TRUE);
 					if ( ! empty($this->email)) $mail->AddReplyTo($this->email, $this->name);

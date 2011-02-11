@@ -22,7 +22,6 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	protected $list_headings = array(
 		'',
 		'Active',
-		'Global',
 		'Email (Username)',
 		'Name',
 		'Permission Groups',
@@ -140,7 +139,6 @@ class Controller_XM_UserAdmin extends Controller_Base {
 		return array(
 			$this->get_list_row_links($user),
 			$user->get_field('active_flag'),
-			$user->get_field('global_flag'),
 			$user->get_field('username'),
 			$user->get_field('first_name') . ' ' . $user->get_field('last_name'),
 			$user->group->group_concat(),

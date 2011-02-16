@@ -9,35 +9,8 @@ class Model_XM_Contact extends ORM {
 	protected $_table_name = 'contact';
 	public $_table_name_display = 'Contact'; // cl4-specific
 
-	// column labels
-	protected $_labels = array(
-		'id' => 'ID',
-		'name' => 'Name',
-		'email' => 'Email',
-		'phone' => 'Phone',
-		'message' => 'Message',
-		'date_submitted' => 'Date Submitted',
-		'ip_address' => 'IP Address',
-	);
-
-	// validation rules
-	protected $_rules = array(
-		'name' => array(
-			'not_empty' => NULL,
-			'min_length' => array(2),
-		),
-		'message' => array(
-			'not_empty' => NULL,
-			'min_length' => array(5),
-		),
-	);
 	protected $_callbacks = array(
 		'email' => array('check_for_email_or_phone'),
-	);
-
-	// Filters
-	protected $_filters = array(
-	    TRUE => array('trim' => array()),
 	);
 
 	// column definitions
@@ -122,6 +95,52 @@ class Model_XM_Contact extends ORM {
 		'column' => 'date_submitted',
 		'format' => 'Y-m-j H:i:s'
 	);
+
+	/**
+	 * Label definitions for validation
+	 *
+	 * @return array
+	 */
+	public function labels() {
+		return array(
+			'id' => 'ID',
+			'name' => 'Name',
+			'email' => 'Email',
+			'phone' => 'Phone',
+			'message' => 'Message',
+			'date_submitted' => 'Date Submitted',
+			'ip_address' => 'IP Address',
+		);
+	}
+
+	/**
+	 * Rule definitions for validation
+	 *
+	 * @return array
+	 */
+	public function rules() {
+		return array(
+			'name' => array(
+				'not_empty' => NULL,
+				'min_length' => array(2),
+			),
+			'message' => array(
+				'not_empty' => NULL,
+				'min_length' => array(5),
+			),
+		);
+	}
+
+	/**
+	 * Filter definitions for validation
+	 *
+	 * @return array
+	 */
+	public function filters() {
+		return array(
+		    TRUE => array('trim' => array()),
+		);
+	}
 
 	public function check_for_email_or_phone(Validate $validate, $field) {
 		if (empty($this->email) && empty($this->phone)) {

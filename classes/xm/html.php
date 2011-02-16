@@ -4,18 +4,18 @@ class XM_HTML extends cl4_HTML {
 	/**
 	 * Creates a style sheet link element.
 	 * Same as Kohana_HTML::style() but supports using //example.com/path/to/file.css and doesn't add a type="text/css"
-	 * Same as cl4_HTML::style() but adds a the filemtime as a query string to the file path
 	 *
 	 *     echo HTML::style('media/css/screen.css');
 	 *
-	 * @param   string  file name
-	 * @param   array   default attributes
+	 * @param   string   file name
+	 * @param   array    default attributes
+	 * @param   mixed    protocol to pass to URL::base()
 	 * @param   boolean  include the index page
 	 * @return  string
 	 * @uses    URL::base
 	 * @uses    HTML::attributes
 	 */
-	public static function style($file, array $attributes = NULL, $index = FALSE) {
+	public static function style($file, array $attributes = NULL, $protocol = NULL, $index = FALSE) {
 		if (strpos($file, '://') === FALSE && strpos($file, '//') !== 0) {
 			// Add the base URL
 			$file = URL::base($index) . $file . HTML::get_filemtime_str($file);
@@ -33,18 +33,18 @@ class XM_HTML extends cl4_HTML {
 	/**
 	 * Creates a script link.
 	 * Same as Kohana_HTML::script() but supports using //example.com/path/to/file.js and doesn't add a type="text/javascript"
-	 * Same as cl4_HTML::script() but adds a the filemtime as a query string to the file path
 	 *
 	 *     echo HTML::script('media/js/jquery.min.js');
 	 *
 	 * @param   string   file name
 	 * @param   array    default attributes
+	 * @param   mixed    protocol to pass to URL::base()
 	 * @param   boolean  include the index page
 	 * @return  string
 	 * @uses    URL::base
 	 * @uses    HTML::attributes
 	 */
-	public static function script($file, array $attributes = NULL, $index = FALSE) {
+	public static function script($file, array $attributes = NULL, $protocol = NULL, $index = FALSE) {
 		if (strpos($file, '://') === FALSE && strpos($file, '//') !== 0) {
 			// Add the base URL
 			$file = URL::base($index) . $file . HTML::get_filemtime_str($file);

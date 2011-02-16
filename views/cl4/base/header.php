@@ -14,7 +14,7 @@
 	<div class="nav_wrapper_repeat">
 		<div class="nav_wrapper">
 			<?php // displays on the right hand side, includes login, logout and profile link ?>
-			<nav class="main_nav logged_in_nav">
+			<nav class="basic_nav main_nav logged_in_nav">
 				<ul>
 					<?php if ($logged_in) { ?>
 					<li class="logout"><?php echo HTML::anchor(Route::get('login')->uri(array('action' => 'logout')), '<img src="/images/nav/logout.gif" width="12" height="12" alt="' . HTML::chars(__('Logout')) . '"> ' . HTML::chars(__('Logout'))); ?></li>
@@ -26,7 +26,7 @@
 					<li class="nav_divider"></li>
 				</ul>
 			</nav>
-			<nav class="main_nav">
+			<nav class="basic_nav main_nav">
 				<ul>
 					<li class="home"><?php echo HTML::anchor('', __('Home')); ?></li>
 					<li class="nav_divider"></li>
@@ -37,7 +37,7 @@
 					</li>
 					<?php if ($logged_in && Auth::instance()->allowed('cl4admin')) { ?>
 					<li class="nav_divider"></li>
-					<li class="dbadmin"><?php echo HTML::anchor(Route::get('cl4admin')->uri(), __('DB ADMIN')); ?>
+					<li class="dbadmin"><?php echo HTML::anchor(Route::get('cl4admin')->uri(), __('DB Admin')); ?>
 						<ul class="sub_nav">
 							<?php if (Auth::instance()->allowed('cl4admin/model_create')) { ?>
 							<li class="modelcreate"><?php echo HTML::anchor(Route::get('cl4admin')->uri(array('model' => 'a', 'action' => 'model_create')), __('Model Create')); ?></li>

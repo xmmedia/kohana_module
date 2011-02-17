@@ -3,6 +3,7 @@
 return array(
 	'sent' => 'Thank you for contacting us. We will contact you soon.',
 	'problem_sending' => 'There was a problem sending your submission. Please try again or contact us directly.',
+	'error' => 'There was an error. Please try again or contact us directly.',
 	'recaptcha' => 'The reCAPTCHA wasn\'t entered correctly. Please try it again.',
 	'name' => array(
 		'not_empty' => 'Please enter your name.',

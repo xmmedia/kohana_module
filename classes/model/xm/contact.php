@@ -9,10 +9,6 @@ class Model_XM_Contact extends ORM {
 	protected $_table_name = 'contact';
 	public $_table_name_display = 'Contact'; // cl4-specific
 
-	protected $_callbacks = array(
-		'email' => array('check_for_email_or_phone'),
-	);
-
 	// column definitions
 	protected $_table_columns = array(
 		/**
@@ -128,6 +124,7 @@ class Model_XM_Contact extends ORM {
 				'not_empty' => NULL,
 				'min_length' => array(5),
 			),
+			'email' => array(array($this, 'check_for_email_or_phone')),
 		);
 	}
 
@@ -157,72 +154,71 @@ class Model_XM_Contact extends ORM {
 	} // function check_for_email_or_phone
 
 	public function save_and_mail($to, $to_name) {
-		if ( ! Kohana::load(Kohana::find_file('vendor', 'recaptcha/recaptchalib'))) {
-			throw new Kohana_Exception('Unable to find reCAPTCHA. Ensure it\'s in a vendor folder');
-		}
-
-		$errors = FALSE;
-
-		if ( ! empty($_POST)) {
-			// check to see if the recaptcha fields are received before using this
-			// if not, then don't check recaptcha
-			if ( ! isset($_POST['recaptcha_challenge_field']) || ! isset($_POST['recaptcha_response_field'])) $recaptcha_received = FALSE;
-			else $recaptcha_received = TRUE;
-			if ($recaptcha_received) $resp = recaptcha_check_answer(RECAPTCHA_PRIVATE_KEY, $_SERVER['REMOTE_ADDR'], $_POST['recaptcha_challenge_field'], $_POST['recaptcha_response_field']);
-			if ( ! $recaptcha_received || ! $resp->is_valid) {
-				$errors = TRUE;
-				Message::add(Kohana::message('contact', 'recaptcha'), Message::$error);
-				Message::add('reCAPTCHA said: ' . $resp->error, Message::$debug);
+		try {
+			if ( ! Kohana::load(Kohana::find_file('vendor', 'recaptcha/recaptchalib'))) {
+				throw new Kohana_Exception('Unable to find reCAPTCHA. Ensure it\'s in a vendor folder');
 			}
 
-			// set the values within the object
-			$this->save_values($_POST);
+			$errors = FALSE;
 
-			// validate the object and only continue (to save) if there haven't been errors so far
-			if ($this->check() && ! $errors) {
-				$this->ip_address = $_SERVER['REMOTE_ADDR'];
-				$this->save();
-				if ( ! $this->saved()) {
+			if ( ! empty($_POST)) {
+				// check to see if the recaptcha fields are received before using this
+				// if not, then don't check recaptcha
+				if ( ! isset($_POST['recaptcha_challenge_field']) || ! isset($_POST['recaptcha_response_field'])) $recaptcha_received = FALSE;
+				else $recaptcha_received = TRUE;
+				if ($recaptcha_received) $resp = recaptcha_check_answer(RECAPTCHA_PRIVATE_KEY, $_SERVER['REMOTE_ADDR'], $_POST['recaptcha_challenge_field'], $_POST['recaptcha_response_field']);
+				if ( ! $recaptcha_received || ! $resp->is_valid) {
 					$errors = TRUE;
+					Message::add(Kohana::message('contact', 'recaptcha'), Message::$error);
+					Message::add('reCAPTCHA said: ' . $resp->error, Message::$debug);
+				}
+
+				// set the values within the object
+				$this->save_values($_POST);
+
+				// validate the object and only continue (to save) if there haven't been errors so far
+				if ( ! $errors) {
+					$this->ip_address = $_SERVER['REMOTE_ADDR'];
+					$this->save();
+				}
+
+				if ( ! $errors) {
+					try {
+						$mail = new Mail();
+						$mail->AddAddress($to, $to_name);
+						$mail->add_log_bcc();
+						$mail->Subject = 'Website Contact Us Submission - ' . date('Y-m-d H:m');
+						$mail->IsHTML(TRUE);
+						if ( ! empty($this->email)) $mail->AddReplyTo($this->email, $this->name);
+
+						$mail->Body = '<p>The following submission was received from the Website Contact Us form:</p>';
+						$mail->Body .= $this->set_mode('view')
+							->set_view_options_for_email()
+							->get_view();
+
+						$mail->Send();
+
+						// clear the object because it's been sent
+						$this->clear();
+
+						Message::add(Kohana::message('contact', 'sent'), Message::$notice);
+
+					} catch (Exception $e) {
+						cl4::exception_handler($e);
+						Message::add(Kohana::message('contact', 'problem_sending'), Message::$error);
+					}
 				} // if
-			} else {
-				$errors = TRUE;
 			}
 
-			if ($errors) {
-				if (count($this->validate()->errors()) > 0) {
-					Message::add('Please fix the following errors: ' . Message::add_validation_errors($this->validate(), 'contact'), Message::$error);
-				}
-			} else {
-				try {
-					$mail = new Mail();
-					$mail->AddAddress($to, $to_name);
-					$mail->add_log_bcc();
-					$mail->Subject = 'Website Contact Us Submission - ' . date('Y-m-d H:m');
-					$mail->IsHTML(TRUE);
-					if ( ! empty($this->email)) $mail->AddReplyTo($this->email, $this->name);
+			$this->set_mode('add');
 
-					$mail->Body = '<p>The following submission was received from the Website Contact Us form:</p>';
-					$mail->Body .= $this->set_mode('view')
-						->set_view_options_for_email()
-						->get_view();
-
-					$mail->Send();
-
-					// clear the object because it's been sent
-					$this->clear();
-
-					Message::add(Kohana::message('contact', 'sent'), Message::$notice);
-
-				} catch (Exception $e) {
-					cl4::exception_handler($e);
-					Message::add(Kohana::message('contact', 'problem_sending'), Message::$error);
-				}
-			} // if
+		} catch (ORM_Validation_Exception $e) {
+			Message::add('Please fix the following errors: ' . Message::add_validation_errors($e, 'contact'), Message::$error);
+		} catch (Exception $e) {
+			cl4::exception_handler($e);
+			Message::add(Kohana::message('contact', 'error'), Message::$error);
 		}
-
-		$this->set_mode('add');
 
 		return $errors;
-	}
+	} // function save_and_mail
 } // class

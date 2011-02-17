@@ -138,7 +138,7 @@ class Model_XM_Contact extends ORM {
 	 */
 	public function filters() {
 		return array(
-		    TRUE => array('trim' => array()),
+		    TRUE => array(array('trim')),
 		);
 	}
 

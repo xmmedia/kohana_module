@@ -1,4 +1,4 @@
-<?php echo Form::open(); ?>
+<?php echo Form::open(Request::current()); ?>
 	<div class="cl4_list_header">
 		<input type="submit" value="Add New Group" class="cl4_button_link_form cl4_list_button" data-cl4_form_action="<?php echo URL::site(Route::get('useradmin')->uri(array('action' => 'add_group'))); ?>">
 		<div class="clear"></div>

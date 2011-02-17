@@ -533,22 +533,16 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	*/
 	protected function save_group($group) {
 		try {
-			// validate the post data against the model
-			$validation = $group->save_values()->check();
+			// save the post data
+			$validation = $group->save_values()->save();
 
-			if ($validation === TRUE) {
-				// save the record
-				if ($group->save()->saved()) {
-					Message::message('cl4admin', 'item_saved', NULL, Message::$notice);
-					$this->redirect_to_group_list();
-				} else {
-					Message::message('cl4admin', 'item_may_have_not_saved', NULL, Message::$error);
-				} // if
-			} else {
-				Message::message('cl4admin', 'values_not_valid', array(
-					':validation_errors' => Message::add_validation_errors($group->validate(), 'user')
-				), Message::$error);
-			}
+			Message::message('cl4admin', 'item_saved', NULL, Message::$notice);
+			$this->redirect_to_group_list();
+
+		} catch (ORM_Validation_Exception $e) {
+			Message::message('cl4admin', 'values_not_valid', array(
+				':validation_errors' => Message::add_validation_errors($e, 'user')
+			), Message::$error);
 		} catch (Exception $e) {
 			cl4::exception_handler($e);
 			Message::message('cl4admin', 'problem_saving', NULL, Message::$error);

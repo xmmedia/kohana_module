@@ -2,7 +2,7 @@
 .db_change_sql { width:100%; height:400px; }
 </style>
 
-<?php echo Form::open(); ?>
+<?php echo Form::open(Request::current()); ?>
 
 <p>Select the databases you want to want to run all of the queries on:<br>
 [ <a href="" class="select_all">Select All</a> ] [ <a href="" class="select_none">Select None</a> ]<br>

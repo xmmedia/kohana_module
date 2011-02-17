@@ -3,7 +3,7 @@
 <h1><?php echo HTML::chars($group->name); ?></h1>
 <?php if ( ! empty($group->description)) { ?><p>Description: <?php echo HTML::chars($group->description); ?></p><?php } ?>
 
-<?php echo Form::open(); ?>
+<?php echo Form::open(Request::current()); ?>
 
 <div class="perm_available">
 	<h4>Users <em>Not</em> in the Group</h4>

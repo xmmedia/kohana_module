@@ -39,6 +39,9 @@
 					<li class="nav_divider"></li>
 					<li class="dbadmin"><?php echo HTML::anchor(Route::get('cl4admin')->uri(), __('DB Admin')); ?>
 						<ul class="sub_nav">
+							<?php if (Auth::instance()->allowed('useradmin/index')) { ?>
+							<li class="useradmin"><?php echo HTML::anchor(Route::get('useradmin')->uri(), __('User Admin')); ?></li>
+							<?php } ?>
 							<?php if (Auth::instance()->allowed('cl4admin/model_create')) { ?>
 							<li class="modelcreate"><?php echo HTML::anchor(Route::get('cl4admin')->uri(array('model' => 'a', 'action' => 'model_create')), __('Model Create')); ?></li>
 							<?php } ?>

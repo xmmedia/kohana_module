@@ -191,7 +191,7 @@ class Model_XM_Contact extends ORM {
 
 			if ($errors) {
 				if (count($this->validate()->errors()) > 0) {
-					Message::add('Please fix the following errors: ' . Message::add_validate_errors($this->validate(), 'contact'), Message::$error);
+					Message::add('Please fix the following errors: ' . Message::add_validation_errors($this->validate(), 'contact'), Message::$error);
 				}
 			} else {
 				try {

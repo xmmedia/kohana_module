@@ -37,7 +37,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	public function before() {
 		parent::before();
 
-		$this->id = Request::instance()->param('id');
+		$this->id = Request::current()->param('id');
 		$page_offset = cl4::get_param('page');
 
 		if ( ! isset($this->session['useradmin'])) {
@@ -45,16 +45,16 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				'page_offset' => 0,
 			);
 		}
-		$this->user_admin_session =& $this->session['useradmin'];
+		$this->user_admin_session = & $this->session['useradmin'];
 
 		if ($page_offset !== NULL) $this->user_admin_session['page_offset'] = intval($page_offset);
 		$this->page_offset = $this->user_admin_session['page_offset'];
 
 		$this->add_admin_css();
 
-		if ($this->request->action == 'groups') {
+		if ($this->request->action() == 'groups') {
 			$page_title = 'Groups';
-		} else if ($this->request->action == 'index') {
+		} else if ($this->request->action() == 'index') {
 			$page_title = 'Users';
 		} else {
 			$page_title = NULL;
@@ -150,27 +150,27 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	protected function get_list_row_links($user) {
 		$id = $user->id;
 
-		$first_col = HTML::anchor(Request::instance()->uri(array('action' => 'view', 'id' => $id)), '&nbsp;', array(
+		$first_col = HTML::anchor(Request::current()->uri(array('action' => 'view', 'id' => $id)), '&nbsp;', array(
 			'title' => __('View this user'),
 			'class' => 'cl4_view',
 		));
 
-		$first_col .= HTML::anchor(Request::instance()->uri(array('action' => 'edit', 'id' => $id)), '&nbsp;', array(
+		$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'edit', 'id' => $id)), '&nbsp;', array(
 			'title' => __('Edit this user'),
 			'class' => 'cl4_edit',
 		));
 
-		$first_col .= HTML::anchor(Request::instance()->uri(array('action' => 'delete', 'id' => $id)), '&nbsp;', array(
+		$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'delete', 'id' => $id)), '&nbsp;', array(
 			'title' => __('Delete this user'),
 			'class' => 'cl4_delete',
 		));
 
-		$first_col .= HTML::anchor(Request::instance()->uri(array('action' => 'add', 'id' => $id)), '&nbsp;', array(
+		$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'add', 'id' => $id)), '&nbsp;', array(
 			'title' => __('Copy this user'),
 			'class' => 'cl4_add',
 		));
 
-		$first_col .= HTML::anchor(Request::instance()->uri(array('action' => 'email_password', 'id' => $id)), '&nbsp;', array(
+		$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'email_password', 'id' => $id)), '&nbsp;', array(
 			'title' => __('Email a new random password to this user'),
 			'class' => 'cl4_mail',
 		));
@@ -252,50 +252,44 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	*/
 	protected function save_user($user) {
 		try {
-			// validate the post data against the model
-			$validation = $user->save_values()->check();
+			// save the post data
+			$user->save_values()->save();
 
-			if ($validation === TRUE) {
+			$this->user_additional_save($user);
+
+			$send_email = cl4::get_param('send_email', FALSE);
+			if ($send_email) {
 				$new_password = cl4::get_param_array(array('c_record', 'user', 0, 'password'), FALSE);
 				$new_password = (empty($new_password) ? FALSE : $new_password);
 				$new_user = ! ($user->id > 0); // false if this is not a new user
 
-				// save the record
-				if ($user->save()->saved()) {
-					$this->user_additional_save($user);
+				$mail = new Mail();
+				$mail->IsHTML();
+				$mail->add_user($user->id);
+				$mail->Subject = SHORT_NAME . ' Login Information';
 
-					$send_email = cl4::get_param('send_email', FALSE);
-					if ($send_email) {
-						$mail = new Mail();
-						$mail->IsHTML();
-						$mail->add_user($user->id);
-						$mail->Subject = SHORT_NAME . ' Login Information';
+				// provide a link to the user including their username
+				$url = URL::site(Route::get('login')->uri(), UTF8::strtolower(Request::current()->protocol())) . '?' . http_build_query(array('username' => $user->username));
 
-						// provide a link to the user including their username
-						$url = URL::site(Route::get('login')->uri(), TRUE) . '?' . http_build_query(array('username' => $user->username));
+				$mail->Body = View::factory('useradmin/' . ($new_user ? 'new_account_email' : 'account_update_email'))
+					->set('app_name', LONG_NAME)
+					->set('username', $user->username)
+					->set('password', $new_password)
+					->set('url', $url)
+					->set('admin_email', ADMIN_EMAIL);
 
-						$mail->Body = View::factory('useradmin/' . ($new_user ? 'new_account_email' : 'account_update_email'))
-							->set('app_name', LONG_NAME)
-							->set('username', $user->username)
-							->set('password', $new_password)
-							->set('url', $url)
-							->set('admin_email', ADMIN_EMAIL);
+				$mail->Send();
 
-						$mail->Send();
-
-						Message::add(__(Kohana::message('useradmin', 'email_account_info')), Message::$notice);
-					}
-
-					Message::message('cl4admin', 'item_saved', NULL, Message::$notice);
-					$this->redirect_to_index();
-				} else {
-					Message::message('cl4admin', 'item_may_have_not_saved', NULL, Message::$error);
-				} // if
-			} else {
-				Message::message('cl4admin', 'values_not_valid', array(
-					':validate_errors' => Message::add_validate_errors($user->validate(), 'user')
-				), Message::$error);
+				Message::add(__(Kohana::message('useradmin', 'email_account_info')), Message::$notice);
 			}
+
+			Message::message('cl4admin', 'item_saved', NULL, Message::$notice);
+			$this->redirect_to_index();
+
+		} catch (ORM_Validation_Exception $e) {
+			Message::message('cl4admin', 'values_not_valid', array(
+				':validation_errors' => Message::add_validation_errors($e, 'user')
+			), Message::$error);
 		} catch (Exception $e) {
 			cl4::exception_handler($e);
 			Message::message('cl4admin', 'problem_saving', NULL, Message::$error);
@@ -307,7 +301,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	* Run inside save_user() after the user record is saved, allowing for saving additional information quickly
 	* By default, nothing extra is saved
 	*
-	* @param mixed $user
+	* @param  ORM  $user
 	*/
 	protected function user_additional_save($user) { }
 
@@ -380,7 +374,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			$mail->Subject = SHORT_NAME . ' Login Information';
 
 			// provide a link to the user including their username
-			$url = URL::site(Route::get('login')->uri(), TRUE) . '?' . http_build_query(array('username' => $user->username));
+			$url = URL::site(Route::get('login')->uri(), UTF8::strtolower(Request::current()->protocol())) . '?' . http_build_query(array('username' => $user->username));
 
 			$mail->Body = View::factory('useradmin/login_information_email')
 				->set('app_name', LONG_NAME)
@@ -413,7 +407,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	} // function
 
 	public function redirect_to_index() {
-		Request::instance()->redirect(Route::get(Route::name(Request::instance()->route))->uri());
+		Request::current()->redirect(Route::get(Route::name(Request::current()->route()))->uri());
 	}
 
 	public function action_groups() {
@@ -452,27 +446,27 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	protected function get_group_list_row_links($group) {
 		$id = $group->id;
 
-		$first_col = HTML::anchor(Request::instance()->uri(array('action' => 'edit_group', 'id' => $id)), '&nbsp;', array(
+		$first_col = HTML::anchor(Request::current()->uri(array('action' => 'edit_group', 'id' => $id)), '&nbsp;', array(
 			'title' => __('Edit this group'),
 			'class' => 'cl4_edit',
 		));
 
-		$first_col .= HTML::anchor(Request::instance()->uri(array('action' => 'delete_group', 'id' => $id)), '&nbsp;', array(
+		$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'delete_group', 'id' => $id)), '&nbsp;', array(
 			'title' => __('Delete this group'),
 			'class' => 'cl4_delete',
 		));
 
-		$first_col .= HTML::anchor(Request::instance()->uri(array('action' => 'add_group', 'id' => $id)), '&nbsp;', array(
+		$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'add_group', 'id' => $id)), '&nbsp;', array(
 			'title' => __('Copy this group'),
 			'class' => 'cl4_add',
 		));
 
-		$first_col .= HTML::anchor(Request::instance()->uri(array('action' => 'group_permissions', 'id' => $id)), '&nbsp;', array(
+		$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'group_permissions', 'id' => $id)), '&nbsp;', array(
 			'title' => __('Edit the permissions for this group'),
 			'class' => 'cl4_lock',
 		));
 
-		$first_col .= HTML::anchor(Request::instance()->uri(array('action' => 'group_users', 'id' => $id)), '&nbsp;', array(
+		$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'group_users', 'id' => $id)), '&nbsp;', array(
 			'title' => __('Edit the users that have this permission group'),
 			'class' => 'cl4_contact2',
 		));
@@ -552,7 +546,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				} // if
 			} else {
 				Message::message('cl4admin', 'values_not_valid', array(
-					':validate_errors' => Message::add_validate_errors($group->validate(), 'user')
+					':validation_errors' => Message::add_validation_errors($group->validate(), 'user')
 				), Message::$error);
 			}
 		} catch (Exception $e) {
@@ -573,7 +567,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	} // function
 
 	public function redirect_to_group_list() {
-		Request::instance()->redirect(Route::get(Route::name(Request::instance()->route))->uri(array('action' => 'groups')));
+		Request::current()->redirect(Route::get(Route::name(Request::current()->route()))->uri(array('action' => 'groups')));
 	}
 
 	public function action_group_permissions() {

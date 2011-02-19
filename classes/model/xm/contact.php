@@ -117,14 +117,15 @@ class Model_XM_Contact extends ORM {
 	public function rules() {
 		return array(
 			'name' => array(
-				'not_empty' => NULL,
-				'min_length' => array(2),
+				array('not_empty'),
 			),
 			'message' => array(
-				'not_empty' => NULL,
-				'min_length' => array(5),
+				array('not_empty'),
+				array('min_length', array(':value', 5)),
 			),
-			'email' => array(array($this, 'check_for_email_or_phone')),
+			'email' => array(
+				array(array($this, 'check_for_email_or_phone'), array(':validation', ':field')),
+			),
 		);
 	}
 
@@ -213,7 +214,7 @@ class Model_XM_Contact extends ORM {
 			$this->set_mode('add');
 
 		} catch (ORM_Validation_Exception $e) {
-			Message::add('Please fix the following errors: ' . Message::add_validation_errors($e, 'contact'), Message::$error);
+			Message::add('Please fix the following errors: ' . Message::add_validation_errors($e, ''), Message::$error);
 		} catch (Exception $e) {
 			cl4::exception_handler($e);
 			Message::add(Kohana::message('contact', 'error'), Message::$error);

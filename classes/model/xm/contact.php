@@ -171,7 +171,7 @@ class Model_XM_Contact extends ORM {
 				if ( ! $recaptcha_received || ! $resp->is_valid) {
 					$errors = TRUE;
 					Message::add(Kohana::message('contact', 'recaptcha'), Message::$error);
-					Message::add('reCAPTCHA said: ' . $resp->error, Message::$debug);
+					if ($recaptcha_received) Message::add('reCAPTCHA said: ' . $resp->error, Message::$debug);
 				}
 
 				// set the values within the object

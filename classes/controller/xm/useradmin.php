@@ -288,7 +288,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 
 		} catch (ORM_Validation_Exception $e) {
 			Message::message('cl4admin', 'values_not_valid', array(
-				':validation_errors' => Message::add_validation_errors($e, 'user')
+				':validation_errors' => Message::add_validation_errors($e, '')
 			), Message::$error);
 		} catch (Exception $e) {
 			cl4::exception_handler($e);
@@ -541,7 +541,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 
 		} catch (ORM_Validation_Exception $e) {
 			Message::message('cl4admin', 'values_not_valid', array(
-				':validation_errors' => Message::add_validation_errors($e, 'user')
+				':validation_errors' => Message::add_validation_errors($e, '')
 			), Message::$error);
 		} catch (Exception $e) {
 			cl4::exception_handler($e);

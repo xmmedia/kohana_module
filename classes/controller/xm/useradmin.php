@@ -96,10 +96,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			--$offset;
 		}
 
-		$user = ORM::factory('user_admin')
-			->set_options(array('mode' => 'view'))
-			->limit($page_max_rows)
-			->offset($offset * $page_max_rows);
+		$user = $this->get_user_orm_list($page_max_rows, $offset);
 
 		$users = $user->find_all();
 		$user_count = $user->count_all();
@@ -134,6 +131,20 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			->set('user_list', $table->get_html())
 			->set('nav_html', $pagination->render());
 	} // function action_index
+
+	/**
+	* Returns an Model_User_Admin (ORM) to retrieve the users
+	*
+	* @param   int  $page_max_rows
+	* @param   int  $offset
+	* @return  Model_User_Admin
+	*/
+	protected function get_user_orm_list($page_max_rows, $offset) {
+		return ORM::factory('user_admin')
+			->set_options(array('mode' => 'view'))
+			->limit($page_max_rows)
+			->offset($offset * $page_max_rows);
+	}
 
 	protected function get_list_row($user) {
 		return array(

@@ -287,7 +287,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 					->set('username', $user->username)
 					->set('password', $new_password)
 					->set('url', $url)
-					->set('admin_email', ADMIN_EMAIL);
+					->set('support_email', Kohana::config('useradmin.support_email'));
 
 				$mail->Send();
 
@@ -392,7 +392,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				->set('username', $user->username)
 				->set('password', $new_password)
 				->set('url', $url)
-				->set('admin_email', ADMIN_EMAIL);
+				->set('support_email', Kohana::config('useradmin.support_email'));
 
 			$mail->Send();
 

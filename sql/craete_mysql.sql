@@ -368,3 +368,10 @@ INSERT INTO `permission` VALUES(NULL, 'dbchange/index', 'DB Change', 'Allows the
 
 -- Permission for User Admin (useradmin controller)
 INSERT INTO `permission` VALUES(NULL, 'useradmin/index', 'User Admin', 'Gives access to all User Admin functionality.');
+
+
+-- The following will add the db change and user admin permissions to the appropriate groups
+-- Only run this on a new cl4 template site
+INSERT INTO `group_permission` VALUES(NULL, 1, 24);
+INSERT INTO `group_permission` VALUES(NULL, 2, 24);
+INSERT INTO `group_permission` VALUES(NULL, 1, 23);

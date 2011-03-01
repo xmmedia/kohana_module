@@ -46,13 +46,14 @@ class XM_ORM extends cl4_ORM {
 		if ( ! empty($label_class)) {
 			$label_attributes = array();
 
-			if ($this->_options['mode'] == 'edit' && isset($this->_rules[$column_name]['not_empty'])) {
+			$label_attributes = HTML::set_class_attribute($label_attributes, $label_class);
+
+			$rules = $this->rules();
+			if ($this->_options['mode'] == 'edit' && isset($rules[$column_name]['not_empty'])) {
 				$label_attributes = HTML::set_class_attribute($label_attributes, 'cl4_required');
 			}
 
-			$label_attributes = HTML::set_class_attribute($label_attributes, $label_class);
-
-			$label_html = Form::label($this->get_field_id($column_name), $this->get_field_label($column_name), $label_attributes);
+			$label_html = Form::label($this->get_field_id($column_name), $this->column_label($column_name), $label_attributes);
 		} else {
 			$label_html = $this->_field_html[$column_name]['label'];
 		}

@@ -140,15 +140,15 @@ class Model_XM_Contact extends ORM {
 		);
 	}
 
-	public function check_for_email_or_phone(Validate $validate, $field) {
+	public function check_for_email_or_phone(Validation $validate, $field) {
 		if (empty($this->email) && empty($this->phone)) {
 			$validate->error('email', 'email_or_phone');
 		} else {
-			if ( ! empty($this->email) && ! Validate::email($this->email)) {
+			if ( ! empty($this->email) && ! Valid::email($this->email)) {
 				$validate->error('email', 'email');
 			}
 
-			if ( ! empty($this->phone) && ! Validate::phone($this->phone)) {
+			if ( ! empty($this->phone) && ! Valid::phone($this->phone)) {
 				$validate->error('phone', 'phone');
 			}
 		} // if
@@ -175,7 +175,7 @@ class Model_XM_Contact extends ORM {
 				}
 
 				// set the values within the object
-				$this->save_values($_POST);
+				$this->save_values($_POST)->check();
 
 				// validate the object and only continue (to save) if there haven't been errors so far
 				if ( ! $errors) {

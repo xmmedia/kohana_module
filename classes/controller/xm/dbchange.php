@@ -137,7 +137,7 @@ EOA
 						try {
 							DB::query(NULL, "USE " . Database::instance()->quote_identifier($use_db))->execute();
 						} catch (Exception $e) {
-							Message::add('Failed to select the database: ' . Kohana::exception_text($e), Message::$error);
+							Message::add('Failed to select the database: ' . Kohana_Exception::text($e), Message::$error);
 							continue;
 						}
 
@@ -146,7 +146,7 @@ EOA
 								$result = Database::instance()->query($query['type'], $query['query']);
 								$successful = TRUE;
 							} catch (Exception $e) {
-								$error = Kohana::exception_text($e);
+								$error = Kohana_Exception::text($e);
 								$successful = FALSE;
 							}
 

@@ -1,18 +1,5 @@
 -- Additional SQL to use all the features of the xmmedia module
 
--- Config table
-CREATE TABLE `config` (
-  `id` int(11) NOT NULL auto_increment,
-  `setting` varchar(50) collate utf8_unicode_ci NOT NULL,
-  `name` varchar(50) collate utf8_unicode_ci NOT NULL,
-  `description` text collate utf8_unicode_ci NOT NULL,
-  `value` varchar(50) collate utf8_unicode_ci NOT NULL,
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `setting` (`setting`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-
 -- Contact table
 CREATE TABLE `contact` (
   `id` int(11) NOT NULL auto_increment,
@@ -381,3 +368,10 @@ INSERT INTO `permission` VALUES(NULL, 'dbchange/index', 'DB Change', 'Allows the
 
 -- Permission for User Admin (useradmin controller)
 INSERT INTO `permission` VALUES(NULL, 'useradmin/index', 'User Admin', 'Gives access to all User Admin functionality.');
+
+
+-- The following will add the db change and user admin permissions to the appropriate groups
+-- Only run this on a new cl4 template site
+INSERT INTO `group_permission` VALUES(NULL, 1, 24);
+INSERT INTO `group_permission` VALUES(NULL, 2, 24);
+INSERT INTO `group_permission` VALUES(NULL, 1, 23);

@@ -96,10 +96,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			--$offset;
 		}
 
-		$user = ORM::factory('user_admin')
-			->set_options(array('mode' => 'view'))
-			->limit($page_max_rows)
-			->offset($offset * $page_max_rows);
+		$user = $this->get_user_orm_list($page_max_rows, $offset);
 
 		$users = $user->find_all();
 		$user_count = $user->count_all();
@@ -134,6 +131,20 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			->set('user_list', $table->get_html())
 			->set('nav_html', $pagination->render());
 	} // function action_index
+
+	/**
+	* Returns an Model_User_Admin (ORM) to retrieve the users
+	*
+	* @param   int  $page_max_rows
+	* @param   int  $offset
+	* @return  Model_User_Admin
+	*/
+	protected function get_user_orm_list($page_max_rows, $offset) {
+		return ORM::factory('user_admin')
+			->set_options(array('mode' => 'view'))
+			->limit($page_max_rows)
+			->offset($offset * $page_max_rows);
+	}
 
 	protected function get_list_row($user) {
 		return array(
@@ -269,14 +280,14 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				$mail->Subject = SHORT_NAME . ' Login Information';
 
 				// provide a link to the user including their username
-				$url = URL::site(Route::get('login')->uri(), UTF8::strtolower(Request::current()->protocol())) . '?' . http_build_query(array('username' => $user->username));
+				$url = URL::site(Route::get('login')->uri(), Request::current()->protocol()) . '?' . http_build_query(array('username' => $user->username));
 
 				$mail->Body = View::factory('useradmin/' . ($new_user ? 'new_account_email' : 'account_update_email'))
 					->set('app_name', LONG_NAME)
 					->set('username', $user->username)
 					->set('password', $new_password)
 					->set('url', $url)
-					->set('admin_email', ADMIN_EMAIL);
+					->set('support_email', Kohana::config('useradmin.support_email'));
 
 				$mail->Send();
 
@@ -288,7 +299,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 
 		} catch (ORM_Validation_Exception $e) {
 			Message::message('cl4admin', 'values_not_valid', array(
-				':validation_errors' => Message::add_validation_errors($e, 'user')
+				':validation_errors' => Message::add_validation_errors($e, '')
 			), Message::$error);
 		} catch (Exception $e) {
 			cl4::exception_handler($e);
@@ -374,14 +385,14 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			$mail->Subject = SHORT_NAME . ' Login Information';
 
 			// provide a link to the user including their username
-			$url = URL::site(Route::get('login')->uri(), UTF8::strtolower(Request::current()->protocol())) . '?' . http_build_query(array('username' => $user->username));
+			$url = URL::site(Route::get('login')->uri(), Request::current()->protocol()) . '?' . http_build_query(array('username' => $user->username));
 
 			$mail->Body = View::factory('useradmin/login_information_email')
 				->set('app_name', LONG_NAME)
 				->set('username', $user->username)
 				->set('password', $new_password)
 				->set('url', $url)
-				->set('admin_email', ADMIN_EMAIL);
+				->set('support_email', Kohana::config('useradmin.support_email'));
 
 			$mail->Send();
 
@@ -541,7 +552,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 
 		} catch (ORM_Validation_Exception $e) {
 			Message::message('cl4admin', 'values_not_valid', array(
-				':validation_errors' => Message::add_validation_errors($e, 'user')
+				':validation_errors' => Message::add_validation_errors($e, '')
 			), Message::$error);
 		} catch (Exception $e) {
 			cl4::exception_handler($e);

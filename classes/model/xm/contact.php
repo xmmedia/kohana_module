@@ -117,14 +117,15 @@ class Model_XM_Contact extends ORM {
 	public function rules() {
 		return array(
 			'name' => array(
-				'not_empty' => NULL,
-				'min_length' => array(2),
+				array('not_empty'),
 			),
 			'message' => array(
-				'not_empty' => NULL,
-				'min_length' => array(5),
+				array('not_empty'),
+				array('min_length', array(':value', 5)),
 			),
-			'email' => array(array($this, 'check_for_email_or_phone')),
+			'email' => array(
+				array(array($this, 'check_for_email_or_phone'), array(':validation', ':field')),
+			),
 		);
 	}
 
@@ -139,15 +140,15 @@ class Model_XM_Contact extends ORM {
 		);
 	}
 
-	public function check_for_email_or_phone(Validate $validate, $field) {
+	public function check_for_email_or_phone(Validation $validate, $field) {
 		if (empty($this->email) && empty($this->phone)) {
 			$validate->error('email', 'email_or_phone');
 		} else {
-			if ( ! empty($this->email) && ! Validate::email($this->email)) {
+			if ( ! empty($this->email) && ! Valid::email($this->email)) {
 				$validate->error('email', 'email');
 			}
 
-			if ( ! empty($this->phone) && ! Validate::phone($this->phone)) {
+			if ( ! empty($this->phone) && ! Valid::phone($this->phone)) {
 				$validate->error('phone', 'phone');
 			}
 		} // if
@@ -170,11 +171,11 @@ class Model_XM_Contact extends ORM {
 				if ( ! $recaptcha_received || ! $resp->is_valid) {
 					$errors = TRUE;
 					Message::add(Kohana::message('contact', 'recaptcha'), Message::$error);
-					Message::add('reCAPTCHA said: ' . $resp->error, Message::$debug);
+					if ($recaptcha_received) Message::add('reCAPTCHA said: ' . $resp->error, Message::$debug);
 				}
 
 				// set the values within the object
-				$this->save_values($_POST);
+				$this->save_values($_POST)->check();
 
 				// validate the object and only continue (to save) if there haven't been errors so far
 				if ( ! $errors) {
@@ -213,7 +214,7 @@ class Model_XM_Contact extends ORM {
 			$this->set_mode('add');
 
 		} catch (ORM_Validation_Exception $e) {
-			Message::add('Please fix the following errors: ' . Message::add_validation_errors($e, 'contact'), Message::$error);
+			Message::add('Please fix the following errors: ' . Message::add_validation_errors($e, ''), Message::$error);
 		} catch (Exception $e) {
 			cl4::exception_handler($e);
 			Message::add(Kohana::message('contact', 'error'), Message::$error);

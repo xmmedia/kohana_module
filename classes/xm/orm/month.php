@@ -37,7 +37,11 @@ class XM_ORM_Month extends ORM_Select {
 	} // function
 
 	public static function view($value, $column_name, ORM $orm_model = NULL, array $options = array(), $source = NULL) {
-		return ($options['include_month_number'] ? $value . ' - ' : '') . date('F', Date::MONTH * $value - (Date::DAY * 2));
+		if ($value > 0) {
+			return ($options['include_month_number'] ? $value . ' - ' : '') . date('F', Date::MONTH * $value - (Date::DAY * 2));
+		} else {
+			return 0;
+		}
 	}
 
 	public static function view_html($value, $column_name, ORM $orm_model = NULL, array $options = array(), $source = NULL) {

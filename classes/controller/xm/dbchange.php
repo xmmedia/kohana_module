@@ -76,6 +76,9 @@ EOA
 			} else {
 				$db_change_sql = $_POST['sql'];
 
+				// set the charset in the globals to the same as the database for use in the sql parser
+				$GLOBALS['charset'] = Kohana::config('database.' . (string) Database::instance() . '.charset');
+
 				Kohana::load(Kohana::find_file('vendor', 'sqlparser/sqlparser.lib'));
 
 				$parsed_queries = PMA_SQP_parse($db_change_sql);

@@ -102,38 +102,6 @@ class XM_ORM extends cl4_ORM {
 		return $this;
 	}
 
-    /**
-	*
-	*
-	* @param mixed $column_name
-	* @param mixed $attribute
-	* @param mixed $value
-	* @return ORM
-	*/
-	public function set_field_attribute($column_name, $attribute, $value = NULL) {
-		if ($this->table_column_exists($column_name)) {
-			$this->_table_columns[$column_name]['field_attributes'] = HTML::merge_attributes($this->_table_columns[$column_name]['field_attributes'], array($attribute => $value));
-		}
-
-		return $this;
-	}
-
-	/**
-	*
-	*
-	* @param mixed $column_name
-	* @param mixed $option
-	* @param mixed $value
-	* @return ORM
-	*/
-	public function set_field_option($column_name, $option, $value = NULL) {
-		if ($this->table_column_exists($column_name)) {
-			$this->_table_columns[$column_name]['field_options'][$option] = $value;
-		}
-
-		return $this;
-	}
-
 	protected function parent_save() {
 		return Kohana_ORM::save();
 	}

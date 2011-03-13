@@ -367,11 +367,21 @@ INSERT INTO `permission` VALUES(NULL, 'dbchange/index', 'DB Change', 'Allows the
 
 
 -- Permission for User Admin (useradmin controller)
-INSERT INTO `permission` VALUES(NULL, 'useradmin/index', 'User Admin', 'Gives access to all User Admin functionality.');
+INSERT INTO `permission` VALUES(NULL, 'useradmin/index', 'User Admin', 'Allows the user to access the list of users.');
 
+INSERT INTO `permission` VALUES(NULL, 'useradmin/index', 'User Admin', 'Allows the user to access the list of users.');
+INSERT INTO `permission` VALUES(NULL, 'useradmin/add', 'User Admin - Add User', 'Allows the user to add new users.');
+INSERT INTO `permission` VALUES(NULL, 'useradmin/edit', 'User Admin - Edit User', 'Allows the user to edit users, excluding their permissions.');
+INSERT INTO `permission` VALUES(NULL, 'useradmin/edit/permissions', 'User Admin - Edit User Permissions', 'Allows the user to edit a users permissions.');
+INSERT INTO `permission` VALUES(NULL, 'useradmin/user/group/*', 'User Admin - All Groups', 'Allows the user to add any permission group to a user.');
+INSERT INTO `permission` VALUES(NULL, 'useradmin/delete', 'User Admin - Delete User', 'Allows the user to delete users.');
+INSERT INTO `permission` VALUES(NULL, 'useradmin/email_password', 'User Admin - Email Password', 'Allows the user to email a new password to a user.');
+INSERT INTO `permission` VALUES(NULL, 'useradmin/group/index', 'User Admin - Groups List', 'Allows the user to access the list of permission groups.');
+INSERT INTO `permission` VALUES(NULL, 'useradmin/group/add', 'User Admin - Group Add', 'Allows the user to add a new permission group. Doesn''t allow the user to assign permissions to the group.');
+INSERT INTO `permission` VALUES(NULL, 'useradmin/group/edit', 'User Admin - Group Edit', 'Allows the user to edit the name and description of a permission group.');
+INSERT INTO `permission` VALUES(NULL, 'useradmin/group/permissions', 'User Admin - Group Permissions', 'Allows the user to add and remove permissions from the permission group.');
+INSERT INTO `permission` VALUES(NULL, 'useradmin/group/users', 'User Admin - Group Users', 'Allows the user to add and remove users from the permission group.');
+INSERT INTO `permission` VALUES(NULL, 'useradmin/group/delete', 'User Admin - Group Delete', 'Allows the user to delete a permission group.');
 
--- The following will add the db change and user admin permissions to the appropriate groups
--- Only run this on a new cl4 template site
-INSERT INTO `group_permission` VALUES(NULL, 1, 24);
-INSERT INTO `group_permission` VALUES(NULL, 2, 24);
-INSERT INTO `group_permission` VALUES(NULL, 1, 23);
+-- updates the description on useradmin/index if the permission already exists
+UPDATE `permission` SET `description` = 'Allows the user to access the list of users.' WHERE `permission`.`permissions` = 'useradmin/index' LIMIT 1 ;

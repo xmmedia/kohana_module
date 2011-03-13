@@ -4,14 +4,20 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	public $auth_required = TRUE;
 	public $secure_actions = array(
 		'index' => 'useradmin/index',
-		'add' => 'useradmin/index',
-		'edit' => 'useradmin/index',
-		'delete' => 'useradmin/index',
+		'add' => 'useradmin/add',
+		'edit' => 'useradmin/edit',
+		'delete' => 'useradmin/delete',
 		'view' => 'useradmin/index',
-		'groups' => 'useradmin/index',
-		'add_group' => 'useradmin/index',
-		'edit_group' => 'useradmin/index',
-		'cancel_group' => 'useradmin/index',
+		'email_password' => 'useradmin/email_password',
+		'cancel' => 'useradmin/index',
+		'groups' => 'useradmin/group/index',
+		'add_group' => 'useradmin/group/add',
+		'edit_group' => 'useradmin/group/edit',
+		'delete_group' => 'useradmin/group/delete',
+		'view_group' => 'useradmin/group/index',
+		'group_permissions' => 'useradmin/group/permissions',
+		'group_users' => 'useradmin/group/users',
+		'cancel_group' => 'useradmin/group/index',
 	);
 	public $page = 'admin';
 
@@ -34,6 +40,12 @@ class Controller_XM_UserAdmin extends Controller_Base {
 		'Description',
 	);
 
+	/**
+	* @var  array  Stores the group ids and names that the user can edit
+	* NULL by default
+	*/
+	protected $allowed_groups;
+
 	public function before() {
 		parent::before();
 
@@ -42,20 +54,29 @@ class Controller_XM_UserAdmin extends Controller_Base {
 
 		if ( ! isset($this->session['useradmin'])) {
 			$this->session['useradmin'] = array(
-				'page_offset' => 0,
+				'users' => array(
+					'page_offset' => 0,
+				),
+				'groups' => array(
+					'page_offset' => 0,
+				),
 			);
 		}
 		$this->user_admin_session = & $this->session['useradmin'];
-
-		if ($page_offset !== NULL) $this->user_admin_session['page_offset'] = intval($page_offset);
-		$this->page_offset = $this->user_admin_session['page_offset'];
 
 		$this->add_admin_css();
 
 		if ($this->request->action() == 'groups') {
 			$page_title = 'Groups';
+
+			if ($page_offset !== NULL) $this->user_admin_session['groups']['page_offset'] = intval($page_offset);
+			$this->page_offset = $this->user_admin_session['groups']['page_offset'];
+
 		} else if ($this->request->action() == 'index') {
 			$page_title = 'Users';
+
+			if ($page_offset !== NULL) $this->user_admin_session['users']['page_offset'] = intval($page_offset);
+			$this->page_offset = $this->user_admin_session['users']['page_offset'];
 		} else {
 			$page_title = NULL;
 		}
@@ -166,25 +187,33 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			'class' => 'cl4_view',
 		));
 
-		$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'edit', 'id' => $id)), '&nbsp;', array(
-			'title' => __('Edit this user'),
-			'class' => 'cl4_edit',
-		));
+		if (Auth::instance()->allowed('useradmin/edit')) {
+			$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'edit', 'id' => $id)), '&nbsp;', array(
+				'title' => __('Edit this user'),
+				'class' => 'cl4_edit',
+			));
+		}
 
-		$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'delete', 'id' => $id)), '&nbsp;', array(
-			'title' => __('Delete this user'),
-			'class' => 'cl4_delete',
-		));
+		if (Auth::instance()->allowed('useradmin/delete')) {
+			$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'delete', 'id' => $id)), '&nbsp;', array(
+				'title' => __('Delete this user'),
+				'class' => 'cl4_delete',
+			));
+		}
 
-		$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'add', 'id' => $id)), '&nbsp;', array(
-			'title' => __('Copy this user'),
-			'class' => 'cl4_add',
-		));
+		if (Auth::instance()->allowed('useradmin/add')) {
+			$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'add', 'id' => $id)), '&nbsp;', array(
+				'title' => __('Copy this user'),
+				'class' => 'cl4_add',
+			));
+		}
 
-		$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'email_password', 'id' => $id)), '&nbsp;', array(
-			'title' => __('Email a new random password to this user'),
-			'class' => 'cl4_mail',
-		));
+		if (Auth::instance()->allowed('useradmin/email_password')) {
+			$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'email_password', 'id' => $id)), '&nbsp;', array(
+				'title' => __('Email a new random password to this user'),
+				'class' => 'cl4_mail',
+			));
+		}
 
 		return $first_col;
 	}
@@ -217,6 +246,8 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				->set_mode('add')
 				->set_option('get_form_view_file', 'useradmin/user_edit_form');
 
+			$this->set_user_permission_edit($user);
+
 			if ( ! empty($_POST)) {
 				$this->save_user($user);
 			}
@@ -243,6 +274,24 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				->set_mode('edit')
 				->set_option('get_form_view_file', 'useradmin/user_edit_form');
 
+			// if the user can edit permissions groups, but doesn't have access to all groups
+			// look for groups that they don't have access to but are on this user and add a message
+			if ($this->set_user_permission_edit($user) && ! Auth::instance()->allowed('useradmin/user/group/*')) {
+				$user_groups = $user->group->find_all()->as_array('id', 'name');
+				$other_groups = '';
+				$other_count = 0;
+				foreach ($user_groups as $group_id => $group_name) {
+					if ( ! Auth::instance()->allowed('useradmin/user/group/' . $group_id)) {
+						if ($other_count > 0) $other_groups .= ', ';
+						$other_groups .= $group_name;
+						++$other_count;
+					}
+				}
+				if ($other_count > 0) {
+					Message::message('useradmin', 'other_groups', array(':other_groups' => HTML::chars($other_groups)), Message::$notice);
+				}
+			} // if
+
 			if ( ! empty($_POST)) {
 				$this->save_user($user);
 			} // if
@@ -257,14 +306,90 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	} // function action_edit
 
 	/**
+	* Sets the edit_flag or array of data for the group relationship inside the user admin model
+	* so that users can't edit groups that they don't have permissions to.
+	*
+	* @param  ORM  $user  The other model
+	*
+	* @return  boolean  Returns FALSE when the user doesn't have permission to edit any groups; TRUE when they have permission to 1 or more groups, possibly all
+	*/
+	protected function set_user_permission_edit($user) {
+		// see if they have permission to edit the permissions of users
+		if ( ! Auth::instance()->allowed('useradmin/edit/permissions')) {
+			$user->set_has_many('group', 'edit_flag', FALSE);
+			return FALSE;
+
+		// if they don't have permission to add all groups, then check for the groups they do have permissions to
+		} else if ( ! Auth::instance()->allowed('useradmin/user/group/*')) {
+			$allowed_groups = $this->allowed_groups();
+			if ( ! empty($allowed_groups)) {
+				$user->set_has_many('group', 'source.source', 'array')
+					->set_has_many('group', 'source.data', $allowed_groups);
+				return TRUE;
+			} else {
+				$user->set_has_many('group', 'edit_flag', FALSE);
+				return FALSE;
+			}
+		} else if (Auth::instance()->allowed('useradmin/user/group/*')) {
+			return TRUE;
+		} // if
+	} // function set_user_permission_edit
+
+	/**
+	* Returns an array of groups that the user has permission to edit
+	* group id => group name
+	*
+	* @return  array
+	*/
+	protected function allowed_groups() {
+		if ($this->allowed_groups === NULL) {
+			$this->allowed_groups = array();
+			foreach (ORM::factory('group')->find_all() as $group) {
+				if (Auth::instance()->allowed('useradmin/user/group/' . $group->pk())) {
+					$this->allowed_groups[$group->pk()] = $group->name;
+				}
+			}
+		}
+
+		return $this->allowed_groups;
+	} // function allowed_groups
+
+	/**
 	* Saves the user record, including teams and permission groups
 	*
 	* @param  ORM  $user
 	*/
 	protected function save_user($user) {
 		try {
+			$post = $_POST;
+
+			// the user is allowed to change the groups on a user, but does not have access to all groups
+			if ($this->set_user_permission_edit($user) && ! Auth::instance()->allowed('useradmin/user/group/*')) {
+				// look in the post for any of the groups that the user is not allowed to add users to (security check)
+				$allowed_groups = $this->allowed_groups();
+				$selected_groups = Arr::path($post, 'c_record.group', array());
+				foreach ($selected_groups as $key => $group_id) {
+					if ( ! isset($allowed_groups[$group_id])) {
+						unset($selected_groups[$key]);
+					}
+				}
+
+				// re-add any groups that the user doesn't have permissions to
+				$other_groups = ORM::factory('user_group')
+					->where('user_group.group_id', 'NOT IN', array_keys($allowed_groups))
+					->where('user_group.user_id', '=', $user->id)
+					->find_all();
+				if (count($other_groups) > 0) {
+					foreach ($other_groups as $user_group) {
+						$selected_groups[] = $user_group->group_id;
+					}
+				}
+
+				$post['c_record']['group'] = $selected_groups;
+			} // if
+
 			// save the post data
-			$user->save_values()->save();
+			$user->save_values($post)->save();
 
 			$this->user_additional_save($user);
 
@@ -291,7 +416,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 
 				$mail->Send();
 
-				Message::add(__(Kohana::message('useradmin', 'email_account_info')), Message::$notice);
+				Message::message('useradmin', 'email_account_info', array(), Message::$notice);
 			}
 
 			Message::message('cl4admin', 'item_saved', NULL, Message::$notice);
@@ -334,7 +459,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 						if ($user->delete() == 0) {
 							Message::message('cl4admin', 'no_item_deleted', NULL, Message::$error);
 						} else {
-							Message::add('The user was deleted.', Message::$notice);
+							Message::message('useradmin', 'user_deleted', array(), Message::$notice);
 							Message::message('cl4admin', 'record_id_deleted', array(':id' => $this->id), Message::$debug);
 						} // if
 					} catch (Exception $e) {
@@ -396,7 +521,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 
 			$mail->Send();
 
-			Message::add(__(Kohana::message('useradmin', 'email_password_sent')), Message::$notice);
+			Message::message('useradmin', 'email_password_sent', array(), Message::$notice);
 
 			$this->redirect_to_index();
 
@@ -415,7 +540,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 		Message::message('cl4admin', 'action_cancelled', NULL, Message::$notice);
 		// redirect to the index
 		$this->redirect_to_index();
-	} // function
+	}
 
 	public function redirect_to_index() {
 		Request::current()->redirect(Route::get(Route::name(Request::current()->route()))->uri());
@@ -457,33 +582,68 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	protected function get_group_list_row_links($group) {
 		$id = $group->id;
 
-		$first_col = HTML::anchor(Request::current()->uri(array('action' => 'edit_group', 'id' => $id)), '&nbsp;', array(
-			'title' => __('Edit this group'),
-			'class' => 'cl4_edit',
+		$first_col = HTML::anchor(Request::current()->uri(array('action' => 'view_group', 'id' => $id)), '&nbsp;', array(
+			'title' => __('View this user'),
+			'class' => 'cl4_view',
 		));
 
-		$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'delete_group', 'id' => $id)), '&nbsp;', array(
-			'title' => __('Delete this group'),
-			'class' => 'cl4_delete',
-		));
+		if (Auth::instance()->allowed('useradmin/group/edit')) {
+			$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'edit_group', 'id' => $id)), '&nbsp;', array(
+				'title' => __('Edit this group'),
+				'class' => 'cl4_edit',
+			));
+		}
 
-		$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'add_group', 'id' => $id)), '&nbsp;', array(
-			'title' => __('Copy this group'),
-			'class' => 'cl4_add',
-		));
+		if (Auth::instance()->allowed('useradmin/group/delete')) {
+			$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'delete_group', 'id' => $id)), '&nbsp;', array(
+				'title' => __('Delete this group'),
+				'class' => 'cl4_delete',
+			));
+		}
 
-		$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'group_permissions', 'id' => $id)), '&nbsp;', array(
-			'title' => __('Edit the permissions for this group'),
-			'class' => 'cl4_lock',
-		));
+		if (Auth::instance()->allowed('useradmin/group/add')) {
+			$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'add_group', 'id' => $id)), '&nbsp;', array(
+				'title' => __('Copy this group'),
+				'class' => 'cl4_add',
+			));
+		}
 
-		$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'group_users', 'id' => $id)), '&nbsp;', array(
-			'title' => __('Edit the users that have this permission group'),
-			'class' => 'cl4_contact2',
-		));
+		if (Auth::instance()->allowed('useradmin/group/permissions')) {
+			$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'group_permissions', 'id' => $id)), '&nbsp;', array(
+				'title' => __('Edit the permissions for this group'),
+				'class' => 'cl4_lock',
+			));
+		}
+
+		if (Auth::instance()->allowed('useradmin/group/users')) {
+			$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'group_users', 'id' => $id)), '&nbsp;', array(
+				'title' => __('Edit the users that have this permission group'),
+				'class' => 'cl4_contact2',
+			));
+		}
 
 		return $first_col;
-	}
+	} // function get_group_list_row_links
+
+	public function action_view_group() {
+		try {
+			if ( ! ($this->id > 0)) {
+				throw new Kohana_Exception('No ID received for view');
+			}
+
+			$this->template->body_html = View::factory('useradmin/group_view')
+				->bind('group', $group);
+
+			$group = ORM::factory('group', $this->id)
+				->set_mode('view')
+				->set_option('get_view_view_file', 'useradmin/group_view_form')
+				->set_option('display_buttons', FALSE);
+		} catch (Exception $e) {
+			cl4::exception_handler($e);
+			Message::message('useradmin', 'error_viewing', NULL, Message::$error);
+			if ( ! cl4::is_dev()) $this->redirect_to_index();
+		}
+	} // function action_view_group
 
 	/**
 	* Display an add form or add (save) a new record
@@ -562,6 +722,51 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	} // function save_user
 
 	/**
+	* Delete a record with a confirm first
+	*/
+	public function action_delete_group() {
+		try {
+			if ( ! ($this->id > 0)) {
+				Message::message('cl4admin', 'no_id', NULL, Message::$error);
+				$this->redirect_to_group_list();
+			} // if
+
+			if ( ! empty($_POST)) {
+				// see if they want to delete the item
+				if (strtolower($_POST['cl4_delete_confirm']) == 'yes') {
+					try {
+						$group = ORM::factory('group', $this->id);
+						if ($group->delete() == 0) {
+							Message::message('cl4admin', 'no_item_deleted', NULL, Message::$error);
+						} else {
+							Message::message('useradmin', 'user_deleted', array(), Message::$notice);
+							Message::message('cl4admin', 'record_id_deleted', array(':id' => $this->id), Message::$debug);
+						} // if
+					} catch (Exception $e) {
+						cl4::exception_handler($e);
+						Message::message('cl4admin', 'error_deleting', NULL, Message::$error);
+						if ( ! cl4::is_dev()) $this->redirect_to_group_list();
+					}
+				} else {
+					Message::message('cl4admin', 'item_not_deleted', NULL, Message::$notice);
+				}
+
+				$this->redirect_to_group_list();
+
+			} else {
+				// the confirmation form goes in the messages
+				Message::add(View::factory('useradmin/confirm_delete'));
+
+				$this->action_view_group();
+			}
+		} catch (Exception $e) {
+			cl4::exception_handler($e);
+			Message::message('cl4admin', 'error_preparing_delete', NULL, Message::$error);
+			if ( ! cl4::is_dev()) $this->redirect_to_group_list();
+		}
+	} // function action_delete
+
+	/**
 	* Cancel the current action by redirecting back to the groups action
 	*/
 	public function action_cancel_group() {
@@ -581,7 +786,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				ORM::factory('group', $this->id)
 					->save_through('permission', 'current_permissions', $save_through_counts);
 
-				Message::add('The permissions for the group were updated' . $this->get_count_msg('permission', $save_through_counts), Message::$notice);
+				Message::message('useradmin', 'group_permissions_updated', array(':count' => $this->get_count_msg('permission', $save_through_counts)), Message::$notice);
 				$this->redirect_to_group_list();
 
 			} catch (Exception $e) {
@@ -668,7 +873,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				ORM::factory('group', $this->id)
 					->save_through('user', 'current_users', $save_through_counts);
 
-				Message::add('The users in the group were updated' . $this->get_count_msg('user', $save_through_counts), Message::$notice);
+				Message::message('useradmin', 'group_users_updated', array(':count' => $this->get_count_msg('user', $save_through_counts)), Message::$notice);
 				$this->redirect_to_group_list();
 
 			} catch (Exception $e) {

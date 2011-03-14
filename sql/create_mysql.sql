@@ -369,7 +369,6 @@ INSERT INTO `permission` VALUES(NULL, 'dbchange/index', 'DB Change', 'Allows the
 -- Permission for User Admin (useradmin controller)
 INSERT INTO `permission` VALUES(NULL, 'useradmin/index', 'User Admin', 'Allows the user to access the list of users.');
 
-INSERT INTO `permission` VALUES(NULL, 'useradmin/index', 'User Admin', 'Allows the user to access the list of users.');
 INSERT INTO `permission` VALUES(NULL, 'useradmin/add', 'User Admin - Add User', 'Allows the user to add new users.');
 INSERT INTO `permission` VALUES(NULL, 'useradmin/edit', 'User Admin - Edit User', 'Allows the user to edit users, excluding their permissions.');
 INSERT INTO `permission` VALUES(NULL, 'useradmin/edit/permissions', 'User Admin - Edit User Permissions', 'Allows the user to edit a users permissions.');

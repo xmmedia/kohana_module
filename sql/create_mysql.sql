@@ -383,4 +383,4 @@ INSERT INTO `permission` VALUES(NULL, 'useradmin/group/users', 'User Admin - Gro
 INSERT INTO `permission` VALUES(NULL, 'useradmin/group/delete', 'User Admin - Group Delete', 'Allows the user to delete a permission group.');
 
 -- updates the description on useradmin/index if the permission already exists
-UPDATE `permission` SET `description` = 'Allows the user to access the list of users.' WHERE `permission`.`permissions` = 'useradmin/index' LIMIT 1 ;
+UPDATE `permission` SET `description` = 'Allows the user to access the list of users.' WHERE `permission`.`permission` = 'useradmin/index' LIMIT 1 ;

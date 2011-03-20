@@ -88,6 +88,8 @@ EOA
 					Message::add('No databases were selected.', Message::$error);
 
 				} else {
+					$current_database = Kohana::config('database.' . Database::instance()->__toString() . '.connection.database');
+
 					foreach ($selected_dbs as $key => $use_db) {
 						if ( ! isset($db_list[$use_db])) {
 							Message::add('The passed DB name :db is no in the list of accessible databases and will be skipped', Message::$error, array(':db' => $use_db));
@@ -181,7 +183,8 @@ EOA
 						} // foreach
 					} // foreach
 
-					//Message::add(Kohana::debug($queries), Message::$notice);
+					// select the original database again so the remainder of the queries (like perms for menus) will work
+					DB::query(NULL, "USE " . Database::instance()->quote_identifier($current_database))->execute();
 				} // if
 			} // if
 		} // if

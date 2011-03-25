@@ -355,7 +355,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	} // function allowed_groups
 
 	/**
-	* Saves the user record, including teams and permission groups
+	* Saves the user record, including permission groups
 	*
 	* @param  ORM  $user
 	*/
@@ -698,7 +698,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	} // function action_edit
 
 	/**
-	* Saves the user record, including teams and permission groups
+	* Saves the group record
 	*
 	* @param  ORM  $user
 	*/

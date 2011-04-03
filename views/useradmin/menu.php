@@ -1,8 +1,8 @@
 
 <nav class="basic_nav">
 	<ul>
-		<li><?php echo HTML::anchor(Route::get('useradmin')->uri(), 'Users'); ?></li>
-		<li><?php echo HTML::anchor(Route::get('useradmin')->uri(array('action' => 'groups')), 'Groups'); ?></li>
+		<?php if (Auth::instance()->allowed('useradmin/index')) { ?><li><?php echo HTML::anchor(Route::get('useradmin')->uri(), 'Users'); ?></li><?php } // if ?>
+		<?php if (Auth::instance()->allowed('useradmin/group/index')) { ?><li><?php echo HTML::anchor(Route::get('useradmin')->uri(array('action' => 'groups')), 'Groups'); ?></li><?php } // if ?>
 	</ul>
 </nav>
 <div class="clear"></div>

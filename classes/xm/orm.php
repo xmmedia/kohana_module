@@ -138,32 +138,6 @@ class XM_ORM extends cl4_ORM {
 	/**
 	*
 	*
-	* @param mixed $column_name
-	* @param mixed $id
-	* @return ORM
-	*/
-	public function set_field_id($column_name, $id = NULL) {
-		return $this->set_field_attribute($column_name, 'id', $id);
-	}
-
-	/**
-	*
-	*
-	* @param mixed $column_name
-	* @param mixed $field_type
-	* @return ORM
-	*/
-	public function set_field_type($column_name, $field_type) {
-		if ($this->table_column_exists($column_name)) {
-			$this->_table_columns[$column_name]['field_type'] = $field_type;
-		}
-
-		return $this;
-	}
-
-	/**
-	*
-	*
 	* @param mixed $prefix
 	* @return ORM
 	*/

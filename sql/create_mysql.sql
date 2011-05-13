@@ -32,6 +32,7 @@ CREATE TABLE `country` (
   KEY `currency_code` (`currency_code`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+-- list taken from http://en.wikipedia.org/wiki/ISO_3166-1 on May 5, 2011
 INSERT INTO `country` VALUES(1, '0000-00-00 00:00:00', 'Afghanistan', '', '1.00000', 'AF', '', 100);
 INSERT INTO `country` VALUES(2, '0000-00-00 00:00:00', 'Åland Islands', '', '1.00000', 'AX', '', 110);
 INSERT INTO `country` VALUES(3, '0000-00-00 00:00:00', 'Albania', '', '1.00000', 'AL', '', 120);

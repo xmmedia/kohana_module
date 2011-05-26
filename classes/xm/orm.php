@@ -68,7 +68,7 @@ class XM_ORM extends cl4_ORM {
 
 		switch ($layout_type) {
 			case 'checkbox' :
-				return $this->_field_html[$column_name]['field'] . $label_html . EOL;
+				return $this->_field_html[$column_name]['field'] . ' ' . $label_html . EOL;
 				break;
 
 			case 'table_row' :

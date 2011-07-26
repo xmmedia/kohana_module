@@ -28,7 +28,7 @@ class Controller_XM_DBChange extends Controller_Base {
 			->bind('db_change_sql', $db_change_sql)
 			->bind('db_checkboxes', $db_checkboxes);
 
-		$mysql_username = Kohana::config('database.' . (string) Database::instance() . '.connection.username');
+		$mysql_username = Kohana::$config->load('database.' . (string) Database::instance() . '.connection.username');
 
 		$db_list = array();
 		foreach (DB::query(Database::SELECT, "SHOW DATABASES;")->execute()->as_array(NULL, 'Database') as $_db) {
@@ -77,7 +77,7 @@ EOA
 				$db_change_sql = $_POST['sql'];
 
 				// set the charset in the globals to the same as the database for use in the sql parser
-				$GLOBALS['charset'] = Kohana::config('database.' . (string) Database::instance() . '.charset');
+				$GLOBALS['charset'] = Kohana::$config->load('database.' . (string) Database::instance() . '.charset');
 
 				Kohana::load(Kohana::find_file('vendor', 'sqlparser/sqlparser.lib'));
 
@@ -88,7 +88,7 @@ EOA
 					Message::add('No databases were selected.', Message::$error);
 
 				} else {
-					$current_database = Kohana::config('database.' . Database::instance()->__toString() . '.connection.database');
+					$current_database = Kohana::$config->load('database.' . Database::instance()->__toString() . '.connection.database');
 
 					foreach ($selected_dbs as $key => $use_db) {
 						if ( ! isset($db_list[$use_db])) {

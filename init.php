@@ -13,7 +13,7 @@ if ( ! isset($lang_options)) {
 	$lang_options = '(en-ca|fr-ca)';
 }
 
-$routes = Kohana::config('xm.routes');
+$routes = Kohana::$config->load('xm.routes');
 
 if ($routes['useradmin']) {
 	Route::set('useradmin', '(<lang>/)useradmin(/<action>(/<id>))', array('lang' => $lang_options))

@@ -231,7 +231,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				->set_mode('view')
 				->set_option('get_view_view_file', 'useradmin/user_view_form');
 		} catch (Exception $e) {
-			cl4::exception_handler($e);
+			Kohana_Exception::caught_handler($e);
 			Message::message('useradmin', 'error_viewing', NULL, Message::$error);
 			if ( ! cl4::is_dev()) $this->redirect_to_index();
 		}
@@ -259,7 +259,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			$this->template->body_html = View::factory('useradmin/user_edit')
 				->bind('user', $user);
 		} catch (Exception $e) {
-			cl4::exception_handler($e);
+			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'error_preparing_add', NULL, Message::$error);
 			if ( ! cl4::is_dev()) $this->redirect_to_index();
 		}
@@ -299,7 +299,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			$this->template->body_html = View::factory('useradmin/user_edit')
 				->bind('user', $user);
 		} catch (Exception $e) {
-			cl4::exception_handler($e);
+			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'error_preparing_edit', NULL, Message::$error);
 			if ( ! cl4::is_dev()) $this->redirect_to_index();
 		} // try
@@ -427,7 +427,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				':validation_errors' => Message::add_validation_errors($e, '')
 			), Message::$error);
 		} catch (Exception $e) {
-			cl4::exception_handler($e);
+			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'problem_saving', NULL, Message::$error);
 			if ( ! cl4::is_dev()) $this->redirect_to_index();
 		} // try
@@ -463,7 +463,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 							Message::message('cl4admin', 'record_id_deleted', array(':id' => $this->id), Message::$debug);
 						} // if
 					} catch (Exception $e) {
-						cl4::exception_handler($e);
+						Kohana_Exception::caught_handler($e);
 						Message::message('cl4admin', 'error_deleting', NULL, Message::$error);
 						if ( ! cl4::is_dev()) $this->redirect_to_index();
 					}
@@ -480,7 +480,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				$this->action_view();
 			}
 		} catch (Exception $e) {
-			cl4::exception_handler($e);
+			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'error_preparing_delete', NULL, Message::$error);
 			if ( ! cl4::is_dev()) $this->redirect_to_index();
 		}
@@ -526,7 +526,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			$this->redirect_to_index();
 
 		} catch (Exception $e) {
-			cl4::exception_handler($e);
+			Kohana_Exception::caught_handler($e);
 			Message::message('useradmin', 'error_preparing_email', NULL, Message::$error);
 			if ( ! cl4::is_dev()) $this->redirect_to_index();
 		}
@@ -639,7 +639,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				->set_option('get_view_view_file', 'useradmin/group_view_form')
 				->set_option('display_buttons', FALSE);
 		} catch (Exception $e) {
-			cl4::exception_handler($e);
+			Kohana_Exception::caught_handler($e);
 			Message::message('useradmin', 'error_viewing', NULL, Message::$error);
 			if ( ! cl4::is_dev()) $this->redirect_to_index();
 		}
@@ -667,7 +667,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			$this->template->body_html = View::factory('useradmin/group_edit')
 				->bind('group', $group);
 		} catch (Exception $e) {
-			cl4::exception_handler($e);
+			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'error_preparing_add', NULL, Message::$error);
 			if ( ! cl4::is_dev()) $this->redirect_to_group_list();
 		}
@@ -691,7 +691,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			$this->template->body_html = View::factory('useradmin/group_edit')
 				->bind('group', $group);
 		} catch (Exception $e) {
-			cl4::exception_handler($e);
+			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'error_preparing_edit', NULL, Message::$error);
 			if ( ! cl4::is_dev()) $this->redirect_to_group_list();
 		} // try
@@ -715,7 +715,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				':validation_errors' => Message::add_validation_errors($e, '')
 			), Message::$error);
 		} catch (Exception $e) {
-			cl4::exception_handler($e);
+			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'problem_saving', NULL, Message::$error);
 			if ( ! cl4::is_dev()) $this->redirect_to_group_list();
 		} // try
@@ -743,7 +743,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 							Message::message('cl4admin', 'record_id_deleted', array(':id' => $this->id), Message::$debug);
 						} // if
 					} catch (Exception $e) {
-						cl4::exception_handler($e);
+						Kohana_Exception::caught_handler($e);
 						Message::message('cl4admin', 'error_deleting', NULL, Message::$error);
 						if ( ! cl4::is_dev()) $this->redirect_to_group_list();
 					}
@@ -760,7 +760,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				$this->action_view_group();
 			}
 		} catch (Exception $e) {
-			cl4::exception_handler($e);
+			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'error_preparing_delete', NULL, Message::$error);
 			if ( ! cl4::is_dev()) $this->redirect_to_group_list();
 		}
@@ -790,7 +790,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				$this->redirect_to_group_list();
 
 			} catch (Exception $e) {
-				cl4::exception_handler($e);
+				Kohana_Exception::caught_handler($e);
 				Message::message('cl4admin', 'problem_saving', NULL, Message::$error);
 				if ( ! cl4::is_dev()) $this->redirect_to_group_list();
 			} // try
@@ -861,7 +861,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				->bind('permission_group_select_remove', $perm_group_select_remove);
 
 		} catch (Exception $e) {
-			cl4::exception_handler($e);
+			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'error_preparing_edit', NULL, Message::$error);
 			if ( ! cl4::is_dev()) $this->redirect_to_group_list();
 		} // try
@@ -877,7 +877,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				$this->redirect_to_group_list();
 
 			} catch (Exception $e) {
-				cl4::exception_handler($e);
+				Kohana_Exception::caught_handler($e);
 				Message::message('cl4admin', 'problem_saving', NULL, Message::$error);
 				if ( ! cl4::is_dev()) $this->redirect_to_group_list();
 			} // try
@@ -924,7 +924,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				->bind('current_users_select', $current_users_select);
 
 		} catch (Exception $e) {
-			cl4::exception_handler($e);
+			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'error_preparing_edit', NULL, Message::$error);
 			if ( ! cl4::is_dev()) $this->redirect_to_group_list();
 		} // try

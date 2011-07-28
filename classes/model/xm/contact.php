@@ -205,7 +205,7 @@ class Model_XM_Contact extends ORM {
 						Message::add(Kohana::message('contact', 'sent'), Message::$notice);
 
 					} catch (Exception $e) {
-						cl4::exception_handler($e);
+						Kohana_Exception::caught_handler($e);
 						Message::add(Kohana::message('contact', 'problem_sending'), Message::$error);
 					}
 				} // if
@@ -216,7 +216,7 @@ class Model_XM_Contact extends ORM {
 		} catch (ORM_Validation_Exception $e) {
 			Message::add('Please fix the following errors: ' . Message::add_validation_errors($e, ''), Message::$error);
 		} catch (Exception $e) {
-			cl4::exception_handler($e);
+			Kohana_Exception::caught_handler($e);
 			Message::add(Kohana::message('contact', 'error'), Message::$error);
 		}
 

@@ -182,34 +182,34 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	protected function get_list_row_links($user) {
 		$id = $user->id;
 
-		$first_col = HTML::anchor(Request::current()->uri(array('action' => 'view', 'id' => $id)), '&nbsp;', array(
+		$first_col = HTML::anchor($this->request->route()->uri(array('action' => 'view', 'id' => $id)), '&nbsp;', array(
 			'title' => __('View this user'),
 			'class' => 'cl4_view',
 		));
 
 		if (Auth::instance()->allowed('useradmin/edit')) {
-			$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'edit', 'id' => $id)), '&nbsp;', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'edit', 'id' => $id)), '&nbsp;', array(
 				'title' => __('Edit this user'),
 				'class' => 'cl4_edit',
 			));
 		}
 
 		if (Auth::instance()->allowed('useradmin/delete')) {
-			$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'delete', 'id' => $id)), '&nbsp;', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'delete', 'id' => $id)), '&nbsp;', array(
 				'title' => __('Delete this user'),
 				'class' => 'cl4_delete',
 			));
 		}
 
 		if (Auth::instance()->allowed('useradmin/add')) {
-			$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'add', 'id' => $id)), '&nbsp;', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'add', 'id' => $id)), '&nbsp;', array(
 				'title' => __('Copy this user'),
 				'class' => 'cl4_add',
 			));
 		}
 
 		if (Auth::instance()->allowed('useradmin/email_password')) {
-			$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'email_password', 'id' => $id)), '&nbsp;', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'email_password', 'id' => $id)), '&nbsp;', array(
 				'title' => __('Email a new random password to this user'),
 				'class' => 'cl4_mail',
 			));
@@ -253,7 +253,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			}
 
 			if ( ! empty($this->id)) {
-				$user->set_option('form_action', URL::site(Request::current()->uri(array('id' => NULL))) . URL::query());
+				$user->set_option('form_action', URL::site(Request::current()->route()->uri(array('id' => NULL))) . URL::query());
 			}
 
 			$this->template->body_html = View::factory('useradmin/user_edit')
@@ -582,41 +582,41 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	protected function get_group_list_row_links($group) {
 		$id = $group->id;
 
-		$first_col = HTML::anchor(Request::current()->uri(array('action' => 'view_group', 'id' => $id)), '&nbsp;', array(
+		$first_col = HTML::anchor($this->request->route()->uri(array('action' => 'view_group', 'id' => $id)), '&nbsp;', array(
 			'title' => __('View this user'),
 			'class' => 'cl4_view',
 		));
 
 		if (Auth::instance()->allowed('useradmin/group/edit')) {
-			$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'edit_group', 'id' => $id)), '&nbsp;', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'edit_group', 'id' => $id)), '&nbsp;', array(
 				'title' => __('Edit this group'),
 				'class' => 'cl4_edit',
 			));
 		}
 
 		if (Auth::instance()->allowed('useradmin/group/delete')) {
-			$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'delete_group', 'id' => $id)), '&nbsp;', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'delete_group', 'id' => $id)), '&nbsp;', array(
 				'title' => __('Delete this group'),
 				'class' => 'cl4_delete',
 			));
 		}
 
 		if (Auth::instance()->allowed('useradmin/group/add')) {
-			$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'add_group', 'id' => $id)), '&nbsp;', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'add_group', 'id' => $id)), '&nbsp;', array(
 				'title' => __('Copy this group'),
 				'class' => 'cl4_add',
 			));
 		}
 
 		if (Auth::instance()->allowed('useradmin/group/permissions')) {
-			$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'group_permissions', 'id' => $id)), '&nbsp;', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'group_permissions', 'id' => $id)), '&nbsp;', array(
 				'title' => __('Edit the permissions for this group'),
 				'class' => 'cl4_lock',
 			));
 		}
 
 		if (Auth::instance()->allowed('useradmin/group/users')) {
-			$first_col .= HTML::anchor(Request::current()->uri(array('action' => 'group_users', 'id' => $id)), '&nbsp;', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'group_users', 'id' => $id)), '&nbsp;', array(
 				'title' => __('Edit the users that have this permission group'),
 				'class' => 'cl4_contact2',
 			));
@@ -661,7 +661,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			}
 
 			if ( ! empty($this->id)) {
-				$group->set_option('form_action', URL::site(Request::current()->uri(array('id' => NULL))) . URL::query());
+				$group->set_option('form_action', URL::site($this->request->route()->uri(array('id' => NULL))) . URL::query());
 			}
 
 			$this->template->body_html = View::factory('useradmin/group_edit')

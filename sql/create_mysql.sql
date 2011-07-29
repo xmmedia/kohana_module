@@ -14,6 +14,19 @@ CREATE TABLE `contact` (
 
 
 
+-- Request log table
+CREATE TABLE `request_log` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `datetime` datetime NOT NULL,
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `path` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `get` text COLLATE utf8_unicode_ci NOT NULL,
+  `post` text COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
 -- Country table and countries
 CREATE TABLE `country` (
   `id` int(11) NOT NULL auto_increment,

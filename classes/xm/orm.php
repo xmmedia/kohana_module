@@ -118,7 +118,7 @@ class XM_ORM extends cl4_ORM {
 	public function only_active() {
 		$this->_db_pending[] = array(
 			'name' => 'where',
-			'args' => array($this->_table_name . '.active_flag', '=', 1),
+			'args' => array($this->_object_name . '.active_flag', '=', 1),
 		);
 
 		return $this;
@@ -129,8 +129,8 @@ class XM_ORM extends cl4_ORM {
 	* @return ORM
 	*/
 	public function set_display_order() {
-		$this->order_by($this->_table_name . '.display_order', 'ASC')
-			->order_by($this->_table_name . '.id', 'ASC');
+		$this->order_by($this->_object_name . '.display_order', 'ASC')
+			->order_by($this->_object_name . '.id', 'ASC');
 
 		return $this;
 	}

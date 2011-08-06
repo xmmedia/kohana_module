@@ -253,7 +253,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			}
 
 			if ( ! empty($this->id)) {
-				$user->set_option('form_action', URL::site(Request::current()->route()->uri(array('id' => NULL))) . URL::query());
+				$user->set_option('form_action', URL::site(Request::current()->route()->uri(array('action' => 'add'))) . URL::query());
 			}
 
 			$this->template->body_html = View::factory('useradmin/user_edit')

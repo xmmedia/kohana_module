@@ -405,7 +405,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				$mail->Subject = SHORT_NAME . ' Login Information';
 
 				// provide a link to the user including their username
-				$url = URL::site(Route::get('login')->uri(), Request::current()->protocol()) . '?' . http_build_query(array('username' => $user->username));
+				$url = URL::site(Route::get('login')->uri(), TRUE) . '?' . http_build_query(array('username' => $user->username));
 
 				$mail->Body = View::factory('useradmin/' . ($new_user ? 'new_account_email' : 'account_update_email'))
 					->set('app_name', LONG_NAME)
@@ -510,7 +510,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			$mail->Subject = SHORT_NAME . ' Login Information';
 
 			// provide a link to the user including their username
-			$url = URL::site(Route::get('login')->uri(), Request::current()->protocol()) . '?' . http_build_query(array('username' => $user->username));
+			$url = URL::site(Route::get('login')->uri(), TRUE) . '?' . http_build_query(array('username' => $user->username));
 
 			$mail->Body = View::factory('useradmin/login_information_email')
 				->set('app_name', LONG_NAME)

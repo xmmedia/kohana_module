@@ -4,9 +4,6 @@
 			<div class="language_options"><?php if ( ! empty($language_options)) { ?><span class="language_label"><?php echo __('Language: '); ?></span><?php echo $language_options; ?><?php } ?></div>
 			<div class="clear"></div>
 			<div class="page_top_logo"><a href="<?php echo URL::base(); ?>"><?php echo HTML::chars(SHORT_NAME . ' v' . APP_VERSION); if (isset($pageTitle) && trim($pageTitle) != '') echo ' - ' . HTML::chars($pageTitle); ?></a></div>
-			<?php if ($logged_in) { ?>
-			<div class="page_top_user_info"><span class="login_in_as">Logged in as</span> <?php echo HTML::chars($user->first_name . ' ' . $user->last_name); ?></div>
-			<?php } // if logged in ?>
 			<div class="clear"></div>
 		</div>
 	</div>
@@ -25,6 +22,9 @@
 					<?php } // if logged in ?>
 					<li class="nav_divider"></li>
 				</ul>
+				<?php if ($logged_in) { ?>
+				<div class="page_top_user_info"><span class="login_in_as">Logged in as</span> <?php echo HTML::chars($user->first_name . ' ' . $user->last_name); ?></div>
+				<?php } // if logged in ?>
 			</nav>
 			<nav class="basic_nav main_nav">
 				<ul>

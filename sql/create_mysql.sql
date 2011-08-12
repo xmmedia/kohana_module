@@ -83,7 +83,7 @@ INSERT INTO `country` VALUES(34, '0000-00-00 00:00:00', 'Brunei Darussalam', '',
 INSERT INTO `country` VALUES(35, '0000-00-00 00:00:00', 'Bulgaria', '', '1.00000', 'BG', '', 440);
 INSERT INTO `country` VALUES(36, '0000-00-00 00:00:00', 'Burkina Faso', '', '1.00000', 'BF', '', 450);
 INSERT INTO `country` VALUES(37, '0000-00-00 00:00:00', 'Burundi', '', '1.00000', 'BI', '', 460);
-INSERT INTO `country` VALUES(40, '0000-00-00 00:00:00', 'Cambodia', '', '1.00000', 'KH', '', 470);
+INSERT INTO `country` VALUES(38, '0000-00-00 00:00:00', 'Cambodia', '', '1.00000', 'KH', '', 470);
 INSERT INTO `country` VALUES(39, '0000-00-00 00:00:00', 'Cameroon', '', '1.00000', 'CM', '', 480);
 INSERT INTO `country` VALUES(40, '0000-00-00 00:00:00', 'Canada', '$', '1.00000', 'CA', 'CAD', 1);
 INSERT INTO `country` VALUES(41, '0000-00-00 00:00:00', 'Cape Verde', '', '1.00000', 'CV', '', 500);
@@ -183,7 +183,7 @@ INSERT INTO `country` VALUES(134, '0000-00-00 00:00:00', 'Maldives', '', '1.0000
 INSERT INTO `country` VALUES(135, '0000-00-00 00:00:00', 'Mali', '', '1.00000', 'ML', '', 1440);
 INSERT INTO `country` VALUES(136, '0000-00-00 00:00:00', 'Malta', '', '1.00000', 'MT', '', 1450);
 INSERT INTO `country` VALUES(137, '0000-00-00 00:00:00', 'Marshall Islands', '', '1.00000', 'MH', '', 1460);
-INSERT INTO `country` VALUES(140, '0000-00-00 00:00:00', 'Martinique', '', '1.00000', 'MQ', '', 1470);
+INSERT INTO `country` VALUES(138, '0000-00-00 00:00:00', 'Martinique', '', '1.00000', 'MQ', '', 1470);
 INSERT INTO `country` VALUES(139, '0000-00-00 00:00:00', 'Mauritania', '', '1.00000', 'MR', '', 1480);
 INSERT INTO `country` VALUES(140, '0000-00-00 00:00:00', 'Mauritius', '', '1.00000', 'MU', '', 1490);
 INSERT INTO `country` VALUES(141, '0000-00-00 00:00:00', 'Mayotte', '', '1.00000', 'YT', '', 1500);
@@ -283,7 +283,7 @@ INSERT INTO `country` VALUES(234, '0000-00-00 00:00:00', 'United Kingdom', '', '
 INSERT INTO `country` VALUES(235, '0000-00-00 00:00:00', 'United States', '$', '1.00000', 'US', 'USD', 2);
 INSERT INTO `country` VALUES(236, '0000-00-00 00:00:00', 'United States Minor Outlying Islands', '', '1.00000', 'UM', '', 2450);
 INSERT INTO `country` VALUES(237, '0000-00-00 00:00:00', 'Uruguay', '', '1.00000', 'UY', '', 2460);
-INSERT INTO `country` VALUES(240, '0000-00-00 00:00:00', 'Uzbekistan', '', '1.00000', 'UZ', '', 2470);
+INSERT INTO `country` VALUES(238, '0000-00-00 00:00:00', 'Uzbekistan', '', '1.00000', 'UZ', '', 2470);
 INSERT INTO `country` VALUES(239, '0000-00-00 00:00:00', 'Vanuatu', '', '1.00000', 'VU', '', 2480);
 INSERT INTO `country` VALUES(240, '0000-00-00 00:00:00', 'Venezuela, Bolivarian Republic of', '', '1.00000', 'VE', '', 2490);
 INSERT INTO `country` VALUES(241, '0000-00-00 00:00:00', 'Viet Nam', '', '1.00000', 'VN', '', 2500);
@@ -351,7 +351,7 @@ INSERT INTO `state` VALUES(34, '0000-00-00 00:00:00', 40, 'New Brunswick', 'NB',
 INSERT INTO `state` VALUES(35, '0000-00-00 00:00:00', 235, 'North Carolina', 'NC', '', 100);
 INSERT INTO `state` VALUES(36, '0000-00-00 00:00:00', 235, 'North Dakota', 'ND', '', 100);
 INSERT INTO `state` VALUES(37, '0000-00-00 00:00:00', 235, 'Nebraska', 'NE', '', 100);
-INSERT INTO `state` VALUES(40, '0000-00-00 00:00:00', 40, 'Newfoundland/Labrador', 'NL', 'Newfoundland|Labrador|Newfoundland and Labrador|Newfoundland & Labrador', 10);
+INSERT INTO `state` VALUES(38, '0000-00-00 00:00:00', 40, 'Newfoundland/Labrador', 'NL', 'Newfoundland|Labrador|Newfoundland and Labrador|Newfoundland & Labrador', 10);
 INSERT INTO `state` VALUES(39, '0000-00-00 00:00:00', 235, 'New Hampshire', 'NH', '', 100);
 INSERT INTO `state` VALUES(40, '0000-00-00 00:00:00', 235, 'New Jersey', 'NJ', '', 100);
 INSERT INTO `state` VALUES(41, '0000-00-00 00:00:00', 235, 'New Mexico', 'NM', '', 100);

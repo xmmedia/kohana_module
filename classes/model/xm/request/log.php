@@ -133,9 +133,16 @@ class Model_XM_Request_Log extends ORM {
 		$get = $_GET;
 		Arr::recursive_unset($get, $remove_keys);
 
+		if ( ! array_key_exists('user_id', $data)) {
+			$user = Auth::instance()->get_user();
+			if ($user->loaded()) {
+				$data['user_id'] = $user->id;
+			}
+		}
+
 		$_data = array(
 			'datetime' => (array_key_exists('datetime', $data) ? $data['datetime'] : DB::expr("NOW()")),
-			'user_id' => (array_key_exists('user_id', $data) ? $data['user_id'] : Auth::instance()->get_user()->id),
+			'user_id' => (array_key_exists('user_id', $data) ? $data['user_id'] : 0),
 			'path' => (array_key_exists('path', $data) ? $data['path'] : Request::current()->uri()),
 			'get' => json_encode(array_key_exists('get', $data) ? $data['get'] : $get),
 			'post' => json_encode(array_key_exists('post', $data) ? $data['post'] : $post),

@@ -135,7 +135,7 @@ class Model_XM_Request_Log extends ORM {
 
 		if ( ! array_key_exists('user_id', $data)) {
 			$user = Auth::instance()->get_user();
-			if ($user->loaded()) {
+			if ( ! empty($user) && $user->loaded()) {
 				$data['user_id'] = $user->id;
 			}
 		}

@@ -47,8 +47,8 @@ class Model_XM_Request_Log extends ORM {
 			'is_nullable' => FALSE,
 			'field_options' => array(
 				'source' => array(
-					'source' => 'model',
-					'data' => 'user',
+					'source' => 'sql',
+					'data' => "SELECT id, CONCAT(first_name, ' ', last_name) AS name FROM user ORDER BY first_name, last_name",
 				),
 			),
 		),

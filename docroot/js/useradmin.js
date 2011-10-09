@@ -1,7 +1,7 @@
 /** user admin **/
 $(function() {
 	/**
-	* Moves select options from one select ot another when a button (or link) is clicked
+	* Moves select options from one select to another when a button (or link) is clicked
 	* The from and to selects are based on data parameters on the button
 	*/
 	$('.move_select_options').click(function() {

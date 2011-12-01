@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die ('No direct script access.');
 
 class XM_Form extends cl4_Form {
-	public static function month($name, $selected, $attributes, $options) {
+	public static function month($name, $selected, $attributes = NULL, $options = array()) {
 		$options += array(
 			'include_month_number' => FALSE,
 		);
@@ -14,7 +14,7 @@ class XM_Form extends cl4_Form {
 		return Form::select($name, $months, $selected, $attributes, $options);
 	} // function month
 
-	public static function weekday($name, $selected, $attributes, $options) {
+	public static function weekday($name, $selected, $attributes = NULL, $options = array()) {
 		$options += array(
 			'include_day_number' => FALSE,
 			'begins_on_sunday' => TRUE,

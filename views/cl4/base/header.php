@@ -12,6 +12,9 @@
 				<?php if (Auth::instance()->allowed('cl4admin') || Auth::instance()->allowed('cl4admin/model_create') || Auth::instance()->allowed('dbchange/index')) { ?>
 				<li class="dbadmin has_subnav"><?php echo HTML::anchor(Route::get('cl4admin')->uri(), __('DB Admin') . '<span class="more"></span>'); ?>
 					<ul class="sub_nav">
+						<?php if (Auth::instance()->allowed('cl4admin')) { ?>
+						<li class="cl4admin"><?php echo HTML::anchor(Route::get('cl4admin')->uri(), __('DB Admin')); ?></li>
+						<?php } ?>
 						<?php if (Auth::instance()->allowed('useradmin/index')) { ?>
 						<li class="useradmin"><?php echo HTML::anchor(Route::get('useradmin')->uri(), __('Users Admin')); ?></li>
 						<?php } ?>

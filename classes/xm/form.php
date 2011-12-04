@@ -16,7 +16,6 @@ class XM_Form extends cl4_Form {
 
 	public static function weekday($name, $selected, $attributes = NULL, $options = array()) {
 		$options += array(
-			'include_day_number' => FALSE,
 			'begins_on_sunday' => TRUE,
 		);
 

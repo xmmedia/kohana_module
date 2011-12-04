@@ -37,6 +37,10 @@ class XM_ORM_Month extends ORM_Select {
 	} // function
 
 	public static function view($value, $column_name, ORM $orm_model = NULL, array $options = array(), $source = NULL) {
+		$options += array(
+			'include_month_number' => FALSE,
+		);
+
 		if ($value > 0) {
 			return ($options['include_month_number'] ? $value . ' - ' : '') . date('F', Date::MONTH * $value - (Date::DAY * 2));
 		} else {

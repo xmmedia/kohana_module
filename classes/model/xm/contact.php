@@ -136,9 +136,7 @@ class Model_XM_Contact extends ORM {
 	 */
 	public function filters() {
 		return array(
-		    'name' => array(array('trim')),
-		    'email' => array(array('trim')),
-		    'message' => array(array('trim')),
+		    TRUE => array(array('trim')),
 		);
 	}
 
@@ -156,7 +154,7 @@ class Model_XM_Contact extends ORM {
 		} // if
 	} // function check_for_email_or_phone
 
-	public function save_and_mail($to, $to_name) {
+	public function save_and_mail($to, $to_name, $subject = NULL) {
 		try {
 			if ( ! Kohana::load(Kohana::find_file('vendor', 'recaptcha/recaptchalib'))) {
 				throw new Kohana_Exception('Unable to find reCAPTCHA. Ensure it\'s in a vendor folder');
@@ -190,7 +188,11 @@ class Model_XM_Contact extends ORM {
 						$mail = new Mail();
 						$mail->AddAddress($to, $to_name);
 						$mail->add_log_bcc();
-						$mail->Subject = 'Website Contact Us Submission - ' . date('Y-m-d H:m');
+						if ($subject === NULL) {
+							$mail->Subject = 'Website Contact Us Submission - ' . date('Y-m-d H:m');
+						} else {
+							$mail->Subject = $subject;
+						}
 						$mail->IsHTML(TRUE);
 						if ( ! empty($this->email)) $mail->AddReplyTo($this->email, $this->name);
 

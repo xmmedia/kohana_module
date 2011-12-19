@@ -68,7 +68,7 @@ class XM_ORM extends cl4_ORM {
 
 		switch ($layout_type) {
 			case 'checkbox' :
-				return $this->_field_html[$column_name]['field'] . ' ' . $label_html . EOL;
+				return $this->_field_html[$column_name]['field'] . ' ' . $label_html . $this->_field_html[$column_name]['help'] . EOL;
 				break;
 
 			case 'table_row' :
@@ -89,8 +89,8 @@ class XM_ORM extends cl4_ORM {
 	public function field_has_error($column_name) {
 		// check to see if there is an error on the field
 		// add a class to the field and the label
-		if ( ! empty($this->_validate)) {
-			$errors = $this->_validate->errors();
+		if ( ! empty($this->_validation)) {
+			$errors = $this->_validation->errors();
 
 			if (isset($errors[$column_name])) {
 				return TRUE;

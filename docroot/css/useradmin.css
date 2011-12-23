@@ -1,9 +1,0 @@
-/** user admin **/
-.group_perm_edit { margin:0 auto; width:960px; }
-.group_perm_edit .perm_available { float:left; width:435px; }
-.group_perm_edit .perm_buttons { float:left; width:90px; text-align:center; padding-top:75px; line-height:2.5em; }
-.group_perm_edit .perm_current { float:left; width:435px; }
-.group_perm_edit .permission_groups { margin:5px 0 5px 0; }
-.group_perm_edit .permission_groups .perm_buttons { padding-top:0; height:1em; }
-.group_perm_edit .permission_groups .perm_current { text-align:right; }
-.xm_permission_edit_select { width:435px; }

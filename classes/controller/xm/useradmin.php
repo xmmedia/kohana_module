@@ -94,7 +94,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 		if ($this->auto_render) {
 			$this->template->styles['css/admin.css'] = NULL;
 			$this->template->styles['css/dbadmin.css'] = NULL;
-			$this->template->styles['css/useradmin.css'] = NULL;
+			$this->template->styles['xm/css/useradmin.css'] = NULL;
 		}
 
 		return $this;
@@ -103,7 +103,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	public function add_template_js() {
 		parent::add_template_js();
 
-		$this->template->scripts['useradmin'] = 'js/useradmin.js';
+		$this->template->scripts['useradmin'] = 'xm/js/useradmin.js';
 
 		return $this;
 	}

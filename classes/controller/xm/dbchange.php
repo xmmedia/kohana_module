@@ -7,6 +7,8 @@ class Controller_XM_DBChange extends Controller_Base {
 		'index' => 'dbchange/index',
 	);
 
+	public $page = 'admin';
+
 	public function before() {
 		parent::before();
 

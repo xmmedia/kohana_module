@@ -3,11 +3,6 @@
 		<nav>
 			<ul class="left">
 				<li class="home"><?php echo HTML::anchor('', __('Home')); ?></li>
-				<li class="aboutus has_subnav"><?php echo HTML::anchor(Route::get('pages')->uri(array('page' => 'aboutus')), __('About Us') . '<span class="more"></span>'); ?>
-					<ul class="sub_nav">
-						<li class="ourpeople"><?php echo HTML::anchor(Route::get('pages_section')->uri(array('section' => 'aboutus', 'page' => 'ourpeople')), __('Our People')); ?></li>
-					</ul>
-				</li>
 				<?php if ($logged_in) { ?>
 				<?php if (Auth::instance()->allowed('cl4admin') || Auth::instance()->allowed('cl4admin/model_create') || Auth::instance()->allowed('dbchange/index')) { ?>
 				<li class="dbadmin has_subnav"><?php echo HTML::anchor(Route::get('cl4admin')->uri(), __('DB Admin') . '<span class="more"></span>'); ?>

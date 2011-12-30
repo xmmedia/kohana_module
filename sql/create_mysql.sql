@@ -20,10 +20,10 @@ CREATE TABLE `request_log` (
   `datetime` datetime NOT NULL,
   `user_id` int(10) unsigned NOT NULL DEFAULT '0',
   `path` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `get` text COLLATE utf8_unicode_ci NOT NULL,
-  `post` text COLLATE utf8_unicode_ci NOT NULL,
+  `get` longtext COLLATE utf8_unicode_ci NOT NULL,
+  `post` longtext COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 

@@ -163,6 +163,8 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	protected function get_user_orm_list($page_max_rows, $offset) {
 		return ORM::factory('user_admin')
 			->set_options(array('mode' => 'view'))
+			->order_by('user_admin.last_name')
+			->order_by('user_admin.first_name')
 			->limit($page_max_rows)
 			->offset($offset * $page_max_rows);
 	}

@@ -141,17 +141,20 @@ class Model_XM_Contact extends ORM {
 	}
 
 	public function check_for_email_or_phone(Validation $validate, $field) {
-		if (empty($this->email) && empty($this->phone)) {
+		$valid_email = Valid::email($this->email);
+		$valid_phone = Valid::phone($this->phone);
+		$empty_phone = ( ! empty($this->phone) || $this->phone != '----');
+
+		if ( ! $valid_email && ! $valid_phone) {
 			$validate->error('email', 'email_or_phone');
 		} else {
-			if ( ! empty($this->email) && ! Valid::email($this->email)) {
+			if ( ! $valid_email && ! empty($this->email) && ! $empty_phone && ! $valid_phone) {
 				$validate->error('email', 'email');
 			}
-
-			if ( ! empty($this->phone) && ! Valid::phone($this->phone)) {
+			if ( ! $valid_phone && $empty_phone && ! empty($this->email) && ! $valid_email) {
 				$validate->error('phone', 'phone');
 			}
-		} // if
+		}
 	} // function check_for_email_or_phone
 
 	public function save_and_mail($to, $to_name, $subject = NULL) {

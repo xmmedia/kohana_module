@@ -25,7 +25,7 @@ class XM_Form extends cl4_Form {
 			4 => __('Wednesday'),
 			5 => __('Thursday'),
 			6 => __('Friday'),
-			7 => __('Saturay'),
+			7 => __('Saturday'),
 		);
 		if ($options['begins_on_sunday']) {
 			$days = Arr::unshift($days, 1, __('Sunday'));

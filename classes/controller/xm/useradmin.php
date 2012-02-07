@@ -405,6 +405,10 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				$mail->IsHTML();
 				$mail->add_user($user->id);
 				$mail->Subject = SHORT_NAME . ' Login Information';
+				$editing_user = Auth::instance()->get_user();
+				if (Valid::email($editing_user->email)) {
+					$mail->AddReplyTo($editing_user->email, $editing_user->first_name . ' ' . $editing_user->last_name);
+				}
 
 				// provide a link to the user including their username
 				$url = URL::site(Route::get('login')->uri(), TRUE) . '?' . http_build_query(array('username' => $user->username));
@@ -510,6 +514,10 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			$mail->IsHTML();
 			$mail->add_user($user->id);
 			$mail->Subject = SHORT_NAME . ' Login Information';
+			$editing_user = Auth::instance()->get_user();
+			if (Valid::email($editing_user->email)) {
+				$mail->AddReplyTo($editing_user->email, $editing_user->first_name . ' ' . $editing_user->last_name);
+			}
 
 			// provide a link to the user including their username
 			$url = URL::site(Route::get('login')->uri(), TRUE) . '?' . http_build_query(array('username' => $user->username));

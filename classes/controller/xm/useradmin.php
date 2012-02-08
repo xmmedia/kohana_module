@@ -671,7 +671,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			}
 
 			if ( ! empty($this->id)) {
-				$group->set_option('form_action', URL::site($this->request->route()->uri(array('id' => NULL))) . URL::query());
+				$group->set_option('form_action', URL::site($this->request->route()->uri(array('action' => $this->request->action()))) . URL::query());
 			}
 
 			$this->template->body_html = View::factory('useradmin/group_edit')

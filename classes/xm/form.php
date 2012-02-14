@@ -35,4 +35,14 @@ class XM_Form extends cl4_Form {
 
 		return Form::select($name, $days, $selected, $attributes, $options);
 	} // function weekday
+
+	public static function user_select($name, $selected, $attributes = NULL, $options = array()) {
+		$users = DB::select('id', array(DB::expr("CONCAT_WS(' ', first_name, last_name)"), 'user_name'))
+			->from('user')
+			->where_expiry()
+			->execute()
+			->as_array('id', 'user_name');
+
+		return Form::select($name, $users, $selected, $attributes, $options);
+	} // function user_select
 } // class XM_Form

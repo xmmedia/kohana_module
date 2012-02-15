@@ -146,4 +146,20 @@ class XM_ORM extends cl4_ORM {
 
 		return $this;
 	}
+
+	/**
+	 * Retrieves the value of a radio based on the source data in the _table_columns source array.
+	 * Will also work for other field types that have the source data in the _table_columns array.
+	 * Will return NULL if the field doesn't exist, the source data or value doesn't exist.
+	 *
+	 * @param  string  $column_name  The column name to retrieve.
+	 * @return  string
+	 */
+	public function get_radio_value_string($column_name) {
+		if ($this->table_column_exists($column_name) && isset($this->_table_columns[$column_name]['field_options']['source']['data'][$this->$column_name])) {
+			return $this->_table_columns[$column_name]['field_options']['source']['data'][$this->$column_name];
+		}
+
+		return NULL;
+	} // function get_radio_value_string
 } // class ORM

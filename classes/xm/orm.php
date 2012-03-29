@@ -71,6 +71,10 @@ class XM_ORM extends cl4_ORM {
 				return $this->_field_html[$column_name]['field'] . ' ' . $label_html . $this->_field_html[$column_name]['help'] . EOL;
 				break;
 
+			case 'radio_above' :
+				return $label_html . '<br>' . $this->_field_html[$column_name]['field'] . '<br>' . $this->_field_html[$column_name]['help'] . EOL;
+				break;
+
 			case 'table_row' :
 				if ($this->_current_table_row === NULL) {
 					$this->_current_table_row = 0;

@@ -49,6 +49,10 @@ class XM_ORM_Month extends ORM_Select {
 	}
 
 	public static function view_html($value, $column_name, ORM $orm_model = NULL, array $options = array(), $source = NULL) {
+		$options += array(
+			'nbsp' => FALSE,
+		);
+
 		$found_value = ORM_Month::view($value, $column_name, $orm_model, $options, $source);
 		if ($found_value !== NULL && $found_value !== 0) {
 			return ORM_Month::prepare_html($found_value, $options['nbsp']);

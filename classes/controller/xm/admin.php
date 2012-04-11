@@ -10,8 +10,21 @@ class Controller_XM_Admin extends Controller_Base {
 
 	// true means users must be logged in to access this controller
 	public $auth_required = TRUE;
-	// secure actions is false because there is special functionality for cl4admin (see check_perm())
-	//public $secure_actions = FALSE; leaving value as default
+	// secure actions: actions that require you to more than just logged in
+	// the list is currently commented out so all actions will not have any special permission checking done
+	// copy the list and add permissions as necessary
+	public $secure_actions = array(
+		// 'index' => '',
+		// 'add' => '',
+		// 'add_multiple' => '',
+		// 'cancel_search' => '',
+		// 'delete' => '',
+		// 'download' => '',
+		// 'edit' => '',
+		// 'edit_multiple' => '',
+		// 'search' => '',
+		// 'view' => '',
+	);
 
 	protected $model_name = 'model'; // the name of the model currently being manipulated
 	protected $model_display_name = 'Model Name'; // the fulll, friendly object name as specified in the options or the model itself

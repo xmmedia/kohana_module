@@ -43,6 +43,8 @@ class Controller_XM_Admin extends Controller_Base {
 
 	protected $route = 'model_route';
 
+	protected $default_view = 'cl4/cl4admin/admin';
+
 	/**
 	* Runs before the action.
 	* Calls parent::before().
@@ -177,7 +179,7 @@ class Controller_XM_Admin extends Controller_Base {
 	* @param  string  $content  The content to put in the content container in the view
 	*/
 	protected function add_default_view($title, $content) {
-		$this->template->body_html .= View::factory('project_admin/default')
+		$this->template->body_html .= View::factory($this->default_view)
 			->bind('title', $title)
 			->bind('content', $content);
 	} // function add_default_view

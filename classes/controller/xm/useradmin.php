@@ -252,6 +252,9 @@ class Controller_XM_UserAdmin extends Controller_Base {
 
 			if ( ! empty($_POST)) {
 				$this->save_user($user);
+			} else {
+				// don't show the failed login count on add as it should default to 0
+				$user->set_table_columns('failed_login_count', 'edit_flag', FALSE);
 			}
 
 			if ( ! empty($this->id)) {

@@ -298,7 +298,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	 */
 	protected function get_user_list_buttons() {
 		$list_buttons = array(
-			Form::submit(NULL, 'Add New User', array('class' => 'cl4_button_link_form cl4_list_button', 'data-cl4_form_action' => URL::site($this->request->route()->uri(array('action' => 'add'))))),
+			Form::submit(NULL, 'Add New User', array('class' => 'cl4_button_link cl4_list_button', 'data-cl4_link' => URL::site($this->request->route()->uri(array('action' => 'add'))))),
 		);
 		if ( ! empty($this->sort_column)) {
 			$list_buttons[] = Form::input_button(NULL, 'Clear Sort', array('class' => 'cl4_button_link cl4_list_button', 'data-cl4_link' => URL::site($this->request->route()->uri() . '?sort_column=&sort_direction=')));

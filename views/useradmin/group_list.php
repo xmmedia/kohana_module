@@ -1,9 +1,7 @@
-<?php echo Form::open(Request::current()); ?>
-	<div class="cl4_list_header">
-		<input type="submit" value="Add New Group" class="cl4_button_link_form cl4_list_button" data-cl4_form_action="<?php echo URL::site(Route::get('useradmin')->uri(array('action' => 'add_group'))); ?>">
-		<div class="clear"></div>
-	</div>
-<?php echo Form::close(); ?>
+<div class="cl4_list_header">
+	<input type="submit" value="Add New Group" class="cl4_button_link cl4_list_button" data-cl4_link="<?php echo URL::site(Route::get('useradmin')->uri(array('action' => 'add_group'))); ?>">
+	<div class="clear"></div>
+</div>
 
 <div class="pagination cl4_nav">
 	<div class="cl4_nav_pages"></div>

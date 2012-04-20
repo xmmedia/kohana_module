@@ -25,6 +25,8 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	protected $page_offset;
 	protected $sort_column;
 	protected $sort_direction;
+	protected $search;
+	protected $search_applied = FALSE;
 	protected $user_admin_session;
 
 	protected $list_headings = array(
@@ -43,6 +45,8 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	);
 	protected $page_max_rows = 30;
 
+	protected $default_search = array('text' => NULL, 'group_id' => NULL, 'only_active' => 1);
+
 	/**
 	* @var  array  Stores the group ids and names that the user can edit
 	* NULL by default
@@ -56,8 +60,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 		$page_offset = Arr::get($_REQUEST, 'page');
 		$sort_column = Arr::get($_REQUEST, 'sort_column');
 		$sort_direction = Arr::get($_REQUEST, 'sort_direction');
-
-
+		$search = Arr::get($_REQUEST, 'search');
 
 		if ( ! isset($this->session['useradmin'])) {
 			$this->session['useradmin'] = array(
@@ -65,6 +68,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 					'page_offset' => 0,
 					'sort_column' => NULL,
 					'sort_direction' => NULL,
+					'search' => $this->default_search,
 				),
 				'groups' => array(
 					'page_offset' => 0,
@@ -85,7 +89,16 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			$page_title = 'Users';
 
 			if ($page_offset !== NULL) $this->user_admin_session['users']['page_offset'] = intval($page_offset);
+			if ($search !== NULL) {
+				if ( ! isset($search['only_active'])) {
+					$search['only_active'] = FALSE;
+				} else {
+					$search['only_active'] = (bool) $search['only_active'];
+				}
+				$this->user_admin_session['users']['search'] = (array) $search + $this->default_search;
+			}
 			$this->page_offset = $this->user_admin_session['users']['page_offset'];
+			$this->search = $this->user_admin_session['users']['search'];
 
 			// if the sort column in is the parameter but it's empty, then erase the sort
 			// because the user has clicked the column a third time
@@ -96,7 +109,6 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				if ($sort_column !== NULL) $this->user_admin_session['users']['sort_column'] = strtolower($sort_column);
 				if ($sort_direction !== NULL) $this->user_admin_session['users']['sort_direction'] = strtoupper($sort_direction);
 			}
-
 			$this->sort_column = $this->user_admin_session['users']['sort_column'];
 			$this->sort_direction = $this->user_admin_session['users']['sort_direction'];
 		} else {
@@ -140,6 +152,8 @@ class Controller_XM_UserAdmin extends Controller_Base {
 		$user = $this->get_user_orm_list($this->page_max_rows, $offset);
 
 		$users = $user->find_all();
+
+		$this->add_user_search($user);
 		$user_count = $user->count_all();
 
 		// create the pagination object
@@ -213,6 +227,8 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			->limit($page_max_rows)
 			->offset($offset * $page_max_rows);
 
+		$this->add_user_search($users);
+
 		if (empty($this->sort_column)) {
 			$users->order_by('user_admin.last_name')
 				->order_by('user_admin.first_name');
@@ -225,6 +241,40 @@ class Controller_XM_UserAdmin extends Controller_Base {
 
 		return $users;
 	} // function get_user_orm_list
+
+	/**
+	 * Adds the search criteria to the query.
+	 * Used for both generating the list of users and also the count.
+	 *
+	 * @param  Model_User  $users  The user model (or a query) to apply the where clauses to.
+	 * @return void
+	 */
+	protected function add_user_search($users) {
+		if ( ! empty($this->search['text'])) {
+			$text_search = '%' . $this->search['text'] . '%';
+			$users->where_open()
+					->or_where('user_admin.first_name', 'LIKE', $text_search)
+					->or_where('user_admin.last_name', 'LIKE', $text_search)
+					->or_where('user_admin.username', 'LIKE', $text_search)
+				->where_close();
+
+			$this->search_applied = TRUE;
+		}
+
+		if ( ! empty($this->search['group_id']) && $this->search['group_id'] != 'all') {
+			$users->join(array('user_group', 'ug'), 'INNER')
+					->on('user_admin.id', '=', 'ug.user_id')
+				->where('ug.group_id', '=', $this->search['group_id']);
+
+			$this->search_applied = TRUE;
+		}
+
+		if ($this->search['only_active']) {
+			$users->where('user_admin.active_flag', '=', 1);
+		} else {
+			$this->search_applied = TRUE;
+		}
+	} // function add_user_search
 
 	/**
 	 * Return an array of the columns for the user list.
@@ -300,9 +350,17 @@ class Controller_XM_UserAdmin extends Controller_Base {
 		$list_buttons = array(
 			Form::submit(NULL, 'Add New User', array('class' => 'cl4_button_link cl4_list_button', 'data-cl4_link' => URL::site($this->request->route()->uri(array('action' => 'add'))))),
 		);
-		if ( ! empty($this->sort_column)) {
-			$list_buttons[] = Form::input_button(NULL, 'Clear Sort', array('class' => 'cl4_button_link cl4_list_button', 'data-cl4_link' => URL::site($this->request->route()->uri() . '?sort_column=&sort_direction=')));
+		if ( ! empty($this->sort_column) || $this->search_applied) {
+			$list_buttons[] = Form::input_button(NULL, 'Clear Search/Sort', array('class' => 'cl4_button_link cl4_list_button', 'data-cl4_link' => URL::site($this->request->route()->uri() . '?sort_column=&sort_direction=&search%5Btext%5D=&search%5Bgroup_id%5D&search%5Bonly_active%5D=1')));
 		}
+
+		$list_buttons[] = Form::open(NULL, array('method' => 'GET'))
+			. Form::input('search[text]', $this->search['text'])
+			. Form::select('search[group_id]', $this->allowed_groups(), $this->search['group_id'], array(), array('add_values' => array('all' => '-- All Permission Groups --')))
+			. Form::checkbox('search[only_active]', 1, (bool) $this->search['only_active'], array('id' => 'user_search_only_active')) . Form::label('user_search_only_active', 'Only Active Users')
+			. Form::submit(NULL, 'Search')
+			. Form::close();
+
 		return $list_buttons;
 	} // function get_user_list_buttons
 
@@ -434,9 +492,10 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	*/
 	protected function allowed_groups() {
 		if ($this->allowed_groups === NULL) {
+			$allowed_all_groups = Auth::instance()->allowed('useradmin/user/group/*');
 			$this->allowed_groups = array();
 			foreach (ORM::factory('group')->find_all() as $group) {
-				if (Auth::instance()->allowed('useradmin/user/group/' . $group->pk())) {
+				if ($allowed_all_groups || Auth::instance()->allowed('useradmin/user/group/' . $group->pk())) {
 					$this->allowed_groups[$group->pk()] = $group->name;
 				}
 			}

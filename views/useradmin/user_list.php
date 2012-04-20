@@ -1,6 +1,6 @@
 <?php echo Form::open(Request::current()); ?>
 	<div class="cl4_list_header">
-		<input type="submit" value="Add New User" class="cl4_button_link_form cl4_list_button" data-cl4_form_action="<?php echo URL::site(Route::get('useradmin')->uri(array('action' => 'add'))); ?>">
+		<?php echo implode('', $list_buttons); ?>
 		<div class="clear"></div>
 	</div>
 <?php echo Form::close(); ?>

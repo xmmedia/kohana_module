@@ -23,22 +23,25 @@ class Controller_XM_UserAdmin extends Controller_Base {
 
 	protected $id;
 	protected $page_offset;
+	protected $sort_column;
+	protected $sort_direction;
 	protected $user_admin_session;
 
 	protected $list_headings = array(
-		'',
-		'Active',
-		'Email (Username)',
-		'Name',
-		'Permission Groups',
-		'Login Count',
-		'Last Login',
+		'' => '',
+		'user_admin.active_flag' => 'Active',
+		'user_admin.username' => 'Email (Username)',
+		'user_admin.last_name,user_admin.first_name' => 'Name',
+		'' => 'Permission Groups',
+		'user_admin.login_count' => 'Login Count',
+		'user_admin.last_login' => 'Last Login',
 	);
 	protected $group_list_headings = array(
 		'',
 		'Name',
 		'Description',
 	);
+	protected $page_max_rows = 30;
 
 	/**
 	* @var  array  Stores the group ids and names that the user can edit
@@ -50,12 +53,18 @@ class Controller_XM_UserAdmin extends Controller_Base {
 		parent::before();
 
 		$this->id = Request::current()->param('id');
-		$page_offset = cl4::get_param('page');
+		$page_offset = Arr::get($_REQUEST, 'page');
+		$sort_column = Arr::get($_REQUEST, 'sort_column');
+		$sort_direction = Arr::get($_REQUEST, 'sort_direction');
+
+
 
 		if ( ! isset($this->session['useradmin'])) {
 			$this->session['useradmin'] = array(
 				'users' => array(
 					'page_offset' => 0,
+					'sort_column' => NULL,
+					'sort_direction' => NULL,
 				),
 				'groups' => array(
 					'page_offset' => 0,
@@ -77,6 +86,19 @@ class Controller_XM_UserAdmin extends Controller_Base {
 
 			if ($page_offset !== NULL) $this->user_admin_session['users']['page_offset'] = intval($page_offset);
 			$this->page_offset = $this->user_admin_session['users']['page_offset'];
+
+			// if the sort column in is the parameter but it's empty, then erase the sort
+			// because the user has clicked the column a third time
+			if ($sort_column == '' && $sort_column !== NULL) {
+				$this->user_admin_session['users']['sort_column'] = NULL;
+				$this->user_admin_session['users']['sort_direction'] = NULL;
+			} else {
+				if ($sort_column !== NULL) $this->user_admin_session['users']['sort_column'] = strtolower($sort_column);
+				if ($sort_direction !== NULL) $this->user_admin_session['users']['sort_direction'] = strtoupper($sort_direction);
+			}
+
+			$this->sort_column = $this->user_admin_session['users']['sort_column'];
+			$this->sort_direction = $this->user_admin_session['users']['sort_direction'];
 		} else {
 			$page_title = NULL;
 		}
@@ -109,15 +131,13 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	}
 
 	public function action_index() {
-		$page_max_rows = 20;
-
 		$offset = $this->page_offset;
 		if ($offset > 0) {
 			// subtract 1 because the first page_offset really by 0, but is passed as 1
 			--$offset;
 		}
 
-		$user = $this->get_user_orm_list($page_max_rows, $offset);
+		$user = $this->get_user_orm_list($this->page_max_rows, $offset);
 
 		$users = $user->find_all();
 		$user_count = $user->count_all();
@@ -126,20 +146,46 @@ class Controller_XM_UserAdmin extends Controller_Base {
 		$pagination = Pagination::factory(array(
 			'group' => 'default',
 			'total_items'    => $user_count, // get the total number of records
-			'items_per_page' => $page_max_rows,
+			'items_per_page' => $this->page_max_rows,
 			'current_page' => array(
 				'page' => $this->page_offset,
 			),
 		));
-		// track the records on page for display purposes
-		//$items_on_page = $pagination->get_items_on_page();
 
 		$table_options = array(
 			'table_attributes' => array(
 				'class' => 'cl4_content',
 			),
-			'heading' => $this->list_headings,
+			'heading' => array(),
 		);
+
+		$sort_url = $this->request->route()->uri();
+		$i = 0;
+		foreach ($this->list_headings as $sort_column => $heading) {
+			// if there is no sort column, then this column be used in sorting (ie, permission groups)
+			if (empty($sort_column)) {
+				$table_options['heading'][] = HTML::chars($heading);
+			} else {
+				if ($sort_column != $this->sort_column) {
+					$sort_query = 'sort_column=' . $sort_column . '&sort_direction=ASC';
+				// the current column is the column being sorted
+				} else {
+					if ($this->sort_direction == 'ASC') {
+						$sort_query = 'sort_column=' . $sort_column . '&sort_direction=DESC';
+					} else if ($this->sort_direction == 'DESC') {
+						$sort_query = 'sort_column=&sort_direction=';
+					}
+				}
+
+				$table_options['heading'][] = HTML::anchor($sort_url . '?' . $sort_query, HTML::chars($heading));
+				if ($sort_column == $this->sort_column) {
+					$table_options['sort_column'] = $i;
+					$table_options['sort_order'] = $this->sort_direction;
+				}
+			}
+
+			++ $i;
+		}
 
 		$table = new HTMLTable($table_options);
 
@@ -150,7 +196,8 @@ class Controller_XM_UserAdmin extends Controller_Base {
 
 		$this->template->body_html = View::factory('useradmin/user_list')
 			->set('user_list', $table->get_html())
-			->set('nav_html', $pagination->render());
+			->set('nav_html', $pagination->render())
+			->set('list_buttons', $this->get_user_list_buttons());
 	} // function action_index
 
 	/**
@@ -161,14 +208,31 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	* @return  Model_User_Admin
 	*/
 	protected function get_user_orm_list($page_max_rows, $offset) {
-		return ORM::factory('user_admin')
+		$users = ORM::factory('user_admin')
 			->set_options(array('mode' => 'view'))
-			->order_by('user_admin.last_name')
-			->order_by('user_admin.first_name')
 			->limit($page_max_rows)
 			->offset($offset * $page_max_rows);
-	}
 
+		if (empty($this->sort_column)) {
+			$users->order_by('user_admin.last_name')
+				->order_by('user_admin.first_name');
+		} else {
+			$sort_columns = explode(',', $this->sort_column);
+			foreach ($sort_columns as $sort_column) {
+				$users->order_by($sort_column, $this->sort_direction);
+			}
+		}
+
+		return $users;
+	} // function get_user_orm_list
+
+	/**
+	 * Return an array of the columns for the user list.
+	 * The array should be ready to be passed directly to HTMLTable.
+	 *
+	 * @param  Model_User  $user  The user model.
+	 * @return  array
+	 */
 	protected function get_list_row($user) {
 		return array(
 			$this->get_list_row_links($user),
@@ -179,8 +243,14 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			$user->get_field('login_count'),
 			$user->get_field('last_login'),
 		);
-	}
+	} // function get_list_row
 
+	/**
+	 * Returns the HTML for the first column of the user list.
+	 *
+	 * @param  Model_User  $user  The user model; usually for the ID.
+	 * @return  string
+	 */
 	protected function get_list_row_links($user) {
 		$id = $user->id;
 
@@ -218,7 +288,23 @@ class Controller_XM_UserAdmin extends Controller_Base {
 		}
 
 		return $first_col;
-	}
+	} // function get_list_row_links
+
+	/**
+	 * Returns an array with the HTML buttons to display at the top of the user list.
+	 * This array is passed to the user_list view and imploded.
+	 *
+	 * @return  array
+	 */
+	protected function get_user_list_buttons() {
+		$list_buttons = array(
+			Form::submit(NULL, 'Add New User', array('class' => 'cl4_button_link_form cl4_list_button', 'data-cl4_form_action' => URL::site($this->request->route()->uri(array('action' => 'add'))))),
+		);
+		if ( ! empty($this->sort_column)) {
+			$list_buttons[] = Form::input_button(NULL, 'Clear Sort', array('class' => 'cl4_button_link cl4_list_button', 'data-cl4_link' => URL::site($this->request->route()->uri() . '?sort_column=&sort_direction=')));
+		}
+		return $list_buttons;
+	} // function get_user_list_buttons
 
 	public function action_view() {
 		try {

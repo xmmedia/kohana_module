@@ -540,15 +540,28 @@ class Controller_XM_UserAdmin extends Controller_Base {
 
 			// save the post data
 			$user->save_values($post);
-			$new_user = ! $user->loaded(); // false if this is not a new user
+
+			// false if this is not a new user
+			$new_user = ! $user->loaded();
+			// if it's a new user and they didn't enter a password, generate a password
+			if ($new_user && empty($user->password)) {
+				$new_password = Text::random('distinct');
+				$user->values(array(
+					'password' => $new_password,
+					'password_confirm' => $new_password,
+				));
+			}
+
 			$user->save();
 
 			$this->user_additional_save($user);
 
 			$send_email = cl4::get_param('send_email', FALSE);
 			if ($send_email) {
-				$new_password = cl4::get_param_array(array('c_record', 'user', 0, 'password'), FALSE);
-				$new_password = (empty($new_password) ? FALSE : $new_password);
+				if ( ! isset($new_password)) {
+					$new_password = cl4::get_param_array(array('c_record', 'user', 0, 'password'), FALSE);
+					$new_password = (empty($new_password) ? FALSE : $new_password);
+				}
 
 				$mail = new Mail();
 				$mail->IsHTML();

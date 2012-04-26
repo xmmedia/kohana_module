@@ -11,7 +11,7 @@
 						<li class="useradmin"><?php echo HTML::anchor(Route::get('useradmin')->uri(), __('User Admin')); ?></li>
 						<?php } ?>
 						<?php if (Auth::instance()->allowed('useradmin/group/index')) { ?>
-						<li class="useradmin_groups"><?php echo HTML::anchor(Route::get('useradmin')->uri(array('action' => 'groups')), __('Permission Group Admin')); ?></li>
+						<li class="useradmin_groups"><?php echo HTML::anchor(Route::get('useradmin')->uri(array('action' => 'groups')), __('Groups/Permissions')); ?></li>
 						<?php } ?>
 						<?php if (Auth::instance()->allowed('cl4admin')) { ?>
 						<li class="cl4admin"><?php echo HTML::anchor(Route::get('cl4admin')->uri(), __('DB Admin')); ?></li>

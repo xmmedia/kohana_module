@@ -30,11 +30,11 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	protected $user_admin_session;
 
 	protected $list_headings = array(
-		'' => '',
+		'',
 		'user_admin.active_flag' => 'Active',
 		'user_admin.username' => 'Email (Username)',
 		'user_admin.last_name,user_admin.first_name' => 'Name',
-		'' => 'Permission Groups',
+		'Permission Groups',
 		'user_admin.login_count' => 'Login Count',
 		'user_admin.last_login' => 'Last Login',
 	);
@@ -177,7 +177,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 		$i = 0;
 		foreach ($this->list_headings as $sort_column => $heading) {
 			// if there is no sort column, then this column be used in sorting (ie, permission groups)
-			if (empty($sort_column)) {
+			if (empty($sort_column) || is_int($sort_column)) {
 				$table_options['heading'][] = HTML::chars($heading);
 			} else {
 				if ($sort_column != $this->sort_column) {

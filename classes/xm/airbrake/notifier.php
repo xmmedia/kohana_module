@@ -124,7 +124,18 @@ class XM_Airbrake_Notifier {
 		$request->addChild('action', Request::current()->action());
 
 		if (isset($_REQUEST)) $this->add_xml_vars($request, 'params', $_REQUEST);
-		if (isset($_SESSION)) $this->add_xml_vars($request, 'session', $_SESSION);
+
+		// combine sessions (PHP + Kohana) into an array to pass to AirBrake
+		$sessions = array();
+		if (isset($_SESSION)) {
+			$sessions['php_session'] = $_SESSION;
+		}
+		if ( ! empty(Session::$instances)) {
+			foreach (Session::$instances as $session) {
+				$sessions['session-' . get_class($session)] = $session->as_array();
+			}
+		}
+		if ( ! empty($sessions)) $this->add_xml_vars($request, 'session', $sessions);
 
 		if (isset($_SERVER)) {
 			$cgi_data = (isset($_ENV) AND ! empty($_ENV))

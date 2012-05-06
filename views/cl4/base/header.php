@@ -16,7 +16,7 @@
 						<?php if (Auth::instance()->allowed('cl4admin')) { ?>
 						<li class="cl4admin"><?php echo HTML::anchor(Route::get('cl4admin')->uri(), __('DB Admin')); ?></li>
 						<?php } ?>
-						<?php if (Auth::instance()->allowed('userguide')) { ?>
+						<?php if (Auth::instance()->allowed('userguide') && Kohana::$environment == Kohana::DEVELOPMENT) { ?>
 						<li class="userguide"><?php echo HTML::anchor(Route::get('docs/guide')->uri(), __('Kohana User Guide')); ?></li>
 						<li class="userguide_api"><?php echo HTML::anchor(Route::get('docs/api')->uri(), __('Kohana API Browser')); ?></li>
 						<?php } ?>

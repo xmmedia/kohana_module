@@ -47,6 +47,11 @@ class XM_Airbrake_Notifier {
 	protected static $_instance;
 
 	/**
+	 * @var  Exception  The exception that will be sent to AirBrake.
+	 */
+	protected $_exception;
+
+	/**
 	 * Singleton pattern
 	 *
 	 * @return  Airbrake_Notifier
@@ -132,7 +137,15 @@ class XM_Airbrake_Notifier {
 		}
 		if ( ! empty(Session::$instances)) {
 			foreach (Session::$instances as $session) {
-				$sessions['session-' . get_class($session)] = $session->as_array();
+				// get the session as an array
+				$session_array = $session->as_array();
+				// loop through the array looking for any key that is an object and convert it to an array
+				foreach ($session_array as $key => $value) {
+					if (is_object($value)) {
+						$session_array[$key] = $value->as_array();
+					}
+				}
+				$sessions['session-' . get_class($session)] = $session_array;
 			}
 		}
 		if ( ! empty($sessions)) $this->add_xml_vars($request, 'session', $sessions);
@@ -193,7 +206,7 @@ class XM_Airbrake_Notifier {
 		foreach ($source as $key => $val) {
 			if (is_array($val)) {
 				foreach ($val as $key1 => $val1) {
-					$this->addXmlVars($parent, $node->getName(), array($key.'['.$key1.']' => $val1));
+					$this->add_xml_vars($parent, $node->getName(), array($key.'['.$key1.']' => $val1));
 				}
 			} else {
 				$var_node = $node->addChild('var', $val);

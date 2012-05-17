@@ -228,13 +228,13 @@ class Controller_XM_Admin extends Controller_Base {
 	* Display an add form or add (save) a new record
 	*/
 	public function action_add() {
-		$this->load_model('add');
-
-		if ( ! empty($_POST)) {
-			$this->save_model();
-		}
-
 		try {
+			$this->load_model('add');
+
+			if ( ! empty($_POST)) {
+				$this->save_model();
+			}
+
 			$view_title = $this->get_page_title_message('adding_item');
 
 			// display the edit form
@@ -260,17 +260,17 @@ class Controller_XM_Admin extends Controller_Base {
 	* Display an edit form for a record or update (save) an existing record
 	*/
 	public function action_edit() {
-		if (empty($this->id)) {
-			throw new Kohana_Exception('No ID received for view');
-		}
-
-		$this->load_model('edit');
-
-		if ( ! empty($_POST)) {
-			$this->save_model();
-		}
-
 		try {
+			if (empty($this->id)) {
+				throw new Kohana_Exception('No ID received for view');
+			}
+
+			$this->load_model('edit');
+
+			if ( ! empty($_POST)) {
+				$this->save_model();
+			}
+
 			$view_title = $this->get_page_title_message('editing_item');
 			$view_content = $this->model->get_form(array(
 				'mode' => 'edit',

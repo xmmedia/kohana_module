@@ -51,9 +51,14 @@ class Controller_XM_Admin extends Controller_Base {
 	);
 
 	/**
-	 * @var  array  Custom options for the edtiable list options passed to MultiORM.
+	 * @var  array  Custom options for the edtiable list options passed to MultiORM and merged with defaults in display_editable_list().
 	 **/
 	protected $editable_list_options = array();
+
+	/**
+	 * @var  array  Custom options for the passed to MultiORM and merged with defaults in display_editable_list().
+	 **/
+	protected $multiorm_options = array();
 
 	protected $route = 'model_route';
 
@@ -173,6 +178,7 @@ class Controller_XM_Admin extends Controller_Base {
 			),
 		);
 		$options = Arr::merge($options, array('editable_list_options' => $this->editable_list_options));
+		$options = Arr::merge($options, $this->multiorm_options);
 
 		$orm_multiple = new MultiORM($this->model_name, $options);
 

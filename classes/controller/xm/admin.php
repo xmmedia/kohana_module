@@ -177,8 +177,7 @@ class Controller_XM_Admin extends Controller_Base {
 				),
 			),
 		);
-		$options = Arr::merge($options, array('editable_list_options' => $this->editable_list_options));
-		$options = Arr::merge($options, $this->multiorm_options);
+		$options = Arr::merge($options, array('editable_list_options' => $this->editable_list_options), $this->multiorm_options);
 
 		$orm_multiple = new MultiORM($this->model_name, $options);
 

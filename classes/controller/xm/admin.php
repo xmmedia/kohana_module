@@ -28,7 +28,7 @@ class Controller_XM_Admin extends Controller_Base {
 	);
 	protected $no_auto_render_actions = array('download', 'export');
 
-	protected $model_name = 'model'; // the name of the model currently being manipulated
+	protected $model_name; // the name of the model currently being manipulated
 	protected $model_display_name = 'Model Name'; // the fulll, friendly object name as specified in the options or the model itself
 	/**
 	* @var  ORM  The model we are working with.

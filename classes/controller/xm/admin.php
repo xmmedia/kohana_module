@@ -24,6 +24,7 @@ class Controller_XM_Admin extends Controller_Base {
 		// 'edit_multiple' => '',
 		// 'search' => '',
 		// 'view' => '',
+		// 'export' => '',
 	);
 	protected $no_auto_render_actions = array('download', 'export');
 

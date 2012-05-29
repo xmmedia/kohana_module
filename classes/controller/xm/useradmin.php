@@ -181,11 +181,11 @@ class Controller_XM_UserAdmin extends Controller_Base {
 				$table_options['heading'][] = HTML::chars($heading);
 			} else {
 				if ($sort_column != $this->sort_column) {
-					$sort_query = 'sort_column=' . $sort_column . '&sort_direction=ASC';
+					$sort_query = 'sort_column=' . urlencode($sort_column) . '&sort_direction=ASC';
 				// the current column is the column being sorted
 				} else {
 					if ($this->sort_direction == 'ASC') {
-						$sort_query = 'sort_column=' . $sort_column . '&sort_direction=DESC';
+						$sort_query = 'sort_column=' . urlencode($sort_column) . '&sort_direction=DESC';
 					} else if ($this->sort_direction == 'DESC') {
 						$sort_query = 'sort_column=&sort_direction=';
 					}

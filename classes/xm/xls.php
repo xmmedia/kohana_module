@@ -43,6 +43,27 @@ class XM_XLS {
 	} // function add_row
 
 	/**
+	 * Adds a row of data using setCellValueExplicit and setting the type to string.
+	 *
+	 * @param  PHPExcel_Worksheet  $sheet  The worksheet to modify.
+	 * @param  int  $row_num  The row number to add at.
+	 * @param  array  $row  The array of data to add.
+	 * @param  int  $type  The value type in Excel.
+	 *
+	 * @see  PHPExcel_Cell_DataType
+	 */
+	public static function add_row_explicit($sheet, $row_num, $row, $type = NULL) {
+		if ($type === NULL) {
+			$type = PHPExcel_Cell_DataType::TYPE_STRING;
+		}
+		$col = 0;
+		foreach ($row as $col_val) {
+			$sheet->setCellValueExplicit(XLS::number_to_excel_col($col) . $row_num, $col_val, $type);
+			++ $col;
+		}
+	} // function add_row_explicit
+
+	/**
 	 * Runs the related letter for the column in Excel.
 	 * Columns start at 1 => A.
 	 * ie, 5 => E, 159 => FC

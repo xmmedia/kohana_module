@@ -157,7 +157,7 @@ EOA
 								$successful = FALSE;
 							}
 
-							$type = strtoupper(substr($query['query'], 0, strpos($query['query'], ' ')));
+							$type = UTF8::strtoupper(UTF8::substr($query['query'], 0, UTF8::strpos($query['query'], ' ')));
 							$message = $type . ' ' . $use_db . '<br><pre class="query">' . $query['query'];
 
 							if ($successful) {

@@ -4,5 +4,6 @@ return array(
 	'routes' => array(
 		'dbchange' => TRUE,
 		'useradmin' => TRUE,
+		'change_script' => FALSE,
 	),
 );

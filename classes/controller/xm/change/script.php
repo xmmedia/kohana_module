@@ -20,6 +20,11 @@
  *
  * To force a script to be run manually, add "@manual" anywhere in the file. Execution will stop when it gets to this file.
  *
+ * By default, the route for this controller is disabled. To enable, set the config xm.routes.change_script to TRUE
+ * or add the route found in init.php to your bootstrap.
+ *
+ * [!!] This is can only be used in CLI.
+ *
  * @package    XM
  * @author     XM Media Inc.
  * @copyright  (c) 2012 XM Media Inc.

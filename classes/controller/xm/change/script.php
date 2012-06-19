@@ -146,7 +146,7 @@ class Controller_XM_Change_Script extends Controller {
 
 							$manual_command_pos = UTF8::strpos($file_contents, '@manual');
 							if ($manual_command_pos !== FALSE) {
-								echo '   ' . $to_apply_change_script . ' -- change script execution will stop after this change script because of @manual in the file' . PHP_EOL;
+								echo '   ' . $to_apply_change_script . ' -- change script execution will stop at this change script because of @manual in the file (the script will not be run)' . PHP_EOL;
 								// end the loop for the change scripts on this and move to the next db
 								continue 2;
 							} else {
@@ -349,7 +349,9 @@ class Controller_XM_Change_Script extends Controller {
 		// set the charset in the globals to the same as the database for use in the sql parser
 		$GLOBALS['charset'] = Kohana::$config->load('database.' . (string) Database::instance() . '.charset');
 
-		Kohana::load(Kohana::find_file('vendor', 'sqlparser/sqlparser.lib'));
+		if ( ! function_exists('PMA_SQP_parse')) {
+			Kohana::load(Kohana::find_file('vendor', 'sqlparser/sqlparser.lib'));
+		}
 
 		$parsed_queries = PMA_SQP_parse($file_contents);
 

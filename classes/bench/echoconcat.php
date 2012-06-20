@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 /**
- * @package    XM Media/Request Log
+ * @package    XM
  * @category   Tests
  * @author
  */

@@ -14,6 +14,19 @@ CREATE TABLE `contact` (
 
 
 
+-- Change Script table
+CREATE TABLE `change_script` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `filename` varchar(250) COLLATE utf8_unicode_ci NOT NULL,
+  `type` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+  `applied` datetime NOT NULL,
+  `description` text COLLATE utf8_unicode_ci NOT NULL,
+  `log` longtext COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
 -- Request log table
 CREATE TABLE `request_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

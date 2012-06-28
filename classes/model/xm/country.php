@@ -133,4 +133,22 @@ class Model_XM_Country extends ORM {
 		'format' 	=> 'Y-m-j H:i:s',
 		'default'	=> 0,
 	);
+
+	/**
+	* Labels for columns
+	*
+	* @return  array
+	*/
+	public function labels() {
+		return array(
+			'id' => 'ID',
+			'expiry_date' => 'Expiry Date',
+			'name' => 'Name',
+			'symbol' => 'Symbol',
+			'exchange_rate' => 'Exchange Rate',
+			'code' => 'Code',
+			'currency_code' => 'Currency Code',
+			'display_order' => 'Display Order',
+		);
+	}
 } // class

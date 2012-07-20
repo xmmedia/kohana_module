@@ -20,7 +20,7 @@
 						<li class="userguide"><?php echo HTML::anchor(Route::get('docs/guide')->uri(), __('Kohana User Guide')); ?></li>
 						<li class="userguide_api"><?php echo HTML::anchor(Route::get('docs/api')->uri(), __('Kohana API Browser')); ?></li>
 						<?php } ?>
-						<?php if (Auth::instance()->allowed('cl4admin/model_create')) { ?>
+						<?php if (cl4::is_dev() && Auth::instance()->allowed('cl4admin/model_create')) { ?>
 						<li class="modelcreate"><?php echo HTML::anchor(Route::get('cl4admin')->uri(array('model' => 'a', 'action' => 'model_create')), __('Model Create')); ?></li>
 						<?php } ?>
 						<?php if (Auth::instance()->allowed('dbchange/index')) { ?>

@@ -13,6 +13,7 @@
 						<?php if (Auth::instance()->allowed('useradmin/group/index')) { ?>
 						<li class="useradmin_groups"><?php echo HTML::anchor(Route::get('useradmin')->uri(array('action' => 'groups')), __('Groups/Permissions')); ?></li>
 						<?php } ?>
+						<li class="tree"><?php echo HTML::anchor(Route::get('tree')->uri(), __('Tree')); ?></li>
 						<?php if (Auth::instance()->allowed('cl4admin')) { ?>
 						<li class="cl4admin"><?php echo HTML::anchor(Route::get('cl4admin')->uri(), __('DB Admin')); ?></li>
 						<?php } ?>

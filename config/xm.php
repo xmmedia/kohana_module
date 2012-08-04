@@ -5,5 +5,6 @@ return array(
 		'dbchange' => TRUE,
 		'useradmin' => TRUE,
 		'change_script' => FALSE,
+		'tree' => TRUE,
 	),
 );

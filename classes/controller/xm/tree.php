@@ -3,7 +3,7 @@
 class Controller_XM_Tree extends Controller_Base {
 	public $auth_required = TRUE;
 
-	public $no_auto_render_actions = array('add');
+	public $no_auto_render_actions = array('add', 'edit', 'delete');
 
 	public function before() {
 		parent::before();
@@ -125,24 +125,16 @@ class Controller_XM_Tree extends Controller_Base {
 	public function action_add() {
 		try {
 			$is_ajax = (bool) Arr::get($_REQUEST, 'c_ajax', FALSE);
-			$add_at_root = Arr::get($_REQUEST, 'add_at_root', FALSE);
+			$parent_id = Arr::get($_REQUEST, 'parent_id', $this->request->param('id'));
 
-			if ( ! $add_at_root) {
-				$parent_id = Arr::get($_REQUEST, 'parent_id', $this->request->param('id'));
-
-				$parent_node = ORM::factory('tree', $parent_id);
-			} else {
-				$parent_node = ORM::factory('tree')
-					->where('lft', '=', 1)
-					->find();
-			}
-
+			$parent_node = ORM::factory('tree', $parent_id);
 			if ( ! $parent_node->loaded()) {
 				throw new Kohana_Exception('The parent ID was not received');
 			}
 
 			if ( ! empty($_POST)) {
 				$new_node = ORM::factory('tree')
+					->set_edit_fields()
 					->save_values();
 
 				$sibling_id = Arr::get($_REQUEST, 'sibling_id');
@@ -172,41 +164,42 @@ class Controller_XM_Tree extends Controller_Base {
 					}
 				} // if
 
-				DB::query(NULL, "LOCK TABLES `tree` WRITE, `change_log` WRITE;")
-					->execute();
+				Tree::lock_tables();
 
 				if ($after_node_id !== NULL) {
 					DB::select(DB::expr("@myPos := rgt"))
 						->from('tree')
 						->where('id', '=', $after_node_id)
+						->where_expiry()
 						->execute();
 				// the first one below the parent
 				} else {
 					DB::select(DB::expr("@myPos := lft"))
 						->from('tree')
 						->where('id', '=', $parent_id)
+						->where_expiry()
 						->execute();
 				}
 
 				DB::update('tree')
 					->set(array('rgt' => DB::expr('rgt + 2')))
 					->where('rgt', '>', DB::expr('@myPos'))
+					->where_expiry()
 					->execute();
 				DB::update('tree')
 					->set(array('lft' => DB::expr('lft + 2')))
 					->where('lft', '>', DB::expr('@myPos'))
+					->where_expiry()
 					->execute();
 				$new_node->values(array(
 						'lft' => DB::expr('@myPos + 1'),
 						'rgt' => DB::expr('@myPos + 2'),
 					))->save();
 
-				DB::query(NULL, "UNLOCK TABLES;")
-					->execute();
+				Tree::unlock_tables();
 
 				Message::add('The new node <em>' . HTML::chars($new_node->name) . '</em> has been added.', Message::$notice);
-
-				$this->request->redirect(Route::get('tree')->uri());
+				$this->redirect();
 			} // if post
 
 			$tree_node = ORM::factory('tree')
@@ -230,20 +223,188 @@ class Controller_XM_Tree extends Controller_Base {
 
 		} catch (Exception $e) {
 			$msg = 'There was a problem adding a node or loading the add node.';
-			if ($is_ajax) {
-				Kohana_Exception::caught_handler($e, FALSE, FALSE);
-
-				$ajax_data = array(
-					'status' => AJAX_Status::UNKNOWN_ERROR,
-					'error_msg' => $msg,
-					'html' => $msg,
-					'debug_msg' => Kohana_Exception::text($e),
-				);
-				AJAX_Status::echo_json(AJAX_Status::ajax($ajax_data));
-			} else {
-				Kohana_Exception::caught_handler($e);
-				Message::add($msg, Message::$error);
-			}
+			$this->exception($e, $msg, $is_ajax);
 		}
 	} // function action_add
+
+	/**
+	 * Action: edit
+	 *
+	 * @return void
+	 */
+	public function action_edit() {
+		try {
+			$is_ajax = (bool) Arr::get($_REQUEST, 'c_ajax', FALSE);
+			$node_id = $this->request->param('id');
+
+			$node = ORM::factory('tree', $node_id);
+			if ( ! $node->loaded()) {
+				throw new Kohana_Exception('The node could not be found');
+			}
+
+			$parent_node = Tree::immediate_parent($node->id);
+
+			if ( ! empty($_POST)) {
+				/*$sibling_id = Arr::get($_REQUEST, 'sibling_id');
+				// move the node to somewhere else on it's current branch
+				if ( ! empty($sibling_id) && strtolower($sibling_id) != 'start') {
+					$after_node_id = intval($sibling_id);
+				} else if ($sibling_id == 'start') {
+					$after_node_id = NULL;
+				}*/
+
+				$node->set_edit_fields()
+					->save_values()
+					->save();
+				Message::add('The node was saved successfully.', Message::$notice);
+				$this->redirect();
+			}
+
+			/*$_parent_subs = Tree::get_immediate_nodes($parent_node['id'])
+				->as_array('id', 'name');
+			if (isset($_parent_subs[$node->id])) {
+				unset($_parent_subs[$node->id]);
+			}
+
+			$add_values = array(
+				'' => '-- Leave Where It Is --',
+				'start' => '-- Move to the Beginning --',
+			);
+			$sibling_select = Form::select('sibling_id', $_parent_subs, NULL, array('id' => 'sibling_id'), array('add_values' => $add_values));*/
+
+			AJAX_Status::echo_json(AJAX_Status::ajax(array(
+				'html' => (string) View::factory('tree/edit')
+					->bind('node', $node)
+					->bind('sibling_select', $sibling_select),
+			)));
+
+		} catch (Exception $e) {
+			$msg = 'There was a problem edit a node or loading the edit node.';
+			$this->exception($e, $msg, $is_ajax);
+		}
+	} // function action_edit
+
+	/**
+	 * Action: delete
+	 *
+	 * @return void
+	 */
+	public function action_delete() {
+		try {
+			$is_ajax = (bool) Arr::get($_REQUEST, 'c_ajax', FALSE);
+			$node_id = $this->request->param('id');
+
+			$node = ORM::factory('tree', $node_id);
+			if ( ! $node->loaded()) {
+				throw new Kohana_Exception('The node could not be found');
+			}
+
+			if ( ! empty($_POST)) {
+				$keep_children = Arr::get($_REQUEST, 'keep_children', FALSE);
+
+				Tree::lock_tables();
+
+				DB::select(DB::expr("@myLeft := lft"), DB::expr("@myRight := rgt"), DB::expr("@myWidth := rgt - lft + 1"))
+					->from('tree')
+					->where('id', '=', $node->id)
+					->where_expiry()
+					->execute();
+
+				// don't keep the children, ie, delete all the children as well
+				if ( ! $keep_children) {
+					DB::update('tree')
+						->set(array('expiry_date' => DB::expr("NOW()")))
+						->where('lft', 'BETWEEN', array(DB::expr("@myLeft"), DB::expr("@myRight")))
+						->where_expiry()
+						->execute();
+
+					DB::update('tree')
+						->set(array('rgt' => DB::expr("rgt - @myWidth")))
+						->where('rgt', '>', DB::expr("@myRight"))
+						->where_expiry()
+						->execute();
+
+					DB::update('tree')
+						->set(array('lft' => DB::expr("lft - @myWidth")))
+						->where('lft', '>', DB::expr("@myRight"))
+						->where_expiry()
+						->execute();
+
+				// keep the children, ie, move the children up to the parent node
+				} else {
+					DB::update('tree')
+						->set(array('expiry_date' => DB::expr("NOW()")))
+						->where('lft', '=', DB::expr('@myLeft'))
+						->where_expiry()
+						->execute();
+
+					DB::update('tree')
+						->set(array(
+							'rgt' => DB::expr('rgt - 1'),
+							'lft' => DB::expr('lft - 1'),
+						))
+						->where('lft', 'BETWEEN', array(DB::expr("@myLeft"), DB::expr("@myRight")))
+						->where_expiry()
+						->execute();
+
+					DB::update('tree')
+						->set(array('rgt' => DB::expr("rgt - 2")))
+						->where('rgt', '>', DB::expr("@myRight"))
+						->where_expiry()
+						->execute();
+
+					DB::update('tree')
+						->set(array('lft' => DB::expr("lft - 2")))
+						->where('lft', '>', DB::expr("@myRight"))
+						->where_expiry()
+						->execute();
+				} // if keep children
+
+				Tree::unlock_tables();
+
+				Message::add('<em>' . HTML::chars($node->name) . '</em> was deleted' . ($keep_children ? ' and it\'s children were kept' : '') . '.', Message::$notice);
+				$this->redirect();
+			} // if post
+
+			$parent = Tree::immediate_parent($node->id);
+
+			AJAX_Status::echo_json(AJAX_Status::ajax(array(
+				'html' => (string) View::factory('tree/delete')
+					->bind('parent', $parent)
+					->bind('node', $node),
+			)));
+
+		} catch (Exception $e) {
+			$msg = 'There was a problem deleting a node or loading the delete confirmation.';
+			$this->exception($e, $msg, $is_ajax);
+		}
+	} // function action_delete
+
+	protected function exception($e, $msg, $is_ajax = FALSE) {
+		if ($is_ajax) {
+			Kohana_Exception::caught_handler($e, FALSE, FALSE);
+
+			$ajax_data = array(
+				'status' => AJAX_Status::UNKNOWN_ERROR,
+				'error_msg' => $msg,
+				'html' => $msg,
+				'debug_msg' => Kohana_Exception::text($e),
+			);
+			AJAX_Status::echo_json(AJAX_Status::ajax($ajax_data));
+		} else {
+			Kohana_Exception::caught_handler($e);
+			Message::add($msg, Message::$error);
+		}
+	} // function exception
+
+	/**
+	 * Redirects the user based to the action on the tree route.
+	 *
+	 * @param  string  $action  The action to redirect to. Use NULL for index or default.
+	 * @param  string  $get     Any additional get parameter to add.
+	 * @return void
+	 */
+	protected function redirect($action = NULL, $get = '') {
+		$this->request->redirect(Route::get('tree')->uri(array('action' => $action)) . $get);
+	}
 }

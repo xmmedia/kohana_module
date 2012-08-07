@@ -144,4 +144,9 @@ class Model_XM_Tree extends ORM {
 		return array(TRUE => array(array('trim')),);
 	}
 	*/
+
+	public function set_edit_fields() {
+		return $this->set_table_columns('lft', 'edit_flag', FALSE)
+			->set_table_columns('rgt', 'edit_flag', FALSE);
+	}
 } // class

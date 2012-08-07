@@ -38,4 +38,39 @@ class XM_Tree {
 				ORDER BY node.lft;")
 			->execute();
 	} // function get_immediate_nodes
+
+	public static function parents($node_id, $include_root = FALSE) {
+		$query = DB::select('parent.*')
+			->from(array('tree', 'node'), array('tree', 'parent'))
+			->where('node.lft', 'BETWEEN', array(DB::expr('`parent`.`lft`'), DB::expr('`parent`.`rgt`')))
+			->where('node.id', '=', $node_id)
+			->order_by('node.lft');
+		if ( ! $include_root) {
+			$query->where('parent.lft', '>', 1);
+		}
+		return $query->execute();
+	}
+
+	public static function immediate_parent($node_id) {
+		$parents = Tree::parents($node_id)
+			->as_array();
+
+		if (count($parents) > 1) {
+			$rev_parents = array_reverse($parents);
+			// 0 is the current node and 1 is the parent
+			return $rev_parents[1];
+		} else {
+			return NULL;
+		}
+	}
+
+	public static function lock_tables() {
+		return DB::query(NULL, "LOCK TABLES `tree` WRITE, `change_log` WRITE;")
+			->execute();
+	}
+
+	public static function unlock_tables() {
+		return DB::query(NULL, "UNLOCK TABLES;")
+			->execute();
+	}
 }

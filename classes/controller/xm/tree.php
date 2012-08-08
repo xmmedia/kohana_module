@@ -14,6 +14,7 @@ class Controller_XM_Tree extends Controller_Base {
 
 	protected $model_name = 'tree';
 	protected $route_name = 'tree';
+	protected $view_path = 'tree';
 
 	// set in the before based on the table name in the mode
 	protected $table_name;
@@ -117,7 +118,8 @@ class Controller_XM_Tree extends Controller_Base {
 				->where('lft', '=', 1)
 				->find();
 
-			$this->template->body_html = View::factory('tree/index')
+			$this->template->body_html = View::factory($this->view_path . '/index')
+				->bind('route_name', $this->route_name)
 				->bind('tree_html', $tree_html)
 				->bind('root_node', $root_node);
 
@@ -193,7 +195,8 @@ class Controller_XM_Tree extends Controller_Base {
 			$sibling_select = Form::select('sibling_id', $_parent_subs, NULL, array('id' => 'sibling_id'), array('add_values' => $add_values));
 
 			AJAX_Status::echo_json(AJAX_Status::ajax(array(
-				'html' => (string) View::factory('tree/add')
+				'html' => (string) View::factory($this->view_path . '/add')
+					->bind('route_name', $this->route_name)
 					->bind('parent_node', $parent_node)
 					->bind('tree_node', $tree_node)
 					->bind('sibling_select', $sibling_select),
@@ -252,7 +255,8 @@ class Controller_XM_Tree extends Controller_Base {
 			$sibling_select = Form::select('sibling_id', $_parent_subs, NULL, array('id' => 'sibling_id'), array('add_values' => $add_values));*/
 
 			AJAX_Status::echo_json(AJAX_Status::ajax(array(
-				'html' => (string) View::factory('tree/edit')
+				'html' => (string) View::factory($this->view_path . '/edit')
+					->bind('route_name', $this->route_name)
 					->bind('node', $node)
 					->bind('sibling_select', $sibling_select),
 			)));
@@ -290,7 +294,8 @@ class Controller_XM_Tree extends Controller_Base {
 			$parent = Tree::immediate_parent($this->table_name, $node->id);
 
 			AJAX_Status::echo_json(AJAX_Status::ajax(array(
-				'html' => (string) View::factory('tree/delete')
+				'html' => (string) View::factory($this->view_path . '/delete')
+					->bind('route_name', $this->route_name)
 					->bind('parent', $parent)
 					->bind('node', $node),
 			)));

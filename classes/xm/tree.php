@@ -185,10 +185,18 @@ class XM_Tree {
 		}
 		$query->execute();
 
-		$node->values(array(
+		// update the left and right on the node we added
+		// do a "manual" query instead of using ORM because ORM seems to fail on some servers using the DB::expr()
+		$query = DB::update($table_name)
+			->set(array(
 				'lft' => DB::expr('@myPos + 1'),
 				'rgt' => DB::expr('@myPos + 2'),
-			))->save();
+			))
+			->where('id', '=', $node->id);
+		if ($expiry_col) {
+			$query->where_expiry();
+		}
+		$query->execute();
 
 		Tree::unlock_tables();
 	} // function add_node
@@ -316,9 +324,9 @@ class XM_Tree {
 
 		$query = DB::select()
 			->from($orig_table_name)
-			->where('parent_id', '=', 0);
+			->where($orig_table_name . '.parent_id', '=', 0);
 		if ($expiry_col) {
-			$query->where_expiry();
+			$query->where_expiry($orig_table_name);
 		}
 		$top_levels = $query->execute();
 
@@ -335,15 +343,16 @@ class XM_Tree {
 		}
 
 		$new_node = ORM::factory($result_table_name)
-			->values($_node);
+			->values($_node)
+			->save();
 
 		Tree::add_node($new_node, $parent_node_id, $last_node_id);
 
 		$query = DB::select()
 			->from($orig_table_name)
-			->where('parent_id', '=', $node['id']);
+			->where($orig_table_name . '.parent_id', '=', $node['parent_id']);
 		if ($expiry_col) {
-			$query->where_expiry();
+			$query->where_expiry($orig_table_name);
 		}
 		$top_levels = $query->execute();
 

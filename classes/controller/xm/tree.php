@@ -73,7 +73,7 @@ class Controller_XM_Tree extends Controller_Base {
 			$route = Route::get($this->route_name);
 
 			// create the tree
-			$current_depth = 0;
+			$current_depth = $node_depth = 0;
 			$counter = 0;
 			$tree_html = '<ul class="tree">';
 			foreach($all_nodes as $node){
@@ -147,7 +147,8 @@ class Controller_XM_Tree extends Controller_Base {
 			if ( ! empty($_POST)) {
 				$new_node = ORM::factory($this->model_name)
 					->set_edit_fields()
-					->save_values();
+					->save_values()
+					->save();
 
 				$sibling_id = Arr::get($_REQUEST, 'sibling_id');
 				if ( ! empty($sibling_id) && strtolower($sibling_id) != 'start') {
@@ -155,30 +156,12 @@ class Controller_XM_Tree extends Controller_Base {
 				} else if ($sibling_id == 'start') {
 					$after_node_id = NULL;
 				} else {
-					// get all the immediate sub nodes of the parent we are adding to
-					$_parent_subs = Tree::immediate_nodes($this->table_name, $parent_node->id);
-
-					// create array of the parent's subs using the id and name as the key
-					// this will ensure we get a unique key
-					$parent_subs = array();
-					foreach ($_parent_subs as $_parent_sub) {
-						$parent_subs[$_parent_sub['name'] . '-' . $_parent_sub['id']] = $_parent_sub['id'];
-					}
-					$parent_subs[$new_node->name] = NULL;
-					ksort($parent_subs);
-
-					$after_node_id = NULL;
-					foreach ($parent_subs as $parent_sub_name => $parent_sub_id) {
-						if ($parent_sub_name == $new_node->name) {
-							break;
-						}
-						$after_node_id = $parent_sub_id;
-					}
+					$after_node_id = $this->get_auto_after_id($parent_node, $new_node);
 				} // if
 
 				Tree::add_node($new_node, $parent_id, $after_node_id);
 
-				Message::add('The new node <em>' . HTML::chars($new_node->name) . '</em> has been added.', Message::$notice);
+				Message::add('The new node <em>' . HTML::chars($new_node->name()) . '</em> has been added.', Message::$notice);
 				$this->redirect();
 			} // if post
 
@@ -207,6 +190,30 @@ class Controller_XM_Tree extends Controller_Base {
 			$this->exception($e, $msg, $is_ajax);
 		}
 	} // function action_add
+
+	protected function get_auto_after_id($parent_node, $new_node) {
+		// get all the immediate sub nodes of the parent we are adding to
+		$_parent_subs = Tree::immediate_nodes($this->table_name, $parent_node->id);
+
+		// create array of the parent's subs using the id and name as the key
+		// this will ensure we get a unique key
+		$parent_subs = array();
+		foreach ($_parent_subs as $_parent_sub) {
+			$parent_subs[$_parent_sub['name'] . '-' . $_parent_sub['id']] = $_parent_sub['id'];
+		}
+		$parent_subs[$new_node->name()] = NULL;
+		ksort($parent_subs);
+
+		$after_node_id = NULL;
+		foreach ($parent_subs as $parent_sub_name => $parent_sub_id) {
+			if ($parent_sub_name == $new_node->name()) {
+				break;
+			}
+			$after_node_id = $parent_sub_id;
+		}
+
+		return $after_node_id;
+	}
 
 	/**
 	 * Action: edit
@@ -287,7 +294,7 @@ class Controller_XM_Tree extends Controller_Base {
 
 				Tree::delete_node($node, $keep_children);
 
-				Message::add('<em>' . HTML::chars($node->name) . '</em> was deleted' . ($keep_children ? ' and it\'s children were kept' : '') . '.', Message::$notice);
+				Message::add('<em>' . HTML::chars($node->name()) . '</em> was deleted' . ($keep_children ? ' and it\'s children were kept' : '') . '.', Message::$notice);
 				$this->redirect();
 			} // if post
 

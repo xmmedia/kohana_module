@@ -124,4 +124,14 @@ class Model_XM_Tree extends ORM {
 		return $this->set_table_columns('lft', 'edit_flag', FALSE)
 			->set_table_columns('rgt', 'edit_flag', FALSE);
 	}
+
+	/**
+	 * Returns the name for the node.
+	 * Useful when the name is not a property of the object, but comes from a relationship.
+	 *
+	 * @return string
+	 */
+	public function name() {
+		return $this->name;
+	}
 } // class

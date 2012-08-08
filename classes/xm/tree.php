@@ -295,4 +295,63 @@ class XM_Tree {
 
 		return ($node['rgt'] - $node['lft'] - 1) / 2;
 	}
+
+	/**
+	 *    Tree::convert('original_tree', 'new_tree');
+	 *
+	 * @return void
+	 */
+	public static function convert($orig_table_name, $result_table_name, $expiry_col = TRUE) {
+		$query = DB::select()
+			->from($result_table_name)
+			->where('lft', '=', 1);
+		if ($expiry_col) {
+			$query->where_expiry();
+		}
+		$count = $query->execute()
+			->count();
+		if ($count === 0) {
+			throw new Kohana_Exception('A root node must exist');
+		}
+
+		$query = DB::select()
+			->from($orig_table_name)
+			->where('parent_id', '=', 0);
+		if ($expiry_col) {
+			$query->where_expiry();
+		}
+		$top_levels = $query->execute();
+
+		$last_node_id = NULL;
+		foreach ($top_levels as $node) {
+			$last_node_id = Tree::convert_node($orig_table_name, $result_table_name, $node, 1, $last_node_id, $expiry_col);
+		}
+	}
+
+	public static function convert_node($orig_table_name, $result_table_name, $node, $parent_node_id, $last_node_id, $expiry_col = TRUE) {
+		$_node = $node;
+		if (isset($_node['id'])) {
+			unset($_node['id']);
+		}
+
+		$new_node = ORM::factory($result_table_name)
+			->values($_node);
+
+		Tree::add_node($new_node, $parent_node_id, $last_node_id);
+
+		$query = DB::select()
+			->from($orig_table_name)
+			->where('parent_id', '=', $node['id']);
+		if ($expiry_col) {
+			$query->where_expiry();
+		}
+		$top_levels = $query->execute();
+
+		$last_node_id = NULL;
+		foreach ($top_levels as $node) {
+			$last_node_id = Tree::convert_node($orig_table_name, $result_table_name, $node, $new_node->id, $last_node_id, $expiry_col);
+		}
+
+		return $new_node->id;
+	}
 }

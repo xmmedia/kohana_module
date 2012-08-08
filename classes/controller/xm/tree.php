@@ -5,6 +5,12 @@ class Controller_XM_Tree extends Controller_Base {
 
 	public $no_auto_render_actions = array('add', 'edit', 'delete');
 
+	protected $model_name = 'tree';
+	protected $route_name = 'tree';
+
+	// set in the before based on the table name in the mode
+	protected $table_name;
+
 	public function before() {
 		parent::before();
 
@@ -12,8 +18,12 @@ class Controller_XM_Tree extends Controller_Base {
 
 		if ($this->auto_render) {
 			$this->template->styles['xm/css/tree.css'] = 'screen';
+			$this->template->scripts['jstorage'] = 'xm/js/jstorage.min.js';
 			$this->template->scripts['tree'] = 'xm/js/tree.js';
 		}
+
+		$temp_model = ORM::factory($this->model_name);
+		$this->table_name = $temp_model->table_name();
 	}
 
 	/**
@@ -24,14 +34,7 @@ class Controller_XM_Tree extends Controller_Base {
 	public function action_index() {
 		try {
 			// get a list of all the nodes with each one's depth
-			$all_nodes = DB::select('node.id', 'node.name', 'node.lft', 'node.rgt', array(DB::expr("COUNT(`parent`.`id`) - 1"), 'depth'))
-				->from(array('tree', 'node'), array('tree', 'parent'))
-				->where('node.lft', 'BETWEEN', array(DB::expr('`parent`.`lft`'), DB::expr('`parent`.`rgt`')))
-				->where_expiry('node')
-				->where_expiry('parent')
-				->group_by('node.id')
-				->order_by('node.lft')
-				->execute();
+			$all_nodes = Tree::all_nodes($this->table_name);
 
 			// determine which nodes have children
 			$children_array = array();
@@ -59,7 +62,7 @@ class Controller_XM_Tree extends Controller_Base {
 				$last_node_id = $node['id'];
 			} // foreach
 
-			$route = Route::get('tree');
+			$route = Route::get($this->route_name);
 
 			// create the tree
 			$current_depth = 0;
@@ -84,9 +87,9 @@ class Controller_XM_Tree extends Controller_Base {
 					$current_depth = $current_depth - ($current_depth - $node_depth);
 				}
 
-				$tree_html .= '<li';
+				$tree_html .= '<li rel="' . $node['id'] . '"';
 				if ($children_array[$node['id']]) {
-					$tree_html .= ' class="has_children"><div><a href="" class="expand">';
+					$tree_html .= ' class="has_children"><div><a href="" class="expand" rel="' . $node['id'] . '">';
 				} else {
 					$tree_html .= '><div><a href="" class="no_expand">';
 				}
@@ -103,7 +106,7 @@ class Controller_XM_Tree extends Controller_Base {
 			$tree_html .= str_repeat('</li></ul>', $node_depth) . '</li>'
 				. '</ul>';
 
-			$root_node = ORM::factory('tree')
+			$root_node = ORM::factory($this->model_name)
 				->where('lft', '=', 1)
 				->find();
 
@@ -127,13 +130,13 @@ class Controller_XM_Tree extends Controller_Base {
 			$is_ajax = (bool) Arr::get($_REQUEST, 'c_ajax', FALSE);
 			$parent_id = Arr::get($_REQUEST, 'parent_id', $this->request->param('id'));
 
-			$parent_node = ORM::factory('tree', $parent_id);
+			$parent_node = ORM::factory($this->model_name, $parent_id);
 			if ( ! $parent_node->loaded()) {
 				throw new Kohana_Exception('The parent ID was not received');
 			}
 
 			if ( ! empty($_POST)) {
-				$new_node = ORM::factory('tree')
+				$new_node = ORM::factory($this->model_name)
 					->set_edit_fields()
 					->save_values();
 
@@ -144,7 +147,7 @@ class Controller_XM_Tree extends Controller_Base {
 					$after_node_id = NULL;
 				} else {
 					// get all the immediate sub nodes of the parent we are adding to
-					$_parent_subs = Tree::get_immediate_nodes($parent_node->id);
+					$_parent_subs = Tree::immediate_nodes($this->table_name, $parent_node->id);
 
 					// create array of the parent's subs using the id and name as the key
 					// this will ensure we get a unique key
@@ -164,48 +167,16 @@ class Controller_XM_Tree extends Controller_Base {
 					}
 				} // if
 
-				Tree::lock_tables();
-
-				if ($after_node_id !== NULL) {
-					DB::select(DB::expr("@myPos := rgt"))
-						->from('tree')
-						->where('id', '=', $after_node_id)
-						->where_expiry()
-						->execute();
-				// the first one below the parent
-				} else {
-					DB::select(DB::expr("@myPos := lft"))
-						->from('tree')
-						->where('id', '=', $parent_id)
-						->where_expiry()
-						->execute();
-				}
-
-				DB::update('tree')
-					->set(array('rgt' => DB::expr('rgt + 2')))
-					->where('rgt', '>', DB::expr('@myPos'))
-					->where_expiry()
-					->execute();
-				DB::update('tree')
-					->set(array('lft' => DB::expr('lft + 2')))
-					->where('lft', '>', DB::expr('@myPos'))
-					->where_expiry()
-					->execute();
-				$new_node->values(array(
-						'lft' => DB::expr('@myPos + 1'),
-						'rgt' => DB::expr('@myPos + 2'),
-					))->save();
-
-				Tree::unlock_tables();
+				Tree::add_node($new_node, $parent_id, $after_node_id);
 
 				Message::add('The new node <em>' . HTML::chars($new_node->name) . '</em> has been added.', Message::$notice);
 				$this->redirect();
 			} // if post
 
-			$tree_node = ORM::factory('tree')
+			$tree_node = ORM::factory($this->model_name)
 				->set_mode('add');
 
-			$_parent_subs = Tree::get_immediate_nodes($parent_node->id)
+			$_parent_subs = Tree::immediate_nodes($this->table_name, $parent_node->id)
 				->as_array('id', 'name');
 
 			$add_values = array(
@@ -237,12 +208,12 @@ class Controller_XM_Tree extends Controller_Base {
 			$is_ajax = (bool) Arr::get($_REQUEST, 'c_ajax', FALSE);
 			$node_id = $this->request->param('id');
 
-			$node = ORM::factory('tree', $node_id);
+			$node = ORM::factory($this->model_name, $node_id);
 			if ( ! $node->loaded()) {
 				throw new Kohana_Exception('The node could not be found');
 			}
 
-			$parent_node = Tree::immediate_parent($node->id);
+			$parent_node = Tree::immediate_parent($this->table_name, $node->id);
 
 			if ( ! empty($_POST)) {
 				/*$sibling_id = Arr::get($_REQUEST, 'sibling_id');
@@ -256,11 +227,12 @@ class Controller_XM_Tree extends Controller_Base {
 				$node->set_edit_fields()
 					->save_values()
 					->save();
+
 				Message::add('The node was saved successfully.', Message::$notice);
 				$this->redirect();
 			}
 
-			/*$_parent_subs = Tree::get_immediate_nodes($parent_node['id'])
+			/*$_parent_subs = Tree::immediate_nodes($this->table_name, $parent_node['id'])
 				->as_array('id', 'name');
 			if (isset($_parent_subs[$node->id])) {
 				unset($_parent_subs[$node->id]);
@@ -294,7 +266,7 @@ class Controller_XM_Tree extends Controller_Base {
 			$is_ajax = (bool) Arr::get($_REQUEST, 'c_ajax', FALSE);
 			$node_id = $this->request->param('id');
 
-			$node = ORM::factory('tree', $node_id);
+			$node = ORM::factory($this->model_name, $node_id);
 			if ( ! $node->loaded()) {
 				throw new Kohana_Exception('The node could not be found');
 			}
@@ -302,71 +274,13 @@ class Controller_XM_Tree extends Controller_Base {
 			if ( ! empty($_POST)) {
 				$keep_children = Arr::get($_REQUEST, 'keep_children', FALSE);
 
-				Tree::lock_tables();
-
-				DB::select(DB::expr("@myLeft := lft"), DB::expr("@myRight := rgt"), DB::expr("@myWidth := rgt - lft + 1"))
-					->from('tree')
-					->where('id', '=', $node->id)
-					->where_expiry()
-					->execute();
-
-				// don't keep the children, ie, delete all the children as well
-				if ( ! $keep_children) {
-					DB::update('tree')
-						->set(array('expiry_date' => DB::expr("NOW()")))
-						->where('lft', 'BETWEEN', array(DB::expr("@myLeft"), DB::expr("@myRight")))
-						->where_expiry()
-						->execute();
-
-					DB::update('tree')
-						->set(array('rgt' => DB::expr("rgt - @myWidth")))
-						->where('rgt', '>', DB::expr("@myRight"))
-						->where_expiry()
-						->execute();
-
-					DB::update('tree')
-						->set(array('lft' => DB::expr("lft - @myWidth")))
-						->where('lft', '>', DB::expr("@myRight"))
-						->where_expiry()
-						->execute();
-
-				// keep the children, ie, move the children up to the parent node
-				} else {
-					DB::update('tree')
-						->set(array('expiry_date' => DB::expr("NOW()")))
-						->where('lft', '=', DB::expr('@myLeft'))
-						->where_expiry()
-						->execute();
-
-					DB::update('tree')
-						->set(array(
-							'rgt' => DB::expr('rgt - 1'),
-							'lft' => DB::expr('lft - 1'),
-						))
-						->where('lft', 'BETWEEN', array(DB::expr("@myLeft"), DB::expr("@myRight")))
-						->where_expiry()
-						->execute();
-
-					DB::update('tree')
-						->set(array('rgt' => DB::expr("rgt - 2")))
-						->where('rgt', '>', DB::expr("@myRight"))
-						->where_expiry()
-						->execute();
-
-					DB::update('tree')
-						->set(array('lft' => DB::expr("lft - 2")))
-						->where('lft', '>', DB::expr("@myRight"))
-						->where_expiry()
-						->execute();
-				} // if keep children
-
-				Tree::unlock_tables();
+				Tree::delete_node($node, $keep_children);
 
 				Message::add('<em>' . HTML::chars($node->name) . '</em> was deleted' . ($keep_children ? ' and it\'s children were kept' : '') . '.', Message::$notice);
 				$this->redirect();
 			} // if post
 
-			$parent = Tree::immediate_parent($node->id);
+			$parent = Tree::immediate_parent($this->table_name, $node->id);
 
 			AJAX_Status::echo_json(AJAX_Status::ajax(array(
 				'html' => (string) View::factory('tree/delete')
@@ -405,6 +319,6 @@ class Controller_XM_Tree extends Controller_Base {
 	 * @return void
 	 */
 	protected function redirect($action = NULL, $get = '') {
-		$this->request->redirect(Route::get('tree')->uri(array('action' => $action)) . $get);
+		$this->request->redirect(Route::get($this->route_name)->uri(array('action' => $action)) . $get);
 	}
 }

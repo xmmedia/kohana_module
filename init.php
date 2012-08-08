@@ -40,11 +40,3 @@ if ($routes['change_script'] && Kohana::$is_cli) {
 			'controller' => 'change_script',
 	));
 }
-
-if ($routes['tree']) {
-	// tree route
-	Route::set('tree', 'tree(/<action>(/<id>))')
-		->defaults(array(
-			'controller' => 'tree',
-	));
-}

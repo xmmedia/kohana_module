@@ -5,7 +5,6 @@
  * standard Kohana ORM features in additon to cl4-specific features.
  */
 class Model_XM_Tree extends ORM {
-	//protected $_db_group = 'default'; // or any group in database configuration
 	protected $_table_names_plural = FALSE;
 	protected $_table_name = 'tree';
 	public $_table_name_display = 'Tree'; // cl4 specific
@@ -15,11 +14,6 @@ class Model_XM_Tree extends ORM {
 		'lft' => 'ASC',
 		'rgt' => 'ASC',
 	);
-
-	// relationships
-	//protected $_has_one = array();
-	//protected $_has_many = array();
-	//protected $_belongs_to = array();
 
 	// column definitions
 	protected $_table_columns = array(
@@ -74,18 +68,6 @@ class Model_XM_Tree extends ORM {
 	);
 
 	/**
-	 * @var  array  $_created_column  The date and time this row was created.
-	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
-	 */
-	//protected $_created_column = array('column' => 'date_created', 'format' => 'Y-m-j H:i:s');
-
-	/**
-	 * @var  array  $_updated_column  The date and time this row was updated.
-	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
-	 */
-	//protected $_updated_column = array('column' => 'date_modified', 'format' => TRUE);
-
-	/**
 	 * @var  array  $_expires_column  The time this row expires and is no longer returned in standard searches.
 	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
 	 */
@@ -93,20 +75,6 @@ class Model_XM_Tree extends ORM {
 		'column' 	=> 'expiry_date',
 		'default'	=> 0,
 	);
-
-	/**
-	 * @var  array  $_display_order  The order to display columns in, if different from as listed in $_table_columns.
-	 * Columns not listed here will be added beneath these columns, in the order they are listed in $_table_columns.
-	 */
-	/*
-	protected $_display_order = array(
-		'id',
-		'expiry_date',
-		'name',
-		'lft',
-		'rgt',
-	);
-	*/
 
 	/**
 	* Labels for columns
@@ -128,23 +96,30 @@ class Model_XM_Tree extends ORM {
 	*
 	* @return  array
 	*/
-	/*
 	public function rules() {
-		return array();
+		return array(
+			'name' => array(
+				array('not_empty'),
+			),
+		);
 	}
-	*/
 
 	/**
 	* Filter definitions, run everytime a field is set
 	*
 	* @return  array
 	*/
-	/*
 	public function filters() {
-		return array(TRUE => array(array('trim')),);
+		return array(
+			'name' => array(array('trim')),
+		);
 	}
-	*/
 
+	/**
+	 * Sets the lft (left) and rgt (right) fields to non-editable so they can be set the user through a form post.
+	 *
+	 * @return ORM
+	 */
 	public function set_edit_fields() {
 		return $this->set_table_columns('lft', 'edit_flag', FALSE)
 			->set_table_columns('rgt', 'edit_flag', FALSE);

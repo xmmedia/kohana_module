@@ -1,5 +1,12 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
+/**
+ *    Route::set('tree', 'tree(/<action>(/<id>))')
+ *        ->defaults(array(
+ *            'controller' => 'tree',
+ *    ));
+ *
+ */
 class Controller_XM_Tree extends Controller_Base {
 	public $auth_required = TRUE;
 

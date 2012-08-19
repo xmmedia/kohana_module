@@ -22,4 +22,14 @@ class Controller_XM_Base extends Controller_cl4_Base {
 
 		return $this;
 	} // function add_template_js
+
+	/**
+	 * Throws a HTTP_Exception_500.
+	 * Useful when there is an exception within an action and a basic error handling is needed.
+	 *
+	 * @return void
+	 */
+	protected function error_500() {
+		throw new HTTP_Exception_500('There was a problem building the page. Please try again later.');
+	}
 }

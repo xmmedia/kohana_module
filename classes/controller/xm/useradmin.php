@@ -677,8 +677,8 @@ class Controller_XM_UserAdmin extends Controller_Base {
 			$mail->add_user($user->id);
 			$mail->Subject = SHORT_NAME . ' Login Information';
 			$editing_user = Auth::instance()->get_user();
-			if (Valid::email($editing_user->email)) {
-				$mail->AddReplyTo($editing_user->email, $editing_user->first_name . ' ' . $editing_user->last_name);
+			if (Valid::email($editing_user->username)) {
+				$mail->AddReplyTo($editing_user->username, $editing_user->first_name . ' ' . $editing_user->last_name);
 			}
 
 			// provide a link to the user including their username

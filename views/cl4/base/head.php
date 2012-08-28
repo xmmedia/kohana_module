@@ -19,7 +19,7 @@ echo HTML::chars(SHORT_NAME . ' v' . APP_VERSION); ?></title>
 	} // foreach
 } // if
 ?>
-	<!--[if lte IE 9]><link rel="stylesheet" href="css/1140ie.css" type="text/css" media="screen" /><![endif]-->
+	<!--[if lte IE 9]><link rel="stylesheet" href="/css/1140ie.css" type="text/css" media="screen" /><![endif]-->
 <?php
 foreach ($styles as $file => $type) echo TAB . HTML::style($file, array('media' => $type)) . EOL;
 // http://www.modernizr.com fixes missing html5 elements in IE and detects for new HTML5 features; this needs to be loaded here so the HTML5 tags will show in IE

@@ -65,8 +65,8 @@ class XM_XLS {
 
 	/**
 	 * Runs the related letter for the column in Excel.
-	 * Columns start at 1 => A.
-	 * ie, 5 => E, 159 => FC
+	 * Columns start at 0 => A.
+	 * ie, 5 => F, 159 => FD
 	 *
 	 * @param  int  $num  The number to convert.
 	 * @return  string

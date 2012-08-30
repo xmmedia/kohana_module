@@ -464,7 +464,7 @@ class Controller_XM_Change_Script extends Controller {
 	 * @return  array
 	 */
 	protected function all_change_scripts() {
-		$change_script_path = ABS_ROOT . $this->config['script_path'];
+		$change_script_path = realpath(ABS_ROOT . $this->config['script_path']);
 
 		$change_scripts = $this->list_files_in_dir($change_script_path);
 		if (empty($change_scripts)) {
@@ -473,6 +473,7 @@ class Controller_XM_Change_Script extends Controller {
 
 		// flatten the array: removes the sub arrays from list_files_in_dir()
 		$change_scripts = Arr::flatten($change_scripts);
+		// remove the full path from array values as we only want to store the relative path the change scripts dir in the db
 		$change_scripts = str_replace($change_script_path . DIRECTORY_SEPARATOR, '', $change_scripts);
 
 		foreach ($change_scripts as $change_script_full_path => $change_script) {

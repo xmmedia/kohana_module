@@ -246,4 +246,25 @@ class Model_XM_Content extends ORM {
 			return 'Unknown';
 		}
 	}
+
+	/**
+	 * Same as parent _load_result(), but after the result is load, when not multiple, a check is made for text only content.
+	 * If it's text only, then the field is changed to a text area and the "tiny_mce" class is changed to "content_text_only" (if class is set).
+	 *
+	 * @chainable
+	 * @param  bool $multiple Return an iterator or load a single row
+	 * @return ORM|Database_Result
+	 */
+	protected function _load_result($multiple = FALSE) {
+		$return = parent::_load_result($multiple);
+
+		if ($multiple !== TRUE && $this->text_only_flag) {
+			$this->_table_columns['content']['field_type'] = 'textarea';
+			if (isset($this->_table_columns['content']['field_attributes']['class'])) {
+				$this->_table_columns['content']['field_attributes']['class'] = UTF8::substr_replace('tiny_mce', 'content_text_only', $this->_table_columns['content']['field_attributes']['class']);
+			}
+		}
+
+		return $return;
+	}
 } // class

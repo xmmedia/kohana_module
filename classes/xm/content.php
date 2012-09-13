@@ -14,6 +14,7 @@ class XM_Content {
 	 * Also checks to see if the user is logged in and has permissions, then displays the edit link,
 	 * last update and if there's a waiting draft.
 	 * Throws and exception if the content item cannnot be found.
+	 * If it's a text only item, no link to edit will be displayed, but draft content maybe shown.
 	 *
 	 * @param   string  $code  The code for the content item.
 	 * @return  string
@@ -24,7 +25,7 @@ class XM_Content {
 			->find();
 		if ($content_item->loaded()) {
 			if (Auth::instance()->logged_in() && Content::allowed($content_item->code)) {
-				if (Arr::get($_REQUEST, 'content_admin_show') == $content_item->code) {
+				if (Arr::get($_REQUEST, 'content_admin_show') == $content_item->code && ! $content_item->text_only_flag) {
 					$highlight_content_item = TRUE;
 					$html = '<div class="contentadmin_show">';
 				} else {
@@ -40,10 +41,12 @@ class XM_Content {
 					$showing_draft = FALSE;
 				}
 
-				$html .= '<div class="contentadmin_edit_links">' . HTML::anchor(Route::get('content_admin')->uri(array('action' => 'edit', 'id' => $content_item->id)) . '?popup=1', '&nbsp;Edit', array('class' => 'cl4_edit contentadmin_edit'))
-					. '<div class="last_update">Last Update: ' . HTML::chars($content_item->last_update()) . '</div>';
+				if ( ! $content_item->text_only_flag) {
+					$html .= '<div class="contentadmin_edit_links">' . HTML::anchor(Route::get('content_admin')->uri(array('action' => 'edit', 'id' => $content_item->id)) . '?popup=1', '&nbsp;Edit', array('class' => 'cl4_edit contentadmin_edit'))
+						. '<div class="last_update">Last Update: ' . HTML::chars($content_item->last_update()) . '</div>';
+				}
 
-				if ($content_item->has_draft()) {
+				if ($content_item->has_draft() && ! $content_item->text_only_flag) {
 					if ($showing_draft) {
 						$html .= '<div class="draft"><em><strong>Showing Waiting Draft</strong></em></div>';
 					} else {
@@ -51,10 +54,12 @@ class XM_Content {
 					}
 				}
 
-				// close the links div
-				$html .= '</div>';
+				if ( ! $content_item->text_only_flag) {
+					// close the links div
+					$html .= '</div>';
+				}
 
-				if ($highlight_content_item) {
+				if ($highlight_content_item && ! $content_item->text_only_flag) {
 					// close the contentadmin_show div
 					$html .= '</div>';
 				}

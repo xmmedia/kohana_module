@@ -19,7 +19,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 		'group_users' => 'useradmin/group/users',
 		'cancel_group' => 'useradmin/group/index',
 	);
-	public $page = 'admin';
+	public $page = 'useradmin';
 
 	protected $id;
 	protected $page_offset;

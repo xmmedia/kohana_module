@@ -25,6 +25,8 @@ class Controller_XM_Content extends Controller_Base {
 		'restore' => 'contentadmin',
 	);
 
+	public $page = 'contentadmin';
+
 	protected $no_auto_render_actions = array('history_view');
 
 	/**

@@ -40,11 +40,11 @@ class Controller_XM_Content extends Controller_Base {
 		$this->add_admin_css();
 
 		if ($this->auto_render) {
-			$this->template->styles['css/contentadmin.css'] = NULL;
+			$this->template->styles['xm/css/contentadmin.css'] = NULL;
 
 			$this->template->scripts['tiny_mce'] = 'js/tiny_mce/jquery.tinymce.js';
 			$this->template->scripts['tiny_mce_config'] = 'js/tiny_mce_config.js';
-			$this->template->scripts['contentadmin'] = 'js/contentadmin.js';
+			$this->template->scripts['contentadmin'] = 'xm/js/contentadmin.js';
 		}
 	} // function before
 
@@ -131,7 +131,7 @@ class Controller_XM_Content extends Controller_Base {
 
 			// load some extra CSS and onload JS if in a popup
 			if ($popup) {
-				$this->template->styles['css/contentadmin_popup.css'] = NULL;
+				$this->template->styles['xm/css/contentadmin_popup.css'] = NULL;
 				$this->add_on_load_js('$(\'.content_admin_cancel\').on(\'click\', function() {
 	window.close();
 });');

@@ -466,3 +466,15 @@ CREATE TABLE `content_page` (
 
 INSERT INTO `permission` VALUES(NULL, 'contentadmin', 'Content Admin', 'Allows the user to access the content admin. Required for users to edit content.');
 INSERT INTO `permission` VALUES(NULL, 'contentadmin/*', 'Content Admin - All Content', 'Allows the user to make changes to all content.');
+
+
+-- a template for the tree table
+CREATE TABLE `tree` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `expiry_date` datetime NOT NULL,
+  `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `lft` int(10) unsigned NOT NULL,
+  `rgt` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `expiry_date` (`expiry_date`,`lft`,`rgt`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

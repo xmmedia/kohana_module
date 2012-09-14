@@ -24,6 +24,15 @@ if ($routes['useradmin']) {
 	));
 }
 
+if ($routes['content_admin']) {
+	// route for content admin
+	Route::set('content_admin', 'content_admin(/<action>(/<id>))')
+		->defaults(array(
+			'controller' => 'content',
+			'action' => 'index',
+	));
+}
+
 if ($routes['dbchange']) {
 	Route::set('dbchange', '(<lang>/)dbchange(/<action>)', array('lang' => $lang_options))
 		->defaults(array(

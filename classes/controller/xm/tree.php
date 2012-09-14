@@ -26,6 +26,7 @@ class Controller_XM_Tree extends Controller_Base {
 
 		if ($this->auto_render) {
 			$this->template->styles['xm/css/tree.css'] = 'screen';
+			$this->template->scripts['json2'] = 'xm/js/json2.min.js';
 			$this->template->scripts['jstorage'] = 'xm/js/jstorage.min.js';
 			$this->template->scripts['tree'] = 'xm/js/tree.js';
 		}

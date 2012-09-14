@@ -8,6 +8,10 @@
 			<?php if ( ! empty($content_item->instructions)) { ?>
 			<p><strong>Instructions:</strong> <?php echo nl2br(HTML::chars($content_item->instructions)); ?></p>
 			<?php } // if ?>
+			<?php if (Kohana::find_file('views', 'content_admin/style_guide')) { ?>
+			<p><a href="" class="js_show_style_guide">Show Style Guide</a></p>
+			<div class="content_style_guide js_content_style_guide"><?php echo View::factory('content_admin/style_guide'); ?></div>
+			<?php } // if ?>
 
 			<?php echo $form_open, Form::hidden('popup', (int) $popup); ?>
 			<p><?php echo Form::checkbox('immediately_live', 1, TRUE, array('id' => 'immediately_live')), Form::label('immediately_live', 'Make the changes live immediately'); ?></p>

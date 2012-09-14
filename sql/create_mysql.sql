@@ -420,3 +420,49 @@ INSERT INTO `permission` VALUES(NULL, 'useradmin/group/delete', 'User Admin - Gr
 
 -- updates the description on useradmin/index if the permission already exists
 UPDATE `permission` SET `description` = 'Allows the user to access the list of users.' WHERE `permission`.`permission` = 'useradmin/index' LIMIT 1 ;
+
+
+-- tables and permissions for the content admin
+CREATE TABLE `content` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `expiry_date` datetime NOT NULL,
+  `last_update` datetime NOT NULL,
+  `last_update_user_id` int(10) unsigned NOT NULL,
+  `code` varchar(100) collate utf8_unicode_ci NOT NULL,
+  `name` varchar(150) collate utf8_unicode_ci NOT NULL,
+  `content_page_id` int(10) unsigned NOT NULL,
+  `description` varchar(500) collate utf8_unicode_ci NOT NULL,
+  `instructions` varchar(1000) collate utf8_unicode_ci NOT NULL,
+  `content` longtext collate utf8_unicode_ci NOT NULL,
+  `text_only_flag` tinyint(1) unsigned NOT NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `expiry_date` (`expiry_date`,`code`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `content_history` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `expiry_date` datetime NOT NULL,
+  `content_id` int(10) unsigned NOT NULL,
+  `creation_date` datetime NOT NULL,
+  `creation_user_id` int(10) unsigned NOT NULL,
+  `post_date` datetime NOT NULL,
+  `post_user_id` int(10) unsigned NOT NULL,
+  `history_date` datetime NOT NULL,
+  `history_user_id` int(10) unsigned NOT NULL,
+  `content` longtext collate utf8_unicode_ci NOT NULL,
+  `comments` varchar(1000) collate utf8_unicode_ci NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `expiry_date` (`expiry_date`,`content_id`,`post_date`,`history_date`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `content_page` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `expiry_date` datetime NOT NULL,
+  `name` varchar(100) collate utf8_unicode_ci NOT NULL,
+  `url` varchar(100) collate utf8_unicode_ci NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `expiry_date` (`expiry_date`,`name`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `permission` VALUES(NULL, 'contentadmin', 'Content Admin', 'Allows the user to access the content admin. Required for users to edit content.');
+INSERT INTO `permission` VALUES(NULL, 'contentadmin/*', 'Content Admin - All Content', 'Allows the user to make changes to all content.');

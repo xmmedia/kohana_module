@@ -1,18 +1,18 @@
 <?php defined('SYSPATH') or die ('No direct script access.');
 
 /**
- * Model for `cart_gift_card_used`.
+ * Model for `cart_gift_card_use`.
  *
  * @package    XM
  * @category   Cart
  * @author     XM Media Inc.
  * @copyright  (c) 2012 XM Media Inc.
  */
-class Model_XM_Cart_Gift_Card_Used extends ORM {
+class Model_XM_Cart_Gift_Card_Use extends ORM {
 	protected $_table_names_plural = FALSE;
-	protected $_table_name = 'cart_gift_card_used';
+	protected $_table_name = 'cart_gift_card_use';
 	//protected $_primary_val = 'name'; // default: name (column used as primary value)
-	public $_table_name_display = 'Cart - Gift Card Used'; // cl4 specific
+	public $_table_name_display = 'Cart - Gift Card Use'; // cl4 specific
 
 	// default sorting
 	//protected $_sorting = array();

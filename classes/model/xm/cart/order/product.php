@@ -11,16 +11,19 @@
 class Model_XM_Cart_Order_Product extends ORM {
 	protected $_table_names_plural = FALSE;
 	protected $_table_name = 'cart_order_product';
-	//protected $_primary_val = 'name'; // default: name (column used as primary value)
 	public $_table_name_display = 'Cart - Order Product'; // cl4 specific
 
-	// default sorting
-	//protected $_sorting = array();
-
 	// relationships
-	//protected $_has_one = array();
-	//protected $_has_many = array();
-	//protected $_belongs_to = array();
+	protected $_belongs_to = array(
+		'cart_order' => array(
+			'model' => 'cart_order',
+			'foreign_key' => 'cart_order_id',
+		),
+		'cart_product' => array(
+			'model' => 'cart_product',
+			'foreign_key' => 'cart_product_id',
+		),
+	);
 
 	// column definitions
 	protected $_table_columns = array(
@@ -42,8 +45,11 @@ class Model_XM_Cart_Order_Product extends ORM {
 			'is_nullable' => FALSE,
 		),
 		'date_modified' => array(
-			'field_type' => 'hidden',
+			'field_type' => 'datetime',
+			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
+			'search_flag' => TRUE,
+			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
 		),
 		'date_removed' => array(
@@ -65,6 +71,7 @@ class Model_XM_Cart_Order_Product extends ORM {
 				'source' => array(
 					'source' => 'model',
 					'data' => 'cart_order',
+					'label' => 'invoice',
 				),
 			),
 		),
@@ -92,6 +99,7 @@ class Model_XM_Cart_Order_Product extends ORM {
 			'field_attributes' => array(
 				'maxlength' => 6,
 				'size' => 6,
+				'class' => 'numeric',
 			),
 		),
 		'unit_price' => array(
@@ -104,6 +112,7 @@ class Model_XM_Cart_Order_Product extends ORM {
 			'field_attributes' => array(
 				'maxlength' => 11,
 				'size' => 11,
+				'class' => 'numeric',
 			),
 		),
 		'data' => array(
@@ -119,41 +128,29 @@ class Model_XM_Cart_Order_Product extends ORM {
 	 * @var  array  $_created_column  The date and time this row was created.
 	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
 	 */
-	//protected $_created_column = array('column' => 'date_created', 'format' => 'Y-m-j H:i:s');
+	protected $_created_column = array('column' => 'date_created', 'format' => 'Y-m-j H:i:s');
 
 	/**
 	 * @var  array  $_updated_column  The date and time this row was updated.
 	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
 	 */
-	protected $_updated_column = array('column' => 'date_modified', 'format' => TRUE);
+	protected $_updated_column = array('column' => 'date_modified', 'format' => 'Y-m-j H:i:s');
 
 	/**
 	 * @var  array  $_expires_column  The time this row expires and is no longer returned in standard searches.
 	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
 	 */
-	/*
 	protected $_expires_column = array(
-		'column' 	=> 'expiry_date',
+		'column' 	=> 'date_removed',
 		'default'	=> 0,
 	);
-	*/
 
 	/**
-	 * @var  array  $_display_order  The order to display columns in, if different from as listed in $_table_columns.
-	 * Columns not listed here will be added beneath these columns, in the order they are listed in $_table_columns.
+	 * Auto-serialize and unserialize columns on get/set.
+	 * The data field needs to be serialized.
+	 * @var  array
 	 */
-	/*
-	protected $_display_order = array(
-		'id',
-		'date_added',
-		'date_modified',
-		'date_removed',
-		'cart_order_id',
-		'cart_product_id',
-		'quantity',
-		'unit_price',
-	);
-	*/
+	protected $_serialize_columns = array('data');
 
 	/**
 	* Labels for columns
@@ -170,28 +167,19 @@ class Model_XM_Cart_Order_Product extends ORM {
 			'cart_product_id' => 'Product',
 			'quantity' => 'Quantity',
 			'unit_price' => 'Unit Price',
+			'data' => 'Data',
 		);
 	}
 
 	/**
-	* Rule definitions for validation
-	*
-	* @return  array
-	*/
-	/*
+	 * Rule definitions for validation.
+	 *
+	 * @return  array
+	 */
 	public function rules() {
-		return array();
+		return array(
+			'cart_order_id' => array(array('not_empty')),
+			'cart_product_id' => array(array('not_empty')),
+		);
 	}
-	*/
-
-	/**
-	* Filter definitions, run everytime a field is set
-	*
-	* @return  array
-	*/
-	/*
-	public function filters() {
-		return array(TRUE => array(array('trim')),);
-	}
-	*/
 } // class

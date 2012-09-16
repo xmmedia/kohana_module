@@ -19,22 +19,28 @@ class Model_XM_Cart_Tax extends ORM {
 	);
 
 	// relationships
-	protected $_has_one = array(
+	protected $_has_many = array(
+		'cart_order' => array(
+			'model' => 'cart_order',
+			'through' => 'cart_order_tax',
+			'foreign_key' => 'cart_tax_id',
+			'far_key' => 'cart_order_id',
+		),
+		'cart_order_tax' => array(
+			'model' => 'cart_order_tax',
+			'foreign_key' => 'cart_tax_id',
+		),
+	);
+	protected $_belongs_to = array(
 		'country' => array(
 			'model' => 'country',
-			'through' => 'country',
-			'foreign_key' => 'id',
-			'far_key' => 'country_id',
+			'foreign_key' => 'country_id',
 		),
 		'state' => array(
 			'model' => 'state',
-			'through' => 'state',
-			'foreign_key' => 'id',
-			'far_key' => 'state_id',
+			'foreign_key' => 'state_id',
 		),
 	);
-	//protected $_has_many = array();
-	//protected $_belongs_to = array();
 
 	// column definitions
 	protected $_table_columns = array(
@@ -47,12 +53,8 @@ class Model_XM_Cart_Tax extends ORM {
 			'edit_flag' => TRUE,
 			'is_nullable' => FALSE,
 		),
-		'date_expired' => array(
+		'expiry_date' => array(
 			'field_type' => 'datetime',
-			'list_flag' => TRUE,
-			'edit_flag' => TRUE,
-			'search_flag' => TRUE,
-			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
 		),
 		'name' => array(
@@ -130,8 +132,8 @@ class Model_XM_Cart_Tax extends ORM {
 				'size' => 6,
 			),
 		),
-		'calculation_type_id' => array(
-			'field_type' => 'select',
+		'calculation_method' => array(
+			'field_type' => 'radios',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -139,9 +141,13 @@ class Model_XM_Cart_Tax extends ORM {
 			'is_nullable' => FALSE,
 			'field_options' => array(
 				'source' => array(
-					'source' => 'model',
-					'data' => 'calculation_type',
+					'source' => 'array',
+					'data' => array(
+						'%' => 'Percentage (%)',
+						'$' => 'Dollar Value ($)'
+					),
 				),
+				'default_value' => '%',
 			),
 		),
 		'amount' => array(
@@ -154,52 +160,19 @@ class Model_XM_Cart_Tax extends ORM {
 			'field_attributes' => array(
 				'maxlength' => 9,
 				'size' => 9,
+				'class' => 'numeric',
 			),
 		),
 	);
 
 	/**
-	 * @var  array  $_created_column  The date and time this row was created.
-	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
-	 */
-	//protected $_created_column = array('column' => 'date_created', 'format' => 'Y-m-j H:i:s');
-
-	/**
-	 * @var  array  $_updated_column  The date and time this row was updated.
-	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
-	 */
-	//protected $_updated_column = array('column' => 'date_modified', 'format' => TRUE);
-
-	/**
 	 * @var  array  $_expires_column  The time this row expires and is no longer returned in standard searches.
 	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
 	 */
-	/*
 	protected $_expires_column = array(
 		'column' 	=> 'expiry_date',
 		'default'	=> 0,
 	);
-	*/
-
-	/**
-	 * @var  array  $_display_order  The order to display columns in, if different from as listed in $_table_columns.
-	 * Columns not listed here will be added beneath these columns, in the order they are listed in $_table_columns.
-	 */
-	/*
-	protected $_display_order = array(
-		'id',
-		'date_expired',
-		'name',
-		'start_date',
-		'end_date',
-		'country_id',
-		'state_id',
-		'together_flag',
-		'priority',
-		'calculation_type_id',
-		'amount',
-	);
-	*/
 
 	/**
 	* Labels for columns
@@ -211,36 +184,38 @@ class Model_XM_Cart_Tax extends ORM {
 			'id' => 'ID',
 			'date_expired' => 'Date Expired',
 			'name' => 'Name',
-			'start_date' => 'Start Date',
-			'end_date' => 'End Date',
+			'start' => 'Start',
+			'end' => 'End',
 			'country_id' => 'Country',
 			'state_id' => 'State',
-			'together_flag' => 'Together Flag',
+			'together_flag' => 'Together',
 			'priority' => 'Priority',
-			'calculation_type_id' => 'Calculation Type',
+			'calculation_method' => 'Calculation Method',
 			'amount' => 'Amount',
 		);
 	}
 
 	/**
-	* Rule definitions for validation
-	*
-	* @return  array
-	*/
-	/*
+	 * Rule definitions for validation.
+	 *
+	 * @return  array
+	 */
 	public function rules() {
-		return array();
+		return array(
+			'name' => array(array('not_empty')),
+			'calculation_method' => array(array('not_empty')),
+			'amount' => array(array('not_empty')),
+		);
 	}
-	*/
 
 	/**
-	* Filter definitions, run everytime a field is set
-	*
-	* @return  array
-	*/
-	/*
+	 * Filter definitions, run everytime a field is set.
+	 *
+	 * @return  array
+	 */
 	public function filters() {
-		return array(TRUE => array(array('trim')),);
+		return array(
+			'name' => array(array('trim')),
+		);
 	}
-	*/
 } // class

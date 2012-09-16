@@ -39,7 +39,7 @@ class Model_XM_Cart_Product_Property extends ORM {
 			'field_type' => 'datetime',
 			'is_nullable' => FALSE,
 		),
-		'product_id' => array(
+		'cart_product_id' => array(
 			'field_type' => 'select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -49,11 +49,11 @@ class Model_XM_Cart_Product_Property extends ORM {
 			'field_options' => array(
 				'source' => array(
 					'source' => 'model',
-					'data' => 'product',
+					'data' => 'cart_product',
 				),
 			),
 		),
-		'property_id' => array(
+		'cart_property_id' => array(
 			'field_type' => 'select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -63,7 +63,8 @@ class Model_XM_Cart_Product_Property extends ORM {
 			'field_options' => array(
 				'source' => array(
 					'source' => 'model',
-					'data' => 'property',
+					'data' => 'cart_property',
+					'label' => 'label',
 				),
 			),
 		),
@@ -110,8 +111,8 @@ class Model_XM_Cart_Product_Property extends ORM {
 	protected $_display_order = array(
 		'id',
 		'expiry_date',
-		'product_id',
-		'property_id',
+		'cart_product_id',
+		'cart_property_id',
 		'display_order',
 	);
 	*/
@@ -125,8 +126,8 @@ class Model_XM_Cart_Product_Property extends ORM {
 		return array(
 			'id' => 'ID',
 			'expiry_date' => 'Expiry Date',
-			'product_id' => 'Product',
-			'property_id' => 'Property',
+			'cart_product_id' => 'Product',
+			'cart_property_id' => 'Property',
 			'display_order' => 'Display Order',
 		);
 	}

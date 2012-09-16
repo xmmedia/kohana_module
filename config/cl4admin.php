@@ -19,8 +19,8 @@ return array(
 		'cart_product' => 'Cart - Products',
 		'cart_product_property' => 'Cart - Product - Properties',
 		'cart_property' => 'Cart - Properties',
-		'cart_shipping' => 'Cart - Shipping',
-		'cart_shipping_location' => 'Cart - Shipping - Locations',
+		'cart_shipping' => 'Cart - Shipping Rate',
+		'cart_shipping_location' => 'Cart - Shipping Rate - Locations',
 		'cart_tax' => 'Cart - Taxes',
 
 		// content admin tables

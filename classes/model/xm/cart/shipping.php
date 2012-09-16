@@ -11,7 +11,7 @@
 class Model_XM_Cart_Shipping extends ORM {
 	protected $_table_names_plural = FALSE;
 	protected $_table_name = 'cart_shipping';
-	public $_table_name_display = 'Cart - Shipping'; // cl4 specific
+	public $_table_name_display = 'Cart - Shipping Rate'; // cl4 specific
 
 	// default sorting
 	protected $_sorting = array(
@@ -20,9 +20,34 @@ class Model_XM_Cart_Shipping extends ORM {
 	);
 
 	// relationships
-	//protected $_has_one = array();
-	//protected $_has_many = array();
-	//protected $_belongs_to = array();
+	protected $_has_many = array(
+		'country' => array(
+			'model' => 'country',
+			'through' => 'cart_shipping_location',
+			'foreign_key' => 'cart_shipping_id',
+			'far_key' => 'country_id',
+		),
+		'state' => array(
+			'model' => 'state',
+			'through' => 'cart_shipping_location',
+			'foreign_key' => 'cart_shipping_id',
+			'far_key' => 'state_id',
+		),
+		'cart_shipping_location' => array(
+			'model' => 'cart_shipping_location',
+			'foreign_key' => 'cart_shipping_id',
+		),
+		'cart_order' => array(
+			'model' => 'cart_order',
+			'through' => 'cart_order_shipping',
+			'foreign_key' => 'cart_shipping_id',
+			'far_key' => 'cart_order_id',
+		),
+		'cart_order_shipping' => array(
+			'model' => 'cart_order_shipping',
+			'foreign_key' => 'cart_shipping_id',
+		),
+	);
 
 	// column definitions
 	protected $_table_columns = array(
@@ -50,6 +75,17 @@ class Model_XM_Cart_Shipping extends ORM {
 				'maxlength' => 50,
 			),
 		),
+		'display_name' => array(
+			'field_type' => 'text',
+			'list_flag' => TRUE,
+			'edit_flag' => TRUE,
+			'search_flag' => TRUE,
+			'view_flag' => TRUE,
+			'is_nullable' => FALSE,
+			'field_attributes' => array(
+				'maxlength' => 50,
+			),
+		),
 		'start' => array(
 			'field_type' => 'datetime',
 			'list_flag' => TRUE,
@@ -66,8 +102,8 @@ class Model_XM_Cart_Shipping extends ORM {
 			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
 		),
-		'calculation_type_id' => array(
-			'field_type' => 'select',
+		'calculation_method' => array(
+			'field_type' => 'radios',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -75,9 +111,13 @@ class Model_XM_Cart_Shipping extends ORM {
 			'is_nullable' => FALSE,
 			'field_options' => array(
 				'source' => array(
-					'source' => 'model',
-					'data' => 'calculation_type',
+					'source' => 'array',
+					'data' => array(
+						'%' => 'Percentage (%)',
+						'$' => 'Dollar Value ($)'
+					),
 				),
+				'default_value' => NULL,
 			),
 		),
 		'amount' => array(
@@ -90,18 +130,27 @@ class Model_XM_Cart_Shipping extends ORM {
 			'field_attributes' => array(
 				'maxlength' => 11,
 				'size' => 11,
+				'class' => 'numeric',
 			),
 		),
-		'shipping_reason_id1' => array(
-			'field_type' => 'text',
+		'shipping_reason_1' => array(
+			'field_type' => 'radios',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
-			'field_attributes' => array(
-				'maxlength' => 10,
-				'size' => 10,
+			'field_options' => array(
+				'source' => array(
+					'source' => 'array',
+					'data' => array(
+						'location' => 'Shipping Location',
+						'order_total' => 'Order Total',
+						'flat_rate' => 'Flat Rate (on all orders)',
+						// 'weight' => 'Weight', not implemented
+					),
+				),
+				'default_value' => NULL,
 			),
 		),
 		'val1_1' => array(
@@ -128,16 +177,25 @@ class Model_XM_Cart_Shipping extends ORM {
 				'size' => 20,
 			),
 		),
-		'shipping_reason_id2' => array(
-			'field_type' => 'text',
+		// the second set of reason and value columns is for between values (ie, between $10 and $100)
+		'shipping_reason_2' => array(
+			'field_type' => 'radios',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
-			'field_attributes' => array(
-				'maxlength' => 10,
-				'size' => 10,
+			'field_options' => array(
+				'source' => array(
+					'source' => 'array',
+					'data' => array(
+						'location' => 'Shipping Location',
+						'order_total' => 'Order Total',
+						'flat_rate' => 'Flat Rate (on all orders)',
+						// 'weight' => 'Weight', not implemented
+					),
+				),
+				'default_value' => NULL,
 			),
 		),
 		'val2_1' => array(
@@ -164,18 +222,6 @@ class Model_XM_Cart_Shipping extends ORM {
 				'size' => 20,
 			),
 		),
-		'alt_display' => array(
-			'field_type' => 'text',
-			'list_flag' => TRUE,
-			'edit_flag' => TRUE,
-			'search_flag' => TRUE,
-			'view_flag' => TRUE,
-			'is_nullable' => FALSE,
-			'field_attributes' => array(
-				'maxlength' => 15,
-				'size' => 15,
-			),
-		),
 		'display_order' => array(
 			'field_type' => 'text',
 			'list_flag' => TRUE,
@@ -199,18 +245,6 @@ class Model_XM_Cart_Shipping extends ORM {
 	);
 
 	/**
-	 * @var  array  $_created_column  The date and time this row was created.
-	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
-	 */
-	//protected $_created_column = array('column' => 'date_created', 'format' => 'Y-m-j H:i:s');
-
-	/**
-	 * @var  array  $_updated_column  The date and time this row was updated.
-	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
-	 */
-	//protected $_updated_column = array('column' => 'date_modified', 'format' => TRUE);
-
-	/**
 	 * @var  array  $_expires_column  The time this row expires and is no longer returned in standard searches.
 	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
 	 */
@@ -218,31 +252,6 @@ class Model_XM_Cart_Shipping extends ORM {
 		'column' 	=> 'expiry_date',
 		'default'	=> 0,
 	);
-
-	/**
-	 * @var  array  $_display_order  The order to display columns in, if different from as listed in $_table_columns.
-	 * Columns not listed here will be added beneath these columns, in the order they are listed in $_table_columns.
-	 */
-	/*
-	protected $_display_order = array(
-		'id',
-		'expiry_date',
-		'name',
-		'start',
-		'end',
-		'calculation_type_id',
-		'amount',
-		'shipping_reason_id1',
-		'val1_1',
-		'val1_2',
-		'shipping_reason_id2',
-		'val2_1',
-		'val2_2',
-		'alt_display',
-		'display_order',
-		'user_selectable_flag',
-	);
-	*/
 
 	/**
 	* Labels for columns
@@ -254,41 +263,46 @@ class Model_XM_Cart_Shipping extends ORM {
 			'id' => 'ID',
 			'expiry_date' => 'Expiry Date',
 			'name' => 'Name',
+			'display_name' => 'Display Name',
 			'start' => 'Start',
 			'end' => 'End',
-			'calculation_type_id' => 'Calculation Type',
+			'calculation_method' => 'Calculation Method',
 			'amount' => 'Amount',
-			'shipping_reason_id1' => 'Shipping Reason Id1',
-			'val1_1' => 'Val1 1',
-			'val1_2' => 'Val1 2',
-			'shipping_reason_id2' => 'Shipping Reason Id2',
-			'val2_1' => 'Val2 1',
-			'val2_2' => 'Val2 2',
-			'alt_display' => 'Alt Display',
+			'shipping_reason_1' => 'Shipping Reason 1',
+			'val1_1' => 'Value 1 - 1',
+			'val1_2' => 'Value 1 - 2',
+			'shipping_reason_2' => 'Shipping Reason 2',
+			'val2_1' => 'Value 1 - 1',
+			'val2_2' => 'Value 1 - 2',
 			'display_order' => 'Display Order',
-			'user_selectable_flag' => 'User Selectable Flag',
+			'user_selectable_flag' => 'User Selectable',
 		);
 	}
 
 	/**
-	* Rule definitions for validation
-	*
-	* @return  array
-	*/
-	/*
+	 * Rule definitions for validation.
+	 *
+	 * @return  array
+	 */
 	public function rules() {
-		return array();
+		return array(
+			'name' => array(array('not_empty')),
+			'display_name' => array(array('not_empty')),
+			'calculation_method' => array(array('not_empty')),
+			'amount' => array(array('not_empty')),
+		);
 	}
-	*/
 
 	/**
-	* Filter definitions, run everytime a field is set
-	*
-	* @return  array
-	*/
-	/*
+	 * Filter definitions, run everytime a field is set.
+	 *
+	 * @return  array
+	 */
 	public function filters() {
-		return array(TRUE => array(array('trim')),);
+		return array(
+			'name' => array(array('trim')),
+			'display_name' => array(array('trim')),
+			'calculation_method' => array(array('trim')),
+		);
 	}
-	*/
 } // class

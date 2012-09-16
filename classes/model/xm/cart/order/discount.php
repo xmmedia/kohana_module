@@ -37,7 +37,7 @@ class Model_XM_Cart_Order_Discount extends ORM {
 			'field_type' => 'datetime',
 			'is_nullable' => FALSE,
 		),
-		'order_id' => array(
+		'cart_order_id' => array(
 			'field_type' => 'select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -51,7 +51,7 @@ class Model_XM_Cart_Order_Discount extends ORM {
 				),
 			),
 		),
-		'discount_id' => array(
+		'cart_discount_id' => array(
 			'field_type' => 'select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -108,8 +108,8 @@ class Model_XM_Cart_Order_Discount extends ORM {
 	protected $_display_order = array(
 		'id',
 		'expiry_date',
-		'order_id',
-		'discount_id',
+		'cart_order_id',
+		'cart_discount_id',
 		'amount',
 	);
 	*/
@@ -123,8 +123,8 @@ class Model_XM_Cart_Order_Discount extends ORM {
 		return array(
 			'id' => 'ID',
 			'expiry_date' => 'Expiry Date',
-			'order_id' => 'Order',
-			'discount_id' => 'Discount',
+			'cart_order_id' => 'Order',
+			'cart_discount_id' => 'Discount',
 			'amount' => 'Amount',
 		);
 	}

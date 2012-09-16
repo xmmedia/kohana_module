@@ -11,16 +11,21 @@
 class Model_XM_Cart_Discount_Product extends ORM {
 	protected $_table_names_plural = FALSE;
 	protected $_table_name = 'cart_discount_product';
-	//protected $_primary_val = 'name'; // default: name (column used as primary value)
 	public $_table_name_display = 'Cart - Discount Product'; // cl4 specific
-
-	// default sorting
-	//protected $_sorting = array();
 
 	// relationships
 	//protected $_has_one = array();
 	//protected $_has_many = array();
-	//protected $_belongs_to = array();
+	protected $_belongs_to = array(
+		'cart_discount' => array(
+			'model' => 'cart_discount',
+			'foreign_key' => 'cart_discount_id',
+		),
+		'cart_product' => array(
+			'model' => 'cart_product',
+			'foreign_key' => 'cart_product_id',
+		),
+	);
 
 	// column definitions
 	protected $_table_columns = array(
@@ -37,7 +42,7 @@ class Model_XM_Cart_Discount_Product extends ORM {
 			'field_type' => 'datetime',
 			'is_nullable' => FALSE,
 		),
-		'discount_id' => array(
+		'cart_discount_id' => array(
 			'field_type' => 'select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -47,11 +52,11 @@ class Model_XM_Cart_Discount_Product extends ORM {
 			'field_options' => array(
 				'source' => array(
 					'source' => 'model',
-					'data' => 'discount',
+					'data' => 'cart_discount',
 				),
 			),
 		),
-		'product_id' => array(
+		'cart_product_id' => array(
 			'field_type' => 'select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -61,23 +66,11 @@ class Model_XM_Cart_Discount_Product extends ORM {
 			'field_options' => array(
 				'source' => array(
 					'source' => 'model',
-					'data' => 'product',
+					'data' => 'cart_product',
 				),
 			),
 		),
 	);
-
-	/**
-	 * @var  array  $_created_column  The date and time this row was created.
-	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
-	 */
-	//protected $_created_column = array('column' => 'date_created', 'format' => 'Y-m-j H:i:s');
-
-	/**
-	 * @var  array  $_updated_column  The date and time this row was updated.
-	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
-	 */
-	//protected $_updated_column = array('column' => 'date_modified', 'format' => TRUE);
 
 	/**
 	 * @var  array  $_expires_column  The time this row expires and is no longer returned in standard searches.
@@ -89,19 +82,6 @@ class Model_XM_Cart_Discount_Product extends ORM {
 	);
 
 	/**
-	 * @var  array  $_display_order  The order to display columns in, if different from as listed in $_table_columns.
-	 * Columns not listed here will be added beneath these columns, in the order they are listed in $_table_columns.
-	 */
-	/*
-	protected $_display_order = array(
-		'id',
-		'expiry_date',
-		'discount_id',
-		'product_id',
-	);
-	*/
-
-	/**
 	* Labels for columns
 	*
 	* @return  array
@@ -110,30 +90,20 @@ class Model_XM_Cart_Discount_Product extends ORM {
 		return array(
 			'id' => 'ID',
 			'expiry_date' => 'Expiry Date',
-			'discount_id' => 'Discount',
-			'product_id' => 'Product',
+			'cart_discount_id' => 'Discount',
+			'cart_product_id' => 'Product',
 		);
 	}
 
 	/**
-	* Rule definitions for validation
-	*
-	* @return  array
-	*/
-	/*
+	 * Rule definitions for validation.
+	 *
+	 * @return  array
+	 */
 	public function rules() {
-		return array();
+		return array(
+			'cart_discount_id' => array(array('selected')),
+			'cart_product_id' => array(array('selected')),
+		);
 	}
-	*/
-
-	/**
-	* Filter definitions, run everytime a field is set
-	*
-	* @return  array
-	*/
-	/*
-	public function filters() {
-		return array(TRUE => array(array('trim')),);
-	}
-	*/
 } // class

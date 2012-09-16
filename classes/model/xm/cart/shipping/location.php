@@ -11,29 +11,23 @@
 class Model_XM_Cart_Shipping_Location extends ORM {
 	protected $_table_names_plural = FALSE;
 	protected $_table_name = 'cart_shipping_location';
-	//protected $_primary_val = 'name'; // default: name (column used as primary value)
 	public $_table_name_display = 'Cart - Shipping Location'; // cl4 specific
 
-	// default sorting
-	//protected $_sorting = array();
-
 	// relationships
-	protected $_has_one = array(
+	protected $_belongs_to = array(
+		'cart_shipping' => array(
+			'model' => 'cart_shipping',
+			'foreign_key' => 'cart_shipping_id',
+		),
 		'country' => array(
 			'model' => 'country',
-			'through' => 'country',
-			'foreign_key' => 'id',
-			'far_key' => 'country_id',
+			'foreign_key' => 'country_id',
 		),
 		'state' => array(
 			'model' => 'state',
-			'through' => 'state',
-			'foreign_key' => 'id',
-			'far_key' => 'state_id',
+			'foreign_key' => 'state_id',
 		),
 	);
-	//protected $_has_many = array();
-	//protected $_belongs_to = array();
 
 	// column definitions
 	protected $_table_columns = array(
@@ -50,7 +44,7 @@ class Model_XM_Cart_Shipping_Location extends ORM {
 			'field_type' => 'datetime',
 			'is_nullable' => FALSE,
 		),
-		'shipping_id' => array(
+		'cart_shipping_id' => array(
 			'field_type' => 'select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -60,7 +54,7 @@ class Model_XM_Cart_Shipping_Location extends ORM {
 			'field_options' => array(
 				'source' => array(
 					'source' => 'model',
-					'data' => 'shipping',
+					'data' => 'cart_shipping',
 				),
 			),
 		),
@@ -95,18 +89,6 @@ class Model_XM_Cart_Shipping_Location extends ORM {
 	);
 
 	/**
-	 * @var  array  $_created_column  The date and time this row was created.
-	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
-	 */
-	//protected $_created_column = array('column' => 'date_created', 'format' => 'Y-m-j H:i:s');
-
-	/**
-	 * @var  array  $_updated_column  The date and time this row was updated.
-	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
-	 */
-	//protected $_updated_column = array('column' => 'date_modified', 'format' => TRUE);
-
-	/**
 	 * @var  array  $_expires_column  The time this row expires and is no longer returned in standard searches.
 	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
 	 */
@@ -114,20 +96,6 @@ class Model_XM_Cart_Shipping_Location extends ORM {
 		'column' 	=> 'expiry_date',
 		'default'	=> 0,
 	);
-
-	/**
-	 * @var  array  $_display_order  The order to display columns in, if different from as listed in $_table_columns.
-	 * Columns not listed here will be added beneath these columns, in the order they are listed in $_table_columns.
-	 */
-	/*
-	protected $_display_order = array(
-		'id',
-		'expiry_date',
-		'shipping_id',
-		'country_id',
-		'state_id',
-	);
-	*/
 
 	/**
 	* Labels for columns
@@ -138,31 +106,21 @@ class Model_XM_Cart_Shipping_Location extends ORM {
 		return array(
 			'id' => 'ID',
 			'expiry_date' => 'Expiry Date',
-			'shipping_id' => 'Shipping',
+			'cart_shipping_id' => 'Shipping Rate',
 			'country_id' => 'Country',
 			'state_id' => 'State',
 		);
 	}
 
 	/**
-	* Rule definitions for validation
-	*
-	* @return  array
-	*/
-	/*
+	 * Rule definitions for validation.
+	 *
+	 * @return  array
+	 */
 	public function rules() {
-		return array();
+		return array(
+			'cart_shipping_id' => array(array('selected')),
+			'country_id' => array(array('selected')),
+		);
 	}
-	*/
-
-	/**
-	* Filter definitions, run everytime a field is set
-	*
-	* @return  array
-	*/
-	/*
-	public function filters() {
-		return array(TRUE => array(array('trim')),);
-	}
-	*/
 } // class

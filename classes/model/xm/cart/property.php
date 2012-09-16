@@ -11,17 +11,27 @@
 class Model_XM_Cart_Property extends ORM {
 	protected $_table_names_plural = FALSE;
 	protected $_table_name = 'cart_property';
+	protected $_primary_val = 'label'; // default: name (column used as primary value)
 	public $_table_name_display = 'Cart - Property'; // cl4 specific
 
 	// default sorting
 	protected $_sorting = array(
-		'name' => 'ASC',
+		'label' => 'ASC',
 	);
 
 	// relationships
-	//protected $_has_one = array();
-	//protected $_has_many = array();
-	//protected $_belongs_to = array();
+	protected $_has_many = array(
+		'cart_product' => array(
+			'model' => 'cart_product',
+			'through' => 'cart_product_property',
+			'foreign_key' => 'cart_property_id',
+			'far_key' => 'cart_product_id',
+		),
+		'cart_product_property' => array(
+			'model' => 'cart_product_property',
+			'foreign_key' => 'cart_property_id',
+		),
+	);
 
 	// column definitions
 	protected $_table_columns = array(
@@ -38,7 +48,7 @@ class Model_XM_Cart_Property extends ORM {
 			'field_type' => 'datetime',
 			'is_nullable' => FALSE,
 		),
-		'name' => array(
+		'label' => array(
 			'field_type' => 'text',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -51,7 +61,6 @@ class Model_XM_Cart_Property extends ORM {
 		),
 		'description' => array(
 			'field_type' => 'text',
-			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -68,106 +77,43 @@ class Model_XM_Cart_Property extends ORM {
 			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
 		),
-		'form_type' => array(
-			'field_type' => 'text',
+		'required_flag' => array(
+			'field_type' => 'checkbox',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
-			'field_attributes' => array(
-				'maxlength' => 32,
+		),
+		'field_type' => array(
+			'field_type' => 'radios',
+			'list_flag' => TRUE,
+			'edit_flag' => TRUE,
+			'search_flag' => TRUE,
+			'view_flag' => TRUE,
+			'is_nullable' => FALSE,
+			'field_options' => array(
+				'source' => array(
+					'source' => 'array',
+					'data' => array(
+						'radios' => 'Radios',
+						'select' => 'Dropdown/Select',
+						'text' => 'Text Field',
+						'textarea' => 'Text Area',
+					),
+				),
+				// need this because the values of the field are strings
+				'default_value' => NULL,
 			),
 		),
-		'source_table' => array(
+		'data' => array(
 			'field_type' => 'textarea',
-			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
-		),
-		'id_field' => array(
-			'field_type' => 'text',
-			'list_flag' => TRUE,
-			'edit_flag' => TRUE,
-			'search_flag' => TRUE,
-			'view_flag' => TRUE,
-			'is_nullable' => FALSE,
-			'field_attributes' => array(
-				'maxlength' => 128,
-			),
-		),
-		'name_field' => array(
-			'field_type' => 'text',
-			'list_flag' => TRUE,
-			'edit_flag' => TRUE,
-			'search_flag' => TRUE,
-			'view_flag' => TRUE,
-			'is_nullable' => FALSE,
-			'field_attributes' => array(
-				'maxlength' => 128,
-			),
-		),
-		'form_value' => array(
-			'field_type' => 'text',
-			'list_flag' => TRUE,
-			'edit_flag' => TRUE,
-			'search_flag' => TRUE,
-			'view_flag' => TRUE,
-			'is_nullable' => FALSE,
-			'field_attributes' => array(
-				'maxlength' => 1024,
-			),
-		),
-		'field_size' => array(
-			'field_type' => 'text',
-			'list_flag' => TRUE,
-			'edit_flag' => TRUE,
-			'search_flag' => TRUE,
-			'view_flag' => TRUE,
-			'is_nullable' => FALSE,
-			'field_attributes' => array(
-				'maxlength' => 3,
-				'size' => 3,
-			),
-		),
-		'max_length' => array(
-			'field_type' => 'text',
-			'list_flag' => TRUE,
-			'edit_flag' => TRUE,
-			'search_flag' => TRUE,
-			'view_flag' => TRUE,
-			'is_nullable' => FALSE,
-			'field_attributes' => array(
-				'maxlength' => 3,
-				'size' => 3,
-			),
-		),
-		'reg_exp' => array(
-			'field_type' => 'text',
-			'list_flag' => TRUE,
-			'edit_flag' => TRUE,
-			'search_flag' => TRUE,
-			'view_flag' => TRUE,
-			'is_nullable' => FALSE,
-			'field_attributes' => array(
-				'maxlength' => 1024,
-			),
 		),
 	);
-
-	/**
-	 * @var  array  $_created_column  The date and time this row was created.
-	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
-	 */
-	//protected $_created_column = array('column' => 'date_created', 'format' => 'Y-m-j H:i:s');
-
-	/**
-	 * @var  array  $_updated_column  The date and time this row was updated.
-	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
-	 */
-	//protected $_updated_column = array('column' => 'date_modified', 'format' => TRUE);
 
 	/**
 	 * @var  array  $_expires_column  The time this row expires and is no longer returned in standard searches.
@@ -179,28 +125,6 @@ class Model_XM_Cart_Property extends ORM {
 	);
 
 	/**
-	 * @var  array  $_display_order  The order to display columns in, if different from as listed in $_table_columns.
-	 * Columns not listed here will be added beneath these columns, in the order they are listed in $_table_columns.
-	 */
-	/*
-	protected $_display_order = array(
-		'id',
-		'expiry_date',
-		'name',
-		'description',
-		'edit_flag',
-		'form_type',
-		'source_table',
-		'id_field',
-		'name_field',
-		'form_value',
-		'field_size',
-		'max_length',
-		'reg_exp',
-	);
-	*/
-
-	/**
 	* Labels for columns
 	*
 	* @return  array
@@ -209,39 +133,36 @@ class Model_XM_Cart_Property extends ORM {
 		return array(
 			'id' => 'ID',
 			'expiry_date' => 'Expiry Date',
-			'name' => 'Name',
+			'label' => 'Label',
 			'description' => 'Description',
-			'edit_flag' => 'Edit Flag',
-			'form_type' => 'Form Type',
-			'source_table' => 'Source Table',
-			'id_field' => 'Id Field',
-			'name_field' => 'Name Field',
-			'form_value' => 'Form Value',
-			'field_size' => 'Field Size',
-			'max_length' => 'Max Length',
-			'reg_exp' => 'Reg Exp',
+			'edit_flag' => 'User Edit',
+			'required_flag' => 'Required',
+			'field_type' => 'Form Type',
+			'data' => 'Data',
 		);
 	}
 
 	/**
-	* Rule definitions for validation
-	*
-	* @return  array
-	*/
-	/*
+	 * Rule definitions for validation
+	 *
+	 * @return  array
+	 */
 	public function rules() {
-		return array();
+		return array(
+			'label' => array(array('not_empty')),
+			'field_type' => array(array('not_empty')),
+		);
 	}
-	*/
 
 	/**
-	* Filter definitions, run everytime a field is set
-	*
-	* @return  array
-	*/
-	/*
+	 * Filter definitions, run everytime a field is set
+	 *
+	 * @return  array
+	 */
 	public function filters() {
-		return array(TRUE => array(array('trim')),);
+		return array(
+			'label' => array(array('trim')),
+			'field_type' => array(array('trim')),
+		);
 	}
-	*/
 } // class

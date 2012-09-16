@@ -37,7 +37,7 @@ class Model_XM_Cart_Order_Shipping extends ORM {
 			'field_type' => 'datetime',
 			'is_nullable' => FALSE,
 		),
-		'order_id' => array(
+		'cart_order_id' => array(
 			'field_type' => 'select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -51,7 +51,7 @@ class Model_XM_Cart_Order_Shipping extends ORM {
 				),
 			),
 		),
-		'shipping_id' => array(
+		'cart_shipping_id' => array(
 			'field_type' => 'select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -116,8 +116,8 @@ class Model_XM_Cart_Order_Shipping extends ORM {
 	protected $_display_order = array(
 		'id',
 		'expiry_date',
-		'order_id',
-		'shipping_id',
+		'cart_order_id',
+		'cart_shipping_id',
 		'amount',
 		'set_flag',
 	);
@@ -132,8 +132,8 @@ class Model_XM_Cart_Order_Shipping extends ORM {
 		return array(
 			'id' => 'ID',
 			'expiry_date' => 'Expiry Date',
-			'order_id' => 'Order',
-			'shipping_id' => 'Shipping',
+			'cart_order_id' => 'Order',
+			'cart_shipping_id' => 'Shipping',
 			'amount' => 'Amount',
 			'set_flag' => 'Set Flag',
 		);

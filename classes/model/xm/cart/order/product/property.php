@@ -12,13 +12,26 @@ class Model_XM_Cart_Order_Product_Property extends ORM {
 	protected $_table_names_plural = FALSE;
 	protected $_table_name = 'cart_order_product_property';
 	//protected $_primary_val = 'name'; // default: name (column used as primary value)
-	public $_table_name_display = 'Cart - Order Product Property'; // cl4 specific
+	public $_table_name_display = 'Cart - Order - Product - Property'; // cl4 specific
 
 	// default sorting
 	//protected $_sorting = array();
 
 	// relationships
-	//protected $_has_one = array();
+	protected $_has_one = array(
+		'cart_order_product' => array(
+			'model' => 'cart_order_product',
+			'through' => 'cart_order_product',
+			'foreign_key' => 'id',
+			'far_key' => 'cart_order_product_id',
+		),
+		'cart_property' => array(
+			'model' => 'cart_property',
+			'through' => 'cart_property',
+			'foreign_key' => 'id',
+			'far_key' => 'cart_property_id',
+		),
+	);
 	//protected $_has_many = array();
 	//protected $_belongs_to = array();
 
@@ -33,12 +46,16 @@ class Model_XM_Cart_Order_Product_Property extends ORM {
 			'edit_flag' => TRUE,
 			'is_nullable' => FALSE,
 		),
+		'expiry_date' => array(
+			'field_type' => 'datetime',
+			'is_nullable' => FALSE,
+		),
 		'date_modified' => array(
 			'field_type' => 'hidden',
 			'edit_flag' => TRUE,
 			'is_nullable' => FALSE,
 		),
-		'order_product_id' => array(
+		'cart_order_product_id' => array(
 			'field_type' => 'select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -48,11 +65,11 @@ class Model_XM_Cart_Order_Product_Property extends ORM {
 			'field_options' => array(
 				'source' => array(
 					'source' => 'model',
-					'data' => 'order_product',
+					'data' => 'cart_order_product',
 				),
 			),
 		),
-		'property_id' => array(
+		'cart_property_id' => array(
 			'field_type' => 'select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -62,20 +79,18 @@ class Model_XM_Cart_Order_Product_Property extends ORM {
 			'field_options' => array(
 				'source' => array(
 					'source' => 'model',
-					'data' => 'property',
+					'data' => 'cart_property',
+					'label' => 'label',
 				),
 			),
 		),
 		'value' => array(
-			'field_type' => 'text',
+			'field_type' => 'textarea',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
-			'field_attributes' => array(
-				'maxlength' => 255,
-			),
 		),
 	);
 
@@ -95,12 +110,10 @@ class Model_XM_Cart_Order_Product_Property extends ORM {
 	 * @var  array  $_expires_column  The time this row expires and is no longer returned in standard searches.
 	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
 	 */
-	/*
 	protected $_expires_column = array(
 		'column' 	=> 'expiry_date',
 		'default'	=> 0,
 	);
-	*/
 
 	/**
 	 * @var  array  $_display_order  The order to display columns in, if different from as listed in $_table_columns.
@@ -109,9 +122,10 @@ class Model_XM_Cart_Order_Product_Property extends ORM {
 	/*
 	protected $_display_order = array(
 		'id',
+		'expiry_date',
 		'date_modified',
-		'order_product_id',
-		'property_id',
+		'cart_order_product_id',
+		'cart_property_id',
 		'value',
 	);
 	*/
@@ -124,9 +138,10 @@ class Model_XM_Cart_Order_Product_Property extends ORM {
 	public function labels() {
 		return array(
 			'id' => 'ID',
+			'expiry_date' => 'Expiry Date',
 			'date_modified' => 'Date Modified',
-			'order_product_id' => 'Order Product',
-			'property_id' => 'Property',
+			'cart_order_product_id' => 'Cart Order Product',
+			'cart_property_id' => 'Cart Property',
 			'value' => 'Value',
 		);
 	}

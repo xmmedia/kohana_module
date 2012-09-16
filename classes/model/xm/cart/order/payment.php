@@ -37,7 +37,7 @@ class Model_XM_Cart_Order_Payment extends ORM {
 			'field_type' => 'datetime',
 			'is_nullable' => FALSE,
 		),
-		'order_id' => array(
+		'cart_order_id' => array(
 			'field_type' => 'select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -244,7 +244,7 @@ class Model_XM_Cart_Order_Payment extends ORM {
 	protected $_display_order = array(
 		'id',
 		'expiry_date',
-		'order_id',
+		'cart_order_id',
 		'date_attempted',
 		'date_completed',
 		'date_refunded',
@@ -272,7 +272,7 @@ class Model_XM_Cart_Order_Payment extends ORM {
 		return array(
 			'id' => 'ID',
 			'expiry_date' => 'Expiry Date',
-			'order_id' => 'Order',
+			'cart_order_id' => 'Order',
 			'date_attempted' => 'Date Attempted',
 			'date_completed' => 'Date Completed',
 			'date_refunded' => 'Date Refunded',

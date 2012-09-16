@@ -19,9 +19,28 @@ class Model_XM_Cart_Discount extends ORM {
 	);
 
 	// relationships
-	//protected $_has_one = array();
-	//protected $_has_many = array();
-	//protected $_belongs_to = array();
+	protected $_has_many = array(
+		'cart_product' => array(
+			'model' => 'cart_product',
+			'through' => 'cart_discount_product',
+			'foreign_key' => 'cart_discount_id',
+			'far_key' => 'cart_product_id',
+		),
+		'cart_discount_product' => array(
+			'model' => 'cart_discount_product',
+			'foreign_key' => 'cart_discount_id',
+		),
+		'cart_order' => array(
+			'model' => 'cart_order',
+			'through' => 'cart_order_discount',
+			'foreign_key' => 'cart_discount_id',
+			'far_key' => 'cart_order_id',
+		),
+		'cart_order_discount' => array(
+			'model' => 'cart_order_discount',
+			'foreign_key' => 'cart_discount_id',
+		),
+	);
 
 	// column definitions
 	protected $_table_columns = array(
@@ -37,6 +56,17 @@ class Model_XM_Cart_Discount extends ORM {
 		'expiry_date' => array(
 			'field_type' => 'datetime',
 			'is_nullable' => FALSE,
+		),
+		'name' => array(
+			'field_type' => 'text',
+			'list_flag' => TRUE,
+			'edit_flag' => TRUE,
+			'search_flag' => TRUE,
+			'view_flag' => TRUE,
+			'is_nullable' => FALSE,
+			'field_attributes' => array(
+				'maxlength' => 50,
+			),
 		),
 		'start' => array(
 			'field_type' => 'datetime',
@@ -54,19 +84,8 @@ class Model_XM_Cart_Discount extends ORM {
 			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
 		),
-		'name' => array(
-			'field_type' => 'text',
-			'list_flag' => TRUE,
-			'edit_flag' => TRUE,
-			'search_flag' => TRUE,
-			'view_flag' => TRUE,
-			'is_nullable' => FALSE,
-			'field_attributes' => array(
-				'maxlength' => 50,
-			),
-		),
-		'calculation_type_id' => array(
-			'field_type' => 'select',
+		'calculation_method' => array(
+			'field_type' => 'radios',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -74,9 +93,13 @@ class Model_XM_Cart_Discount extends ORM {
 			'is_nullable' => FALSE,
 			'field_options' => array(
 				'source' => array(
-					'source' => 'model',
-					'data' => 'calculation_type',
+					'source' => 'array',
+					'data' => array(
+						'%' => 'Percentage (%)',
+						'$' => 'Dollar Value ($)'
+					),
 				),
+				'default_value' => NULL,
 			),
 		),
 		'amount' => array(
@@ -89,6 +112,7 @@ class Model_XM_Cart_Discount extends ORM {
 			'field_attributes' => array(
 				'maxlength' => 11,
 				'size' => 11,
+				'class' => 'numeric',
 			),
 		),
 		'free_flag' => array(
@@ -99,8 +123,8 @@ class Model_XM_Cart_Discount extends ORM {
 			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
 		),
-		'discount_reason_id' => array(
-			'field_type' => 'select',
+		'discount_reason' => array(
+			'field_type' => 'radios',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -108,9 +132,16 @@ class Model_XM_Cart_Discount extends ORM {
 			'is_nullable' => FALSE,
 			'field_options' => array(
 				'source' => array(
-					'source' => 'model',
-					'data' => 'discount_reason',
+					'source' => 'array',
+					'data' => array(
+						// 'product_count' => 'Number of Products', not implemented
+						// 'weight' => 'Total Weight of Order', not implemented
+						// 'order_total' => 'Order Total', not implemented
+						'code' => 'Promo/Discount Code',
+						// 'product' => 'Certain Product', not implemented
+					),
 				),
+				'default_value' => 'code',
 			),
 		),
 		'val1' => array(
@@ -137,8 +168,8 @@ class Model_XM_Cart_Discount extends ORM {
 				'size' => 20,
 			),
 		),
-		'discount_type_id' => array(
-			'field_type' => 'select',
+		'discount_type' => array(
+			'field_type' => 'radios',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -146,24 +177,17 @@ class Model_XM_Cart_Discount extends ORM {
 			'is_nullable' => FALSE,
 			'field_options' => array(
 				'source' => array(
-					'source' => 'model',
-					'data' => 'discount_type',
+					'source' => 'array',
+					'data' => array(
+						// 'shipping' => 'Shipping Discount', not implemented
+						// 'product' => 'Product Discount', not implemented
+						'order_total' => 'Order Total',
+					),
 				),
+				'default_value' => 'order_total',
 			),
 		),
 	);
-
-	/**
-	 * @var  array  $_created_column  The date and time this row was created.
-	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
-	 */
-	//protected $_created_column = array('column' => 'date_created', 'format' => 'Y-m-j H:i:s');
-
-	/**
-	 * @var  array  $_updated_column  The date and time this row was updated.
-	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
-	 */
-	//protected $_updated_column = array('column' => 'date_modified', 'format' => TRUE);
 
 	/**
 	 * @var  array  $_expires_column  The time this row expires and is no longer returned in standard searches.
@@ -175,27 +199,6 @@ class Model_XM_Cart_Discount extends ORM {
 	);
 
 	/**
-	 * @var  array  $_display_order  The order to display columns in, if different from as listed in $_table_columns.
-	 * Columns not listed here will be added beneath these columns, in the order they are listed in $_table_columns.
-	 */
-	/*
-	protected $_display_order = array(
-		'id',
-		'expiry_date',
-		'start',
-		'end',
-		'name',
-		'calculation_type_id',
-		'amount',
-		'free_flag',
-		'discount_reason_id',
-		'val1',
-		'val2',
-		'discount_type_id',
-	);
-	*/
-
-	/**
 	* Labels for columns
 	*
 	* @return  array
@@ -204,38 +207,45 @@ class Model_XM_Cart_Discount extends ORM {
 		return array(
 			'id' => 'ID',
 			'expiry_date' => 'Expiry Date',
+			'name' => 'Name',
 			'start' => 'Start',
 			'end' => 'End',
-			'name' => 'Name',
-			'calculation_type_id' => 'Calculation Type',
+			'calculation_method' => 'Calculation Method',
 			'amount' => 'Amount',
-			'free_flag' => 'Free Flag',
-			'discount_reason_id' => 'Discount Reason',
-			'val1' => 'Val1',
-			'val2' => 'Val2',
-			'discount_type_id' => 'Discount Type',
+			'free_flag' => 'Free',
+			'discount_reason' => 'Discount Reason',
+			'val1' => 'Value 1',
+			'val2' => 'Value 2',
+			'discount_type' => 'Discount Type',
 		);
 	}
 
 	/**
-	* Rule definitions for validation
-	*
-	* @return  array
-	*/
-	/*
+	 * Rule definitions for validation.
+	 *
+	 * @return  array
+	 */
 	public function rules() {
-		return array();
+		return array(
+			'name' => array(array('not_empty')),
+			'calculation_method' => array(array('not_empty')),
+			'amount' => array(array('not_empty')),
+			'discount_reason' => array(array('not_empty')),
+			'discount_type' => array(array('not_empty')),
+		);
 	}
-	*/
 
 	/**
-	* Filter definitions, run everytime a field is set
-	*
-	* @return  array
-	*/
-	/*
+	 * Filter definitions, run everytime a field is set.
+	 *
+	 * @return  array
+	 */
 	public function filters() {
-		return array(TRUE => array(array('trim')),);
+		return array(
+			'name' => array(array('trim')),
+			'calculation_method' => array(array('trim')),
+			'discount_reason' => array(array('trim')),
+			'discount_type' => array(array('trim')),
+		);
 	}
-	*/
 } // class

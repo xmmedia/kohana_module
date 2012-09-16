@@ -11,16 +11,19 @@
 class Model_XM_Cart_Gift_Card_Use extends ORM {
 	protected $_table_names_plural = FALSE;
 	protected $_table_name = 'cart_gift_card_use';
-	//protected $_primary_val = 'name'; // default: name (column used as primary value)
 	public $_table_name_display = 'Cart - Gift Card Use'; // cl4 specific
 
-	// default sorting
-	//protected $_sorting = array();
-
 	// relationships
-	//protected $_has_one = array();
-	//protected $_has_many = array();
-	//protected $_belongs_to = array();
+	protected $_belongs_to = array(
+		'cart_order' => array(
+			'model' => 'cart_order',
+			'foreign_key' => 'cart_order_id',
+		),
+		'cart_gift_card' => array(
+			'model' => 'cart_gift_card',
+			'foreign_key' => 'cart_gift_card_id',
+		),
+	);
 
 	// column definitions
 	protected $_table_columns = array(
@@ -37,7 +40,7 @@ class Model_XM_Cart_Gift_Card_Use extends ORM {
 			'field_type' => 'datetime',
 			'is_nullable' => FALSE,
 		),
-		'order_id' => array(
+		'cart_order_id' => array(
 			'field_type' => 'select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -47,11 +50,12 @@ class Model_XM_Cart_Gift_Card_Use extends ORM {
 			'field_options' => array(
 				'source' => array(
 					'source' => 'model',
-					'data' => 'order',
+					'data' => 'cart_order',
+					'label' => 'invoice',
 				),
 			),
 		),
-		'gift_card_id' => array(
+		'cart_gift_card_id' => array(
 			'field_type' => 'select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -61,7 +65,8 @@ class Model_XM_Cart_Gift_Card_Use extends ORM {
 			'field_options' => array(
 				'source' => array(
 					'source' => 'model',
-					'data' => 'gift_card',
+					'data' => 'cart_gift_card',
+					'label' => 'code',
 				),
 			),
 		),
@@ -75,21 +80,10 @@ class Model_XM_Cart_Gift_Card_Use extends ORM {
 			'field_attributes' => array(
 				'maxlength' => 11,
 				'size' => 11,
+				'class' => 'numeric',
 			),
 		),
 	);
-
-	/**
-	 * @var  array  $_created_column  The date and time this row was created.
-	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
-	 */
-	//protected $_created_column = array('column' => 'date_created', 'format' => 'Y-m-j H:i:s');
-
-	/**
-	 * @var  array  $_updated_column  The date and time this row was updated.
-	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
-	 */
-	//protected $_updated_column = array('column' => 'date_modified', 'format' => TRUE);
 
 	/**
 	 * @var  array  $_expires_column  The time this row expires and is no longer returned in standard searches.
@@ -101,20 +95,6 @@ class Model_XM_Cart_Gift_Card_Use extends ORM {
 	);
 
 	/**
-	 * @var  array  $_display_order  The order to display columns in, if different from as listed in $_table_columns.
-	 * Columns not listed here will be added beneath these columns, in the order they are listed in $_table_columns.
-	 */
-	/*
-	protected $_display_order = array(
-		'id',
-		'expiry_date',
-		'order_id',
-		'gift_card_id',
-		'amount',
-	);
-	*/
-
-	/**
 	* Labels for columns
 	*
 	* @return  array
@@ -123,31 +103,22 @@ class Model_XM_Cart_Gift_Card_Use extends ORM {
 		return array(
 			'id' => 'ID',
 			'expiry_date' => 'Expiry Date',
-			'order_id' => 'Order',
-			'gift_card_id' => 'Gift Card',
-			'amount' => 'Amount',
+			'cart_order_id' => 'Order',
+			'cart_gift_card_id' => 'Gift Card',
+			'amount' => 'Amount ($)',
 		);
 	}
 
 	/**
-	* Rule definitions for validation
-	*
-	* @return  array
-	*/
-	/*
+	 * Rule definitions for validation.
+	 *
+	 * @return  array
+	 */
 	public function rules() {
-		return array();
+		return array(
+			'cart_order_id' => array(array('selected')),
+			'cart_gift_card_id' => array(array('selected')),
+			'amount' => array(array('not_empty')),
+		);
 	}
-	*/
-
-	/**
-	* Filter definitions, run everytime a field is set
-	*
-	* @return  array
-	*/
-	/*
-	public function filters() {
-		return array(TRUE => array(array('trim')),);
-	}
-	*/
 } // class

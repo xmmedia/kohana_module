@@ -11,16 +11,27 @@
 class Model_XM_Cart_Gift_Card extends ORM {
 	protected $_table_names_plural = FALSE;
 	protected $_table_name = 'cart_gift_card';
-	//protected $_primary_val = 'name'; // default: name (column used as primary value)
+	protected $_primary_val = 'code'; // default: name (column used as primary value)
 	public $_table_name_display = 'Cart - Gift Card'; // cl4 specific
 
 	// default sorting
-	//protected $_sorting = array();
+	protected $_sorting = array(
+		'code' => 'ASC',
+	);
 
 	// relationships
-	//protected $_has_one = array();
-	//protected $_has_many = array();
-	//protected $_belongs_to = array();
+	protected $_has_many = array(
+		'cart_gift_card_use' => array(
+			'model' => 'cart_gift_card_use',
+			'foreign_key' => 'cart_gift_card_id',
+		),
+		'cart_order' => array(
+			'model' => 'cart_order',
+			'through' => 'cart_gift_card_use',
+			'foreign_key' => 'cart_gift_card_id',
+			'far_key' => 'cart_order_id',
+		),
+	);
 
 	// column definitions
 	protected $_table_columns = array(
@@ -59,21 +70,10 @@ class Model_XM_Cart_Gift_Card extends ORM {
 			'field_attributes' => array(
 				'maxlength' => 11,
 				'size' => 11,
+				'class' => 'numeric',
 			),
 		),
 	);
-
-	/**
-	 * @var  array  $_created_column  The date and time this row was created.
-	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
-	 */
-	//protected $_created_column = array('column' => 'date_created', 'format' => 'Y-m-j H:i:s');
-
-	/**
-	 * @var  array  $_updated_column  The date and time this row was updated.
-	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
-	 */
-	//protected $_updated_column = array('column' => 'date_modified', 'format' => TRUE);
 
 	/**
 	 * @var  array  $_expires_column  The time this row expires and is no longer returned in standard searches.
@@ -85,19 +85,6 @@ class Model_XM_Cart_Gift_Card extends ORM {
 	);
 
 	/**
-	 * @var  array  $_display_order  The order to display columns in, if different from as listed in $_table_columns.
-	 * Columns not listed here will be added beneath these columns, in the order they are listed in $_table_columns.
-	 */
-	/*
-	protected $_display_order = array(
-		'id',
-		'expiry_date',
-		'code',
-		'amount',
-	);
-	*/
-
-	/**
 	* Labels for columns
 	*
 	* @return  array
@@ -107,29 +94,30 @@ class Model_XM_Cart_Gift_Card extends ORM {
 			'id' => 'ID',
 			'expiry_date' => 'Expiry Date',
 			'code' => 'Code',
-			'amount' => 'Amount',
+			'amount' => 'Amount ($)',
 		);
 	}
 
 	/**
-	* Rule definitions for validation
-	*
-	* @return  array
-	*/
-	/*
+	 * Rule definitions for validation.
+	 *
+	 * @return  array
+	 */
 	public function rules() {
-		return array();
+		return array(
+			'code' => array(array('not_empty')),
+			'amount' => array(array('not_empty')),
+		);
 	}
-	*/
 
 	/**
-	* Filter definitions, run everytime a field is set
-	*
-	* @return  array
-	*/
-	/*
+	 * Filter definitions, run everytime a field is set.
+	 *
+	 * @return  array
+	 */
 	public function filters() {
-		return array(TRUE => array(array('trim')),);
+		return array(
+			'code' => array(array('trim')),
+		);
 	}
-	*/
 } // class

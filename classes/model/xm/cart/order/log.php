@@ -41,7 +41,7 @@ class Model_XM_Cart_Order_Log extends ORM {
 			'edit_flag' => TRUE,
 			'is_nullable' => FALSE,
 		),
-		'order_id' => array(
+		'cart_order_id' => array(
 			'field_type' => 'select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -128,7 +128,7 @@ class Model_XM_Cart_Order_Log extends ORM {
 	/*
 	protected $_display_order = array(
 		'id',
-		'order_id',
+		'cart_order_id',
 		'user_id',
 		'event_timestamp',
 		'action',
@@ -144,7 +144,7 @@ class Model_XM_Cart_Order_Log extends ORM {
 	public function labels() {
 		return array(
 			'id' => 'ID',
-			'order_id' => 'Order',
+			'cart_order_id' => 'Order',
 			'user_id' => 'User',
 			'event_timestamp' => 'Event Timestamp',
 			'action' => 'Action',

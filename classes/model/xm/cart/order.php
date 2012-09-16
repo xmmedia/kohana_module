@@ -11,29 +11,88 @@
 class Model_XM_Cart_Order extends ORM {
 	protected $_table_names_plural = FALSE;
 	protected $_table_name = 'cart_order';
-	//protected $_primary_val = 'name'; // default: name (column used as primary value)
+	protected $_primary_val = 'invoice'; // default: name (column used as primary value)
 	public $_table_name_display = 'Cart - Order'; // cl4 specific
 
 	// default sorting
-	//protected $_sorting = array();
+	protected $_sorting = array(
+		'date_modified' => 'DESC',
+	);
 
 	// relationships
-	protected $_has_one = array(
+	protected $_has_many = array(
+		'cart_order_additional_charge' => array(
+			'model' => 'cart_order_additional_charge',
+			'foreign_key' => 'cart_order_id',
+		),
+
+		// discounts
+		'cart_order_discount' => array(
+			'model' => 'cart_order_discount',
+			'foreign_key' => 'cart_order_id',
+		),
+		'cart_discount' => array(
+			'model' => 'cart_discount',
+			'through' => 'cart_order_discount',
+			'foreign_key' => 'cart_order_id',
+			'far_key' => 'cart_discount_id',
+		),
+
+		'cart_order_log' => array(
+			'model' => 'cart_order_log',
+			'foreign_key' => 'cart_order_id',
+		),
+		'cart_order_payment' => array(
+			'model' => 'cart_order_payment',
+			'foreign_key' => 'cart_order_id',
+		),
+
+		// products
+		'cart_order_product' => array(
+			'model' => 'cart_order_product',
+			'foreign_key' => 'cart_order_id',
+		),
+		'cart_product' => array(
+			'model' => 'cart_product',
+			'through' => 'cart_order_product',
+			'foreign_key' => 'cart_order_id',
+			'far_key' => 'cart_product_id',
+		),
+
+		// shipping
+		'cart_order_shipping' => array(
+			'model' => 'cart_order_shipping',
+			'foreign_key' => 'cart_order_id',
+		),
+		'cart_shipping' => array(
+			'model' => 'cart_shipping',
+			'through' => 'cart_order_shipping',
+			'foreign_key' => 'cart_order_id',
+			'far_key' => 'cart_shipping_id',
+		),
+
+		// taxes
+		'cart_order_tax' => array(
+			'model' => 'cart_order_tax',
+			'foreign_key' => 'cart_order_id',
+		),
+		'cart_tax' => array(
+			'model' => 'cart_tax',
+			'through' => 'cart_order_tax',
+			'foreign_key' => 'cart_order_id',
+			'far_key' => 'cart_tax_id',
+		),
+	);
+	protected $_belongs_to = array(
 		'user' => array(
 			'model' => 'user',
-			'through' => 'user',
-			'foreign_key' => 'id',
-			'far_key' => 'user_id',
+			'foreign_key' => 'user_id',
 		),
 		'country' => array(
 			'model' => 'country',
-			'through' => 'country',
-			'foreign_key' => 'id',
-			'far_key' => 'country_id',
+			'foreign_key' => 'country_id',
 		),
 	);
-	//protected $_has_many = array();
-	//protected $_belongs_to = array();
 
 	// column definitions
 	protected $_table_columns = array(
@@ -51,18 +110,21 @@ class Model_XM_Cart_Order extends ORM {
 			'is_nullable' => FALSE,
 		),
 		'date_created' => array(
-			'field_type' => 'hidden',
+			'field_type' => 'datetime',
 			'edit_flag' => TRUE,
+			'search_flag' => TRUE,
+			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
 		),
 		'date_modified' => array(
-			'field_type' => 'hidden',
+			'field_type' => 'datetime',
 			'edit_flag' => TRUE,
+			'search_flag' => TRUE,
+			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
 		),
 		'date_payment' => array(
 			'field_type' => 'datetime',
-			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -70,7 +132,6 @@ class Model_XM_Cart_Order extends ORM {
 		),
 		'date_received' => array(
 			'field_type' => 'datetime',
-			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -78,7 +139,6 @@ class Model_XM_Cart_Order extends ORM {
 		),
 		'date_completed' => array(
 			'field_type' => 'datetime',
-			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -86,7 +146,6 @@ class Model_XM_Cart_Order extends ORM {
 		),
 		'date_required' => array(
 			'field_type' => 'date',
-			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -94,7 +153,6 @@ class Model_XM_Cart_Order extends ORM {
 		),
 		'date_shipped' => array(
 			'field_type' => 'datetime',
-			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -109,8 +167,8 @@ class Model_XM_Cart_Order extends ORM {
 			'is_nullable' => FALSE,
 			'field_options' => array(
 				'source' => array(
-					'source' => 'model',
-					'data' => 'user',
+					'source' => 'sql',
+					'data' => "SELECT id, CONCAT(first_name, ' ', last_name) AS name FROM user ORDER BY first_name, last_name",
 				),
 			),
 		),
@@ -124,6 +182,7 @@ class Model_XM_Cart_Order extends ORM {
 			'field_attributes' => array(
 				'maxlength' => 11,
 				'size' => 11,
+				'class' => 'numeric',
 			),
 		),
 		'grand_total' => array(
@@ -136,6 +195,7 @@ class Model_XM_Cart_Order extends ORM {
 			'field_attributes' => array(
 				'maxlength' => 11,
 				'size' => 11,
+				'class' => 'numeric',
 			),
 		),
 		'exchange_rate' => array(
@@ -148,6 +208,7 @@ class Model_XM_Cart_Order extends ORM {
 			'field_attributes' => array(
 				'maxlength' => 12,
 				'size' => 12,
+				'class' => 'numeric',
 			),
 		),
 		'country_id' => array(
@@ -190,7 +251,6 @@ class Model_XM_Cart_Order extends ORM {
 		),
 		'encrypted_code' => array(
 			'field_type' => 'text',
-			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -208,8 +268,15 @@ class Model_XM_Cart_Order extends ORM {
 			'is_nullable' => FALSE,
 			'field_options' => array(
 				'source' => array(
-					'source' => 'model',
-					'data' => 'status',
+					'source' => 'array',
+					'data' => array(
+						1 => 'Unpaid / New Order',
+						2 => 'Complete',
+						3 => 'Payment in Progress',
+						4 => 'Paid',
+						5 => 'Shipped',
+						6 => 'Submitted / Waiting for Payment',
+					),
 				),
 			),
 		),
@@ -226,7 +293,6 @@ class Model_XM_Cart_Order extends ORM {
 		),
 		'order_note' => array(
 			'field_type' => 'textarea',
-			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -234,7 +300,6 @@ class Model_XM_Cart_Order extends ORM {
 		),
 		'user_address_loaded_flag' => array(
 			'field_type' => 'checkbox',
-			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -286,7 +351,6 @@ class Model_XM_Cart_Order extends ORM {
 		),
 		'shipping_address1' => array(
 			'field_type' => 'text',
-			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -297,7 +361,6 @@ class Model_XM_Cart_Order extends ORM {
 		),
 		'shipping_address2' => array(
 			'field_type' => 'text',
-			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -308,7 +371,6 @@ class Model_XM_Cart_Order extends ORM {
 		),
 		'shipping_city' => array(
 			'field_type' => 'text',
-			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -319,7 +381,6 @@ class Model_XM_Cart_Order extends ORM {
 		),
 		'shipping_state_id' => array(
 			'field_type' => 'select',
-			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -327,13 +388,12 @@ class Model_XM_Cart_Order extends ORM {
 			'field_options' => array(
 				'source' => array(
 					'source' => 'model',
-					'data' => 'shipping_state',
+					'data' => 'state',
 				),
 			),
 		),
 		'shipping_state' => array(
 			'field_type' => 'text',
-			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -344,7 +404,6 @@ class Model_XM_Cart_Order extends ORM {
 		),
 		'shipping_postal_code' => array(
 			'field_type' => 'text',
-			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -356,7 +415,6 @@ class Model_XM_Cart_Order extends ORM {
 		),
 		'shipping_country_id' => array(
 			'field_type' => 'select',
-			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -364,20 +422,16 @@ class Model_XM_Cart_Order extends ORM {
 			'field_options' => array(
 				'source' => array(
 					'source' => 'model',
-					'data' => 'shipping_country',
+					'data' => 'country',
 				),
 			),
 		),
 		'shipping_phone' => array(
-			'field_type' => 'text',
-			'list_flag' => TRUE,
+			'field_type' => 'phone',
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
-			'field_attributes' => array(
-				'maxlength' => 32,
-			),
 		),
 		'same_as_shipping_flag' => array(
 			'field_type' => 'checkbox',
@@ -422,7 +476,6 @@ class Model_XM_Cart_Order extends ORM {
 		),
 		'billing_address1' => array(
 			'field_type' => 'text',
-			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -433,7 +486,6 @@ class Model_XM_Cart_Order extends ORM {
 		),
 		'billing_address2' => array(
 			'field_type' => 'text',
-			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -444,7 +496,6 @@ class Model_XM_Cart_Order extends ORM {
 		),
 		'billing_city' => array(
 			'field_type' => 'text',
-			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -455,7 +506,6 @@ class Model_XM_Cart_Order extends ORM {
 		),
 		'billing_state_id' => array(
 			'field_type' => 'select',
-			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -463,13 +513,12 @@ class Model_XM_Cart_Order extends ORM {
 			'field_options' => array(
 				'source' => array(
 					'source' => 'model',
-					'data' => 'billing_state',
+					'data' => 'state',
 				),
 			),
 		),
 		'billing_state' => array(
 			'field_type' => 'text',
-			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -480,7 +529,6 @@ class Model_XM_Cart_Order extends ORM {
 		),
 		'billing_postal_code' => array(
 			'field_type' => 'text',
-			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -492,7 +540,6 @@ class Model_XM_Cart_Order extends ORM {
 		),
 		'billing_country_id' => array(
 			'field_type' => 'select',
-			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -500,20 +547,16 @@ class Model_XM_Cart_Order extends ORM {
 			'field_options' => array(
 				'source' => array(
 					'source' => 'model',
-					'data' => 'billing_country',
+					'data' => 'country',
 				),
 			),
 		),
 		'billing_phone' => array(
-			'field_type' => 'text',
-			'list_flag' => TRUE,
+			'field_type' => 'phone',
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
-			'field_attributes' => array(
-				'maxlength' => 32,
-			),
 		),
 	);
 
@@ -539,60 +582,6 @@ class Model_XM_Cart_Order extends ORM {
 	);
 
 	/**
-	 * @var  array  $_display_order  The order to display columns in, if different from as listed in $_table_columns.
-	 * Columns not listed here will be added beneath these columns, in the order they are listed in $_table_columns.
-	 */
-	/*
-	protected $_display_order = array(
-		'id',
-		'expiry_date',
-		'date_created',
-		'date_modified',
-		'date_payment',
-		'date_received',
-		'date_completed',
-		'date_required',
-		'date_shipped',
-		'user_id',
-		'sub_total',
-		'grand_total',
-		'exchange_rate',
-		'country_id',
-		'invoice',
-		'internal_order_num',
-		'encrypted_code',
-		'status_id',
-		'po_number',
-		'order_note',
-		'user_address_loaded_flag',
-		'email',
-		'shipping_first_name',
-		'shipping_last_name',
-		'shipping_company',
-		'shipping_address1',
-		'shipping_address2',
-		'shipping_city',
-		'shipping_state_id',
-		'shipping_state',
-		'shipping_postal_code',
-		'shipping_country_id',
-		'shipping_phone',
-		'same_as_shipping_flag',
-		'billing_first_name',
-		'billing_last_name',
-		'billing_company',
-		'billing_address1',
-		'billing_address2',
-		'billing_city',
-		'billing_state_id',
-		'billing_state',
-		'billing_postal_code',
-		'billing_country_id',
-		'billing_phone',
-	);
-	*/
-
-	/**
 	* Labels for columns
 	*
 	* @return  array
@@ -614,30 +603,30 @@ class Model_XM_Cart_Order extends ORM {
 			'exchange_rate' => 'Exchange Rate',
 			'country_id' => 'Country',
 			'invoice' => 'Invoice',
-			'internal_order_num' => 'Internal Order Num',
+			'internal_order_num' => 'Internal Order Number',
 			'encrypted_code' => 'Encrypted Code',
 			'status_id' => 'Status',
-			'po_number' => 'Po Number',
+			'po_number' => 'PO Number',
 			'order_note' => 'Order Note',
-			'user_address_loaded_flag' => 'User Address Loaded Flag',
+			'user_address_loaded_flag' => 'User Address Loaded',
 			'email' => 'Email',
 			'shipping_first_name' => 'Shipping First Name',
 			'shipping_last_name' => 'Shipping Last Name',
 			'shipping_company' => 'Shipping Company',
-			'shipping_address1' => 'Shipping Address1',
-			'shipping_address2' => 'Shipping Address2',
+			'shipping_address1' => 'Shipping Address 1',
+			'shipping_address2' => 'Shipping Address 2',
 			'shipping_city' => 'Shipping City',
 			'shipping_state_id' => 'Shipping State',
 			'shipping_state' => 'Shipping State',
 			'shipping_postal_code' => 'Shipping Postal Code',
 			'shipping_country_id' => 'Shipping Country',
 			'shipping_phone' => 'Shipping Phone',
-			'same_as_shipping_flag' => 'Same As Shipping Flag',
+			'same_as_shipping_flag' => 'Same As Shipping',
 			'billing_first_name' => 'Billing First Name',
 			'billing_last_name' => 'Billing Last Name',
 			'billing_company' => 'Billing Company',
-			'billing_address1' => 'Billing Address1',
-			'billing_address2' => 'Billing Address2',
+			'billing_address1' => 'Billing Address 1',
+			'billing_address2' => 'Billing Address 2',
 			'billing_city' => 'Billing City',
 			'billing_state_id' => 'Billing State',
 			'billing_state' => 'Billing State',
@@ -648,24 +637,13 @@ class Model_XM_Cart_Order extends ORM {
 	}
 
 	/**
-	* Rule definitions for validation
-	*
-	* @return  array
-	*/
-	/*
-	public function rules() {
-		return array();
-	}
-	*/
-
-	/**
-	* Filter definitions, run everytime a field is set
-	*
-	* @return  array
-	*/
-	/*
+	 * Filter definitions, run everytime a field is set.
+	 *
+	 * @return  array
+	 */
 	public function filters() {
-		return array(TRUE => array(array('trim')),);
+		return array(
+			'invoice' => array(array('trim')),
+		);
 	}
-	*/
 } // class

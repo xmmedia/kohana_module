@@ -37,7 +37,7 @@ class Model_XM_Cart_Order_Tax extends ORM {
 			'field_type' => 'datetime',
 			'is_nullable' => FALSE,
 		),
-		'order_id' => array(
+		'cart_order_id' => array(
 			'field_type' => 'select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -51,7 +51,7 @@ class Model_XM_Cart_Order_Tax extends ORM {
 				),
 			),
 		),
-		'tax_id' => array(
+		'cart_tax_id' => array(
 			'field_type' => 'select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -108,8 +108,8 @@ class Model_XM_Cart_Order_Tax extends ORM {
 	protected $_display_order = array(
 		'id',
 		'expiry_date',
-		'order_id',
-		'tax_id',
+		'cart_order_id',
+		'cart_tax_id',
 		'amount',
 	);
 	*/
@@ -123,8 +123,8 @@ class Model_XM_Cart_Order_Tax extends ORM {
 		return array(
 			'id' => 'ID',
 			'expiry_date' => 'Expiry Date',
-			'order_id' => 'Order',
-			'tax_id' => 'Tax',
+			'cart_order_id' => 'Order',
+			'cart_tax_id' => 'Tax',
 			'amount' => 'Amount',
 		);
 	}

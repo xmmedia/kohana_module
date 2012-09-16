@@ -51,7 +51,7 @@ class Model_XM_Cart_Order_Additional_Charge extends ORM {
 				),
 			),
 		),
-		'additional_charge_id' => array(
+		'cart_additional_charge_id' => array(
 			'field_type' => 'select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -109,7 +109,7 @@ class Model_XM_Cart_Order_Additional_Charge extends ORM {
 		'id',
 		'expiry_date',
 		'order_id',
-		'additional_charge_id',
+		'cart_additional_charge_id',
 		'amount',
 	);
 	*/
@@ -124,7 +124,7 @@ class Model_XM_Cart_Order_Additional_Charge extends ORM {
 			'id' => 'ID',
 			'expiry_date' => 'Expiry Date',
 			'order_id' => 'Order',
-			'additional_charge_id' => 'Additional Charge',
+			'cart_additional_charge_id' => 'Additional Charge',
 			'amount' => 'Amount',
 		);
 	}

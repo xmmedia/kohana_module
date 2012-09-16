@@ -54,7 +54,7 @@ class Model_XM_Cart_Order_Product extends ORM {
 			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
 		),
-		'order_id' => array(
+		'cart_order_id' => array(
 			'field_type' => 'select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -64,11 +64,11 @@ class Model_XM_Cart_Order_Product extends ORM {
 			'field_options' => array(
 				'source' => array(
 					'source' => 'model',
-					'data' => 'order',
+					'data' => 'cart_order',
 				),
 			),
 		),
-		'product_id' => array(
+		'cart_product_id' => array(
 			'field_type' => 'select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -78,7 +78,7 @@ class Model_XM_Cart_Order_Product extends ORM {
 			'field_options' => array(
 				'source' => array(
 					'source' => 'model',
-					'data' => 'product',
+					'data' => 'cart_product',
 				),
 			),
 		),
@@ -105,6 +105,13 @@ class Model_XM_Cart_Order_Product extends ORM {
 				'maxlength' => 11,
 				'size' => 11,
 			),
+		),
+		'data' => array(
+			'field_type' => 'textarea',
+			'edit_flag' => TRUE,
+			'search_flag' => TRUE,
+			'view_flag' => TRUE,
+			'is_nullable' => FALSE,
 		),
 	);
 
@@ -141,8 +148,8 @@ class Model_XM_Cart_Order_Product extends ORM {
 		'date_added',
 		'date_modified',
 		'date_removed',
-		'order_id',
-		'product_id',
+		'cart_order_id',
+		'cart_product_id',
 		'quantity',
 		'unit_price',
 	);
@@ -159,8 +166,8 @@ class Model_XM_Cart_Order_Product extends ORM {
 			'date_added' => 'Date Added',
 			'date_modified' => 'Date Modified',
 			'date_removed' => 'Date Removed',
-			'order_id' => 'Order',
-			'product_id' => 'Product',
+			'cart_order_id' => 'Order',
+			'cart_product_id' => 'Product',
 			'quantity' => 'Quantity',
 			'unit_price' => 'Unit Price',
 		);

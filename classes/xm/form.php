@@ -45,4 +45,65 @@ class XM_Form extends cl4_Form {
 
 		return Form::select($name, $users, $selected, $attributes, $options);
 	} // function user_select
+
+	/**
+	 * Creates radio buttons for a form, but returns as an array.
+	 *
+	 * @param string $name       The name of these radio buttons.
+	 * @param array  $source     The source to build the inputs from.
+	 * @param mixed  $selected   The selected input.
+	 * @param array  $attributes Attributes to apply to the radio inputs.
+	 * @param array  $options    Options to modify the creation of our inputs.
+	 *        orientation => the way that radio buttons and checkboxes are laid out, allowed: horizontal, vertical, table, table_vertical (puts text above the <input> separated by a <br />) (default: horizontal)
+	 *        radio_attributes => an array where the keys are the radio values and the values are arrays of attributes to be added to the radios
+	 *
+	 * @return string
+	 */
+	public static function radio_array($name, $source, $selected = NULL, array $attributes = NULL, array $options = array()) {
+		$html = '';
+
+		$default_options = array(
+			'view' => NULL,
+			'replace_spaces' => TRUE,
+			'table_tag' => true,
+			'escape_label' => TRUE,
+			'source_value' => Form::$default_source_value,
+			'source_label' => Form::$default_source_label,
+			'radio_attributes' => array(),
+			'label_attributes' => array(),
+		);
+		$options += $default_options;
+
+		if (empty($attributes['id'])) {
+			// since we have no ID, but we need one for the labels, so just use a unique id
+			$attributes['id'] = uniqid();
+		}
+
+		$radios = array();
+		foreach ($source as $radio_key => $radio_value) {
+			$checked = ($selected == $radio_key);
+
+			// make an attribute for this radio based on the current id plus the value of the radio
+			$this_attributes = Arr::overwrite($attributes, array('id' => $attributes['id'] . '-' . $radio_key));
+
+			if (isset($options['radio_attributes'][$radio_key])) {
+				$this_attributes = HTML::merge_attributes($this_attributes, $options['radio_attributes'][$radio_key]);
+			}
+
+			$label_attributes = array(
+				'for' => $this_attributes['id'],
+			);
+			if (isset($options['label_attributes'][$radio_key])) {
+				$label_attributes = HTML::merge_attributes($label_attributes, $options['label_attributes'][$radio_key]);
+			}
+
+			$radios[] = array(
+				'radio' => Form::radio($name, $radio_key, $checked, $this_attributes),
+				'label' => $radio_value,
+				'label_tag' => '<label' . HTML::attributes($label_attributes) . '>',
+			);
+		} // foreach
+
+		return $radios;
+	} // function radio_array
 } // class XM_Form

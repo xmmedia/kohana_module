@@ -33,6 +33,7 @@ class XM_ORM extends cl4_ORM {
 
 		$options += array(
 			'label_attributes' => array(),
+			'custom_view' => NULL,
 		);
 
 		// check to see if there is an error on the field
@@ -82,6 +83,15 @@ class XM_ORM extends cl4_ORM {
 					++ $this->_current_table_row;
 				}
 				return '<tr class="row' . $this->_current_table_row . ' ' . ($this->_current_table_row % 2 ? 'odd' : 'even') . '">' . "\n\t" . '<td class="column0">' . $label_html . '</td>' . "\n\t" . '<td class="column1">' . $this->_field_html[$column_name]['field'] . '</td>' . EOL . '</tr>' . EOL;
+				break;
+
+			case 'custom' :
+				return View::factory($options['custom_view'])
+					->bind('model', $this)
+					->bind('column_name', $column_name)
+					->bind('field_html', $this->_field_html)
+					->bind('current_table_row', $this->_current_table_row)
+					->bind('label_html', $label_html);
 				break;
 
 			default :

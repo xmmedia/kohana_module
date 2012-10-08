@@ -97,7 +97,7 @@ class XM_ORM extends cl4_ORM {
 			default :
 				return $label_html . $this->_field_html[$column_name]['field'] . EOL;
 				break;
-        } // switch
+		} // switch
 	} // function get_field_layout
 
 	public function field_has_error($column_name) {

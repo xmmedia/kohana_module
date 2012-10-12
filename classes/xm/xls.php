@@ -81,4 +81,15 @@ class XM_XLS {
 			return $letter;
 		}
 	} // function number_to_excel_col
+
+	/**
+	 * Cleans the sheet name, replacing any characters that are not allowed with spaces.
+	 * Found this this list on [Stack Overflow](http://stackoverflow.com/questions/451452/valid-characters-for-excel-sheet-names).
+	 *
+	 * @param  string  $name  The sheet name to clean.
+	 * @return  string
+	 */
+	public static function clean_sheet_name($name) {
+		return UTF8::str_ireplace(array('[', ']', '*', '/', '\\', '?', ':'), ' ', $name);
+	}
 }

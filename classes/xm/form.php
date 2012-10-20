@@ -106,4 +106,30 @@ class XM_Form extends cl4_Form {
 
 		return $radios;
 	} // function radio_array
+
+	/**
+	 * Returns a string of hidden fields.
+	 * If `$name` is an array, the keys will be used as the field names and the values will be the field values.
+	 * If `$name` is a string, the name will be used as the name for all the fields and the values will the values for all the fields (they keys will be ignored).
+	 * In the later case, the name should probably end with "[]".
+	 *
+	 * @param  array   $name    The array of names and values or the name of the fields.
+	 * @param  array   $values  If applicable, the values of the fields.
+	 * @return  string
+	 */
+	public static function hidden_array($name, $values = NULL) {
+		$html = '';
+
+		if (is_array($name)) {
+			foreach ($name as $_name => $_value) {
+				$html .= Form::hidden($_name, $_value);
+			}
+		} else {
+			foreach ($values as $value) {
+				$html .= Form::hidden($name, $value);
+			}
+		}
+
+		return $html;
+	} // function hidden_array
 } // class XM_Form

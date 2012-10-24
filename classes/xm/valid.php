@@ -16,4 +16,15 @@ class XM_Valid extends cl4_Valid {
 
 		return FALSE;
 	}
+
+	/**
+	 * Tests if a number is greater or equal to a value.
+	 *
+	 * @param   string  $number number to check
+	 * @param   integer $min    minimum value
+	 * @return  boolean
+	 */
+	public static function greater_than($number, $min) {
+		return ($number >= $min);
+	}
 }

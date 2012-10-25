@@ -10,7 +10,7 @@ class XM_Valid extends cl4_Valid {
 	public static function valid_date($value) {
 		$date = explode('-', $value);
 
-		if (count($date) == 3 && checkdate($date[1], $date[2], $date[0])) {
+		if (count($date) == 3 && checkdate(intval($date[1]), intval($date[2]), intval($date[0]))) {
 			return TRUE;
 		}
 

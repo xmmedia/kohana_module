@@ -162,6 +162,19 @@ class XM_ORM extends cl4_ORM {
 		return FALSE;
 	}
 
+	/**
+	 * Gets the label for a column if it exists, otherwise it will just be the column name.
+	 * Also performs translation.
+	 *
+	 * @param  string  $column_name
+	 * @return  string
+	 */
+	public function column_label($column_name) {
+		$labels = $this->labels();
+
+		return (array_key_exists($column_name, $labels) ? __($labels[$column_name]) : $column_name);
+	}
+
 	public function set_view_options_for_email() {
 		$this->_options['checkmark_icons'] = FALSE;
 		$this->_options['display_buttons'] = FALSE;

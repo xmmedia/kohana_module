@@ -10,8 +10,36 @@
  */
 class XM_PayPal {
 	/**
+	 * Changes the character set of the PayPal data if needed.
+	 * Most data from PayPal comes in the charset "windows-1252" and this will convert it to UTF-8.
+	 *
+	 * @param  array  $ipn_data  The array of IPN data, likely the entire $_POST array.
+	 * @return  array
+	 */
+	public static function change_ipn_charset($ipn_data) {
+		if (array_key_exists('charset', $ipn_data) && ($charset = $ipn_data['charset'])) {
+			// Ignore if same as our default
+			if ($charset == Kohana::$charset) {
+				return $ipn_data;
+			}
+
+			// Otherwise convert all the values
+			foreach($ipn_data as $key => $value) {
+				$ipn_data[$key] = mb_convert_encoding($value, 'utf-8', $charset);
+			}
+
+			// And store the charset values for future reference
+			$ipn_data['charset'] = 'utf-8';
+			$ipn_data['charset_original'] = $charset;
+		}
+
+		return $ipn_data;
+	} // function change_ipn_charset
+
+	/**
 	 * Performs the post back to PayPal to verify the data we've received.
 	 * If `FALSE` is returned, there was a problem connecting to PayPal.
+	 * This uses the actual $_POST array as PayPal doesn't like having anything changed.
 	 * If it's successful, an array will be returned with 2 keys:
 	 *
 	 * Type      | Key        | Description

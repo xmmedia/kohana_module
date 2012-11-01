@@ -27,4 +27,15 @@ class XM_Valid extends cl4_Valid {
 	public static function greater_than($number, $min) {
 		return ($number >= $min);
 	}
+
+	/**
+	 * Tests if the value is not in the listed array.
+	 *
+	 * @param   string  $value  The value to check
+	 * @param   array   $array  The array to check if value is in
+	 * @return  boolean
+	 */
+	public static function not_in_array($value, $array) {
+		return ! in_array($value, (array) $array);
+	}
 }

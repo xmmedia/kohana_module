@@ -289,7 +289,7 @@ setTimeout("window.close();", 2000);
 					'Comments',
 				),
 				'table_attributes' => array(
-					'class' => 'cl4_content content_history',
+					'class' => 'cl4_content content_history js_content_history',
 				),
 			));
 

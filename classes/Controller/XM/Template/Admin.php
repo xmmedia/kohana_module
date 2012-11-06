@@ -98,20 +98,15 @@ class Controller_XM_Template_Admin extends Controller_Admin {
 		$this->sort_order = $this->controller_session['sort_by_order'];
 		$this->search = ( ! empty($this->controller_session['search']) ? $this->controller_session['search'] : NULL);
 
-		$this->add_admin_css();
+		$this->add_css();
 	} // function before
 
-	/**
-	* Adds the CSS for the admin.
-	*/
-	protected function add_admin_css() {
-		parent::add_admin_css();
-
+	protected function add_css() {
 		if ($this->auto_render) {
-			// $this->template->styles['css/admin.css'] = NULL;
-			$this->template->styles['css/dbadmin.css'] = NULL;
+			$this->add_style('admin', 'css/admin.css')
+				->add_style('dbadmin', 'css/dbadmin.css');
 		}
-	} // function add_admin_css
+	} // function add_css
 
 	/**
 	* Stores the current values for page, search and sorting in the session.
@@ -601,6 +596,6 @@ class Controller_XM_Template_Admin extends Controller_Admin {
 	* Redirects the user to the index for the current model based on the current route
 	*/
 	function redirect_to_index() {
-		$this->redirect(Route::get($this->route)->uri());
+		$this->request->redirect(Route::get($this->route)->uri());
 	} // function
 } // class

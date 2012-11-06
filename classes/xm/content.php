@@ -42,7 +42,7 @@ class XM_Content {
 				}
 
 				if ( ! $content_item->text_only_flag) {
-					$html .= '<div class="contentadmin_edit_links">' . HTML::anchor(Route::get('content_admin')->uri(array('action' => 'edit', 'id' => $content_item->id)) . '?popup=1', '&nbsp;Edit', array('class' => 'cl4_edit contentadmin_edit'))
+					$html .= '<div class="contentadmin_edit_links">' . HTML::anchor(Route::get('content_admin')->uri(array('action' => 'edit', 'id' => $content_item->id)) . '?popup=1', '&nbsp;Edit', array('class' => 'cl4_edit contentadmin_edit js_contentadmin_edit'))
 						. '<div class="last_update">Last Update: ' . HTML::chars($content_item->last_update()) . '</div>';
 				}
 

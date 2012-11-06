@@ -23,10 +23,10 @@
  			<p><a href="" class="js_content_admin_hide_changes">Hide Changes</a></p>
 
  			<p><a href="" class="js_content_admin_show_content" rel="new" data-name="New">Show New</a></p>
- 			<div class="content_diff_all" rel="new"><?php echo $content_history->content; ?></div>
+ 			<div class="content_diff_all js_content_diff_all" rel="new"><?php echo $content_history->content; ?></div>
 
  			<p><a href="" class="js_content_admin_show_content" rel="original" data-name="Original">Show Original</a></p>
- 			<div class="content_diff_all" rel="original"><?php echo $prev_content_history->content; ?></div>
+ 			<div class="content_diff_all js_content_diff_all" rel="original"><?php echo $prev_content_history->content; ?></div>
 		</div>
 	</div>
 </div>

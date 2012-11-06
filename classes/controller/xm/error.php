@@ -26,10 +26,7 @@ class Controller_XM_Error extends Controller_Public {
 			$this->message = 'The requested URL was not found.';
 		}
 
-		if (Kohana::$is_cli) {
-			echo $this->message . EOL;
-			$this->auto_render = FALSE;
-		} else if (cl4::get_param('c_ajax', FALSE)) {
+		if (cl4::get_param('c_ajax', FALSE)) {
 			echo AJAX_Status::ajax(array(
 				'status' => AJAX_Status::NOT_FOUND_404,
 				'debug_msg' => 'Requested URL: ' . $_SERVER['REQUEST_URI'],

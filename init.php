@@ -41,11 +41,3 @@ if ($routes['dbchange']) {
 			'action' => NULL,
 	));
 }
-
-if ($routes['change_script'] && Kohana::$is_cli) {
-	// change script route: for running db and other upgrade change scripts
-	Route::set('change_script', 'change_script(/<action>)')
-		->defaults(array(
-			'controller' => 'change_script',
-	));
-}

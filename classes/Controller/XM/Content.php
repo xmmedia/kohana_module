@@ -70,7 +70,7 @@ class Controller_XM_Content extends Controller_Base {
 				),
 			));
 
-			$content_items = ORM::factory('content')
+			$content_items = ORM::factory('Content')
 				->find_all();
 			$route = Route::get('content_admin');
 			foreach ($content_items as $content_item) {
@@ -120,7 +120,7 @@ class Controller_XM_Content extends Controller_Base {
 		try {
 			$popup = (bool) Arr::get($_REQUEST, 'popup');
 
-			$content_item = ORM::factory('content', $this->request->param('id'))
+			$content_item = ORM::factory('Content', $this->request->param('id'))
 				->set_mode('edit');
 			if ( ! $content_item->loaded()) {
 				throw new Kohana_Exception('The content item could not be loaded');
@@ -161,7 +161,7 @@ class Controller_XM_Content extends Controller_Base {
 							->save();
 					}
 
-					$content_history = ORM::factory('content_history')
+					$content_history = ORM::factory('Content_History')
 						->values(array(
 							'content_id' => $content_item->id,
 							'creation_user_id' => Auth::instance()->get_user()->pk(),
@@ -218,7 +218,7 @@ setTimeout("window.close();", 2000);
 				->set('form_open', Form::open($this->request->uri()))
 				->bind('popup', $popup)
 				->bind('content_item', $content_item)
-				->set('content_history', ORM::factory('content_history'));
+				->set('content_history', ORM::factory('Content_History'));
 
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);
@@ -234,7 +234,7 @@ setTimeout("window.close();", 2000);
 	 */
 	public function action_discard_draft() {
 		try {
-			$content_item = ORM::factory('content', $this->request->param('id'))
+			$content_item = ORM::factory('Content', $this->request->param('id'))
 				->set_mode('edit');
 			if ( ! $content_item->loaded()) {
 				throw new Kohana_Exception('The content item could not be loaded');
@@ -271,7 +271,7 @@ setTimeout("window.close();", 2000);
 	 */
 	public function action_history() {
 		try {
-			$content_item = ORM::factory('content', $this->request->param('id'));
+			$content_item = ORM::factory('Content', $this->request->param('id'));
 			if ( ! $content_item->loaded()) {
 				throw new Kohana_Exception('The content item could not be loaded');
 			}
@@ -334,7 +334,7 @@ setTimeout("window.close();", 2000);
 	 */
 	public function action_view_changes() {
 		try {
-			$content_history = ORM::factory('content_history', $this->request->param('id'));
+			$content_history = ORM::factory('Content_History', $this->request->param('id'));
 			if ( ! $content_history->loaded()) {
 				throw new Kohana_Exception('The content history item could not be loaded');
 			}
@@ -352,9 +352,9 @@ setTimeout("window.close();", 2000);
 
 			$compare_to = Arr::get($_REQUEST, 'compare_to');
 			if ( ! empty($compare_to)) {
-				$prev_content_history = ORM::factory('content_history', $compare_to);
+				$prev_content_history = ORM::factory('Content_History', $compare_to);
 			} else {
-				$prev_content_history = ORM::factory('content_history')
+				$prev_content_history = ORM::factory('Content_History')
 					->where('content_id', '=', $content_item->id)
 					->where('creation_date', '<', $content_history->creation_date)
 					->limit(1)
@@ -423,7 +423,7 @@ setTimeout("window.close();", 2000);
 	 */
 	public function action_history_view() {
 		try {
-			$content_history = ORM::factory('content_history', $this->request->param('id'));
+			$content_history = ORM::factory('Content_History', $this->request->param('id'));
 			if ( ! $content_history->loaded()) {
 				throw new Kohana_Exception('The content history item could not be loaded');
 			}
@@ -463,7 +463,7 @@ setTimeout("window.close();", 2000);
 	 */
 	public function action_restore() {
 		try {
-			$content_history = ORM::factory('content_history', $this->request->param('id'));
+			$content_history = ORM::factory('Content_History', $this->request->param('id'));
 			if ( ! $content_history->loaded()) {
 				throw new Kohana_Exception('The content history item could not be loaded');
 			}
@@ -496,7 +496,7 @@ setTimeout("window.close();", 2000);
 						->save();
 				}
 
-				$content_history = ORM::factory('content_history')
+				$content_history = ORM::factory('Content_History')
 					->values(array(
 						'content_id' => $content_item->id,
 						'creation_user_id' => Auth::instance()->get_user()->pk(),

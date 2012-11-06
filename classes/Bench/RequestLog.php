@@ -190,7 +190,7 @@ class Bench_RequestLog extends Codebench {
 	);
 
 	public function bench_orm($subject) {
-		ORM::factory('request_log')
+		ORM::factory('Request_Log')
 			->values($subject)
 			->save();
 

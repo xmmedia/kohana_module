@@ -7,7 +7,7 @@
  *    ));
  *
  */
-class Controller_XM_Tree extends Controller_Base {
+class Controller_XM_Tree extends Controller_Admin {
 	public $auth_required = TRUE;
 
 	public $no_auto_render_actions = array('add', 'edit', 'delete');
@@ -22,13 +22,11 @@ class Controller_XM_Tree extends Controller_Base {
 	public function before() {
 		parent::before();
 
-		$this->add_admin_css();
-
 		if ($this->auto_render) {
-			$this->template->styles['xm/css/tree.css'] = 'screen';
-			$this->template->scripts['json2'] = 'xm/js/json2.min.js';
-			$this->template->scripts['jstorage'] = 'xm/js/jstorage.min.js';
-			$this->template->scripts['tree'] = 'xm/js/tree.js';
+			$this->add_style('tree', 'xm/css/tree.css', 'screen');
+			$this->add_script('json2', 'xm/js/json2.min.js')
+				->add_script('jstorage', 'xm/js/jstorage.min.js')
+				->add_script('tree', 'xm/js/tree.js');
 		}
 
 		$temp_model = ORM::factory($this->model_name);
@@ -163,7 +161,7 @@ class Controller_XM_Tree extends Controller_Base {
 				Tree::add_node($new_node, $parent_id, $after_node_id);
 
 				Message::add('The new node <em>' . HTML::chars($new_node->name()) . '</em> has been added.', Message::$notice);
-				$this->redirect();
+				$this->default_redirect();
 			} // if post
 
 			$tree_node = ORM::factory($this->model_name)
@@ -247,7 +245,7 @@ class Controller_XM_Tree extends Controller_Base {
 					->save();
 
 				Message::add('The node was saved successfully.', Message::$notice);
-				$this->redirect();
+				$this->default_redirect();
 			}
 
 			/*$_parent_subs = Tree::immediate_nodes($this->table_name, $parent_node['id'])
@@ -296,7 +294,7 @@ class Controller_XM_Tree extends Controller_Base {
 				Tree::delete_node($node, $keep_children);
 
 				Message::add('<em>' . HTML::chars($node->name()) . '</em> was deleted' . ($keep_children ? ' and it\'s children were kept' : '') . '.', Message::$notice);
-				$this->redirect();
+				$this->default_redirect();
 			} // if post
 
 			$parent = Tree::immediate_parent($this->table_name, $node->id);
@@ -338,7 +336,7 @@ class Controller_XM_Tree extends Controller_Base {
 	 * @param  string  $get     Any additional get parameter to add.
 	 * @return void
 	 */
-	protected function redirect($action = NULL, $get = '') {
-		$this->request->redirect(Route::get($this->route_name)->uri(array('action' => $action)) . $get);
+	protected function default_redirect($action = NULL, $get = '') {
+		$this->redirect(Route::get($this->route_name)->uri(array('action' => $action)) . $get);
 	}
 }

@@ -142,16 +142,16 @@ class Controller_XM_Login extends Controller_cl4_Login {
 						throw $e;
 					}
 
-					Request::current()->redirect(Route::get(Route::name(Request::current()->route()))->uri());
+					$this->redirect(Route::get(Route::name(Request::current()->route()))->uri());
 
 				} else {
 					Message::add(__(Kohana::message('login', 'password_email_username_not_found')), Message::$error);
-					Request::current()->redirect(Route::get(Route::name(Request::current()->route()))->uri(array('action' => 'forgot')));
+					$this->redirect(Route::get(Route::name(Request::current()->route()))->uri(array('action' => 'forgot')));
 				}
 
 			} else {
 				Message::add(__(Kohana::message('login', 'password_email_partial')), Message::$error);
-				Request::current()->redirect(Route::get(Route::name(Request::current()->route()))->uri(array('action' => 'forgot')));
+				$this->redirect(Route::get(Route::name(Request::current()->route()))->uri(array('action' => 'forgot')));
 			}
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);

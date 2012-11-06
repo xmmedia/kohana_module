@@ -11,7 +11,7 @@
  * @author     XM Media Inc.
  * @copyright  (c) 2012 XM Media Inc.
  */
-class Controller_XM_Content extends Controller_Base {
+class Controller_XM_Content extends Controller_Admin {
 	public $auth_required = TRUE;
 
 	public $secure_actions = array(
@@ -39,14 +39,12 @@ class Controller_XM_Content extends Controller_Base {
 	public function before() {
 		parent::before();
 
-		$this->add_admin_css();
-
 		if ($this->auto_render) {
-			$this->template->styles['xm/css/contentadmin.css'] = NULL;
+			$this->add_style('contentadmin', 'xm/css/contentadmin.css');
 
-			$this->template->scripts['tiny_mce'] = 'js/tiny_mce/jquery.tinymce.js';
-			$this->template->scripts['tiny_mce_config'] = 'js/tiny_mce_config.js';
-			$this->template->scripts['contentadmin'] = 'xm/js/contentadmin.js';
+			$this->add_script('tiny_mce', 'js/tiny_mce/jquery.tinymce.js')
+				->add_script('tiny_mce_config', 'js/tiny_mce_config.js')
+				->add_script('contentadmin', 'xm/js/contentadmin.js');
 		}
 	} // function before
 
@@ -362,7 +360,7 @@ setTimeout("window.close();", 2000);
 			}
 			if ( ! $prev_content_history->loaded()) {
 				Message::add('No previous changes could be found, therefore nothing to compare the content to. Please pick a history item that is not the last one.', Message::$error);
-				$this->request->redirect(Route::get('content_admin')->uri(array('action' => 'history', 'id' => $content_item->id)));
+				$this->redirect(Route::get('content_admin')->uri(array('action' => 'history', 'id' => $content_item->id)));
 			}
 
 			// generate the diff using daisydiff (http://code.google.com/p/daisydiff/)
@@ -545,6 +543,6 @@ setTimeout("window.close();", 2000);
 	 * @return  void
 	 */
 	function redirect_to_index() {
-		$this->request->redirect(Route::get('content_admin')->uri());
+		$this->redirect(Route::get('content_admin')->uri());
 	}
 }

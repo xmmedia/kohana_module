@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die ('No direct script access.');
 
-class Controller_XM_UserAdmin extends Controller_Base {
+class Controller_XM_UserAdmin extends Controller_Admin {
 	public $auth_required = TRUE;
 	public $secure_actions = array(
 		'index' => 'useradmin/index',
@@ -77,7 +77,8 @@ class Controller_XM_UserAdmin extends Controller_Base {
 		}
 		$this->user_admin_session = & $this->session['useradmin'];
 
-		$this->add_admin_css();
+		$this->add_css()
+			->add_js();
 
 		if ($this->request->action() == 'groups') {
 			$page_title = 'Groups';
@@ -121,23 +122,19 @@ class Controller_XM_UserAdmin extends Controller_Base {
 		}
 	} // function before
 
-	/**
-	* Adds the CSS for cl4admin
-	*/
-	protected function add_admin_css() {
+	protected function add_css() {
 		if ($this->auto_render) {
-			$this->template->styles['css/admin.css'] = NULL;
-			$this->template->styles['css/dbadmin.css'] = NULL;
-			$this->template->styles['xm/css/useradmin.css'] = NULL;
+			$this->add_style('dbadmin', 'css/dbadmin.css')
+				->add_style('useradmin', 'xm/css/useradmin.css');
 		}
 
 		return $this;
 	} // function add_admin_css
 
-	public function add_template_js() {
-		parent::add_template_js();
-
-		$this->template->scripts['useradmin'] = 'xm/js/useradmin.js';
+	public function add_js() {
+		if ($this->auto_render) {
+			$this->add_script('useradmin', 'xm/js/useradmin.js');
+		}
 
 		return $this;
 	}
@@ -715,7 +712,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	}
 
 	public function redirect_to_index() {
-		Request::current()->redirect(Route::get(Route::name(Request::current()->route()))->uri());
+		$this->redirect(Route::get(Route::name(Request::current()->route()))->uri());
 	}
 
 	public function action_groups() {
@@ -949,7 +946,7 @@ class Controller_XM_UserAdmin extends Controller_Base {
 	} // function
 
 	public function redirect_to_group_list() {
-		Request::current()->redirect(Route::get(Route::name(Request::current()->route()))->uri(array('action' => 'groups')));
+		$this->redirect(Route::get(Route::name(Request::current()->route()))->uri(array('action' => 'groups')));
 	}
 
 	public function action_group_permissions() {

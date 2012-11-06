@@ -5,7 +5,7 @@
  * Extend this and make the necessary changes.
  * This shouldn't be used directly; it will likely break and be a security hole.
  */
-class Controller_XM_Admin extends Controller_Base {
+class Controller_XM_Template_Admin extends Controller_Admin {
 	public $page = 'cl4admin';
 
 	// true means users must be logged in to access this controller
@@ -601,6 +601,6 @@ class Controller_XM_Admin extends Controller_Base {
 	* Redirects the user to the index for the current model based on the current route
 	*/
 	function redirect_to_index() {
-		$this->request->redirect(Route::get($this->route)->uri());
+		$this->redirect(Route::get($this->route)->uri());
 	} // function
 } // class

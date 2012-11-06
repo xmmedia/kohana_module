@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die ('No direct script access.');
 
-class Controller_XM_DBChange extends Controller_Base {
+class Controller_XM_DBChange extends Controller_Admin {
 	public $auth_required = TRUE;
 
 	public $secure_actions = array(
@@ -12,18 +12,10 @@ class Controller_XM_DBChange extends Controller_Base {
 	public function before() {
 		parent::before();
 
-		$this->add_admin_css();
-	}
-
-	/**
-	* Adds the CSS for cl4admin
-	*/
-	protected function add_admin_css() {
 		if ($this->auto_render) {
-			$this->template->styles['css/admin.css'] = NULL;
-			$this->template->styles['css/dbadmin.css'] = NULL;
+			$this->add_style('dbadmin', 'css/dbadmin.css');
 		}
-	} // function add_admin_css
+	}
 
 	public function action_index() {
 		$this->template->body_html = View::factory('dbchange/index')
@@ -191,4 +183,4 @@ EOA
 			} // if
 		} // if
 	} // function action_index
-} // class Controller_DB_Change
+}

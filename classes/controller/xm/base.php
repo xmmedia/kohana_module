@@ -291,11 +291,11 @@ class Controller_XM_Base extends Controller_Template {
 	} // function add_template_js
 
 	/**
-	* Adds JavaScript to the template on_load_js var, including checking to see if there should be a line break before the addition.
-	*
-	* @param  string  $js  The javascript to add
-	* @return  Controller_Base
-	*/
+	 * Adds JavaScript to the template on_load_js var, including checking to see if there should be a line break before the addition.
+	 *
+	 * @param  string  $js  The javascript to add
+	 * @return  Controller_Base
+	 */
 	public function add_on_load_js($js) {
 		if ( ! empty($this->on_load_js)) {
 			$this->on_load_js .= "\n";

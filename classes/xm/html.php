@@ -18,17 +18,17 @@ class XM_HTML extends cl4_HTML {
 	public static function style($file, array $attributes = NULL, $protocol = NULL, $index = FALSE) {
 		if (strpos($file, '://') === FALSE && strpos($file, '//') !== 0) {
 			// Add the base URL
-			$file = URL::base($index) . $file . HTML::get_filemtime_str($file);
+			$file = URL::site($file, $protocol, $index) . HTML::add_cache_buster($file);
 		}
 
 		// Set the stylesheet link
 		$attributes['href'] = $file;
 
 		// Set the stylesheet rel
-		$attributes['rel'] = 'stylesheet';
+		$attributes['rel'] = empty($attributes['rel']) ? 'stylesheet' : $attributes['rel'];
 
 		return '<link' . HTML::attributes($attributes) . '>';
-	} // function
+	}
 
 	/**
 	 * Creates a script link.
@@ -47,24 +47,26 @@ class XM_HTML extends cl4_HTML {
 	public static function script($file, array $attributes = NULL, $protocol = NULL, $index = FALSE) {
 		if (strpos($file, '://') === FALSE && strpos($file, '//') !== 0) {
 			// Add the base URL
-			$file = URL::base($index) . $file . HTML::get_filemtime_str($file);
+			$file = URL::site($file, $protocol, $index) . HTML::add_cache_buster($file);
 		}
 
 		// Set the script link
 		$attributes['src'] = $file;
 
 		return '<script' . HTML::attributes($attributes) . '></script>';
-	} // function
+	}
 
 	/**
+	* Rewrites the filename
 	* Gets the filemtime plus "?v=" for use with css and script files to help with getting browsers to grab a new version
 	*
-	* @param   mixed   $file  The file to mtime, DOCROOT is appended before
-	* @return  string  ?v=[time]
+	* @param   string  $file  The path to the file inside the DOCROOT.
+	* @return  string
 	*/
-	public static function get_filemtime_str($file) {
+	public static function add_cache_buster($file) {
 		if (file_exists(DOCROOT . $file)) {
-			return '?v=' . filemtime(DOCROOT . $file);
+			$ext = pathinfo(DOCROOT . $file, PATHINFO_EXTENSION);
+			return str_replace($ext, '', $file) . filemtime(DOCROOT . $file) . '.' . $ext;
 		}
-	} // function get_filemtime_str
+	}
 } // class XM_HTML

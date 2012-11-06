@@ -264,7 +264,7 @@ class Controller_XM_Base extends Controller_Template {
 	public function add_template_styles() {
 		$this->add_style('1140', 'css/1140.css')
 			->add_style('normalize', 'css/normalize.css')
-			->add_style('jquery-ui', '//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/pepper-grinder/jquery-ui.css')
+			->add_style('jquery-ui', '//ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/themes/pepper-grinder/jquery-ui.css')
 			->add_style('cl4', 'cl4/css/cl4.css')
 			->add_style('base', 'css/base.css');
 
@@ -278,7 +278,7 @@ class Controller_XM_Base extends Controller_Template {
 	 */
 	public function add_template_js() {
 		$this->add_script('jquery', '//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js')
-			->add_script('jquery_ui', '//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js');
+			->add_script('jquery_ui', '//ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js');
 		if (DEBUG_FLAG) {
 			$this->add_script('xm_debug', 'xm/js/debug.js');
 		}

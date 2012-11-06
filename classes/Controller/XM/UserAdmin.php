@@ -219,7 +219,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 	* @return  Model_User_Admin
 	*/
 	protected function get_user_orm_list($page_max_rows, $offset) {
-		$users = ORM::factory('user_admin')
+		$users = ORM::factory('User_Admin')
 			->set_options(array('mode' => 'view'))
 			->limit($page_max_rows)
 			->offset($offset * $page_max_rows);
@@ -370,7 +370,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 			$this->template->body_html = View::factory('useradmin/user_view')
 				->bind('user', $user);
 
-			$user = ORM::factory('user_admin', $this->id)
+			$user = ORM::factory('User_Admin', $this->id)
 				->set_mode('view')
 				->set_option('get_view_view_file', 'useradmin/user_view_form');
 		} catch (Exception $e) {
@@ -385,7 +385,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 	*/
 	public function action_add() {
 		try {
-			$user = ORM::factory('user_admin', $this->id)
+			$user = ORM::factory('User_Admin', $this->id)
 				->set_mode('add')
 				->set_option('get_form_view_file', 'useradmin/user_edit_form');
 
@@ -416,7 +416,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 	*/
 	public function action_edit() {
 		try {
-			$user = ORM::factory('user_admin', $this->id)
+			$user = ORM::factory('User_Admin', $this->id)
 				->set_mode('edit')
 				->set_option('get_form_view_file', 'useradmin/user_edit_form');
 
@@ -491,7 +491,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 		if ($this->allowed_groups === NULL) {
 			$allowed_all_groups = Auth::instance()->allowed('useradmin/user/group/*');
 			$this->allowed_groups = array();
-			foreach (ORM::factory('group')->find_all() as $group) {
+			foreach (ORM::factory('Group')->find_all() as $group) {
 				if ($allowed_all_groups || Auth::instance()->allowed('useradmin/user/group/' . $group->pk())) {
 					$this->allowed_groups[$group->pk()] = $group->name;
 				}
@@ -522,7 +522,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 				}
 
 				// re-add any groups that the user doesn't have permissions to
-				$other_groups = ORM::factory('user_group')
+				$other_groups = ORM::factory('User_Group')
 					->where('user_group.group_id', 'NOT IN', array_keys($allowed_groups))
 					->where('user_group.user_id', '=', $user->id)
 					->find_all();
@@ -620,7 +620,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 				// see if they want to delete the item
 				if (strtolower($_POST['cl4_delete_confirm']) == 'yes') {
 					try {
-						$user = ORM::factory('user_admin', $this->id);
+						$user = ORM::factory('User_Admin', $this->id);
 						if ($user->delete() == 0) {
 							Message::message('cl4admin', 'no_item_deleted', NULL, Message::$error);
 						} else {
@@ -660,7 +660,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 
 			$new_password = cl4_Auth::generate_password();
 
-			$user = ORM::factory('user', $this->id)
+			$user = ORM::factory('User', $this->id)
 				->values(array(
 					'password' => $new_password,
 					'force_update_password_flag' => 1,
@@ -716,7 +716,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 	}
 
 	public function action_groups() {
-		$group = ORM::factory('group')
+		$group = ORM::factory('Group')
 			->set_options(array('mode' => 'view'));
 		$groups = $group->find_all();
 		$group_count = $group->count_all();
@@ -803,7 +803,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 			$this->template->body_html = View::factory('useradmin/group_view')
 				->bind('group', $group);
 
-			$group = ORM::factory('group', $this->id)
+			$group = ORM::factory('Group', $this->id)
 				->set_mode('view')
 				->set_option('get_view_view_file', 'useradmin/group_view_form')
 				->set_option('display_buttons', FALSE);
@@ -819,7 +819,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 	*/
 	public function action_add_group() {
 		try {
-			$group = ORM::factory('group', $this->id)
+			$group = ORM::factory('Group', $this->id)
 				->set_mode('add')
 				->set_option('cancel_button_attributes', array(
 					'data-cl4_link' => URL::site(Route::get('useradmin')->uri(array('action' => 'cancel_group'))),
@@ -847,7 +847,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 	*/
 	public function action_edit_group() {
 		try {
-			$group = ORM::factory('group', $this->id)
+			$group = ORM::factory('Group', $this->id)
 				->set_mode('edit')
 				->set_option('cancel_button_attributes', array(
 					'data-cl4_link' => URL::site(Route::get('useradmin')->uri(array('action' => 'cancel_group'))),
@@ -904,7 +904,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 				// see if they want to delete the item
 				if (strtolower($_POST['cl4_delete_confirm']) == 'yes') {
 					try {
-						$group = ORM::factory('group', $this->id);
+						$group = ORM::factory('Group', $this->id);
 						if ($group->delete() == 0) {
 							Message::message('cl4admin', 'no_item_deleted', NULL, Message::$error);
 						} else {
@@ -952,7 +952,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 	public function action_group_permissions() {
 		if ( ! empty($_POST)) {
 			try {
-				ORM::factory('group', $this->id)
+				ORM::factory('Group', $this->id)
 					->save_through('permission', 'current_permissions', $save_through_counts);
 
 				Message::message('useradmin', 'group_permissions_updated', array(':count' => $this->get_count_msg('permission', $save_through_counts)), Message::$notice);
@@ -966,18 +966,18 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 		} // if
 
 		try {
-			$group = ORM::factory('group', $this->id);
+			$group = ORM::factory('Group', $this->id);
 
 			$select_perm_id = 'permission.id';
 			$select_perm_name = array(DB::expr("CONCAT_WS('', permission.name, ' (', permission.permission, ')')"), 'permission_name');
 
-			$all_permissions = ORM::factory('permission')
+			$all_permissions = ORM::factory('Permission')
 				->select($select_perm_id)
 				->select($select_perm_name)
 				->find_all()
 				->as_array('id', 'permission_name');
 
-			$current_permissions = ORM::factory('group', $this->id)
+			$current_permissions = ORM::factory('Group', $this->id)
 				->permission
 				->select($select_perm_id)
 				->select($select_perm_name)
@@ -1002,7 +1002,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 
 			// now attempt to generate the permission group drop downs
 			if (class_exists('Model_Permission_Group')) {
-				$permission_groups = ORM::factory('permission_group')
+				$permission_groups = ORM::factory('Permission_Group')
 					->find_all();
 
 				if (count($permission_groups) > 0) {
@@ -1039,7 +1039,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 	public function action_group_users() {
 		if ( ! empty($_POST)) {
 			try {
-				ORM::factory('group', $this->id)
+				ORM::factory('Group', $this->id)
 					->save_through('user', 'current_users', $save_through_counts);
 
 				Message::message('useradmin', 'group_users_updated', array(':count' => $this->get_count_msg('user', $save_through_counts)), Message::$notice);
@@ -1053,18 +1053,18 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 		} // if
 
 		try {
-			$group = ORM::factory('group', $this->id);
+			$group = ORM::factory('Group', $this->id);
 
 			$select_user_id = 'user.id';
 			$select_user_name = array(DB::expr("CONCAT_WS('', user.first_name, ' ', user.last_name)"), 'name');
 
-			$all_users = ORM::factory('user')
+			$all_users = ORM::factory('User')
 				->select($select_user_id)
 				->select($select_user_name)
 				->find_all()
 				->as_array('id', 'name');
 
-			$current_users = ORM::factory('group', $this->id)
+			$current_users = ORM::factory('Group', $this->id)
 				->user
 				->select($select_user_id)
 				->select($select_user_name)

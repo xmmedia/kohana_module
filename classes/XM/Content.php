@@ -20,7 +20,7 @@ class XM_Content {
 	 * @return  string
 	 */
 	public static function display($code) {
-		$content_item = ORM::factory('content')
+		$content_item = ORM::factory('Content')
 			->where('code', '=', $code)
 			->find();
 		if ($content_item->loaded()) {

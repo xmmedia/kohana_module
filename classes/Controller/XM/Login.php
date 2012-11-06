@@ -21,7 +21,7 @@ class Controller_XM_Login extends Controller_cl4_Login {
 					$resp = recaptcha_check_answer(RECAPTCHA_PRIVATE_KEY, $_SERVER['REMOTE_ADDR'], $_POST['recaptcha_challenge_field'], $_POST['recaptcha_response_field']);
 				}
 
-				$user = ORM::factory('user')->where('username', '=', $_POST['reset_username'])
+				$user = ORM::factory('User')->where('username', '=', $_POST['reset_username'])
 					->where_active('user')
 					->find();
 
@@ -93,7 +93,7 @@ class Controller_XM_Login extends Controller_cl4_Login {
 			// make sure that the reset_token has exactly 32 characters (not doing that would allow resets with token length 0)
 			// also make sure we aren't trying to reset the password for an admin
 			if ( ! empty($username) && ! empty($reset_token) && strlen($reset_token) == 32) {
-				$user = ORM::factory('user')
+				$user = ORM::factory('User')
 					->where('username', '=', $_REQUEST['username'])
 					->and_where('reset_token', '=', $_REQUEST['reset_token'])
 					->where_active('user')

@@ -76,7 +76,7 @@ class Controller_XM_Tree extends Controller_Base {
 			// create the tree
 			$current_depth = $node_depth = 0;
 			$counter = 0;
-			$tree_html = '<ul class="tree">';
+			$tree_html = '<ul class="tree js_tree">';
 			foreach($all_nodes as $node){
 				$node_depth = $node['depth'];
 				// skip the "root" node
@@ -98,15 +98,15 @@ class Controller_XM_Tree extends Controller_Base {
 
 				$tree_html .= '<li rel="' . $node['id'] . '"';
 				if ($children_array[$node['id']]) {
-					$tree_html .= ' class="has_children"><div><a href="" class="expand" rel="' . $node['id'] . '">';
+					$tree_html .= ' class="has_children js_has_children"><div><a href="" class="expand js_expand" rel="' . $node['id'] . '">';
 				} else {
-					$tree_html .= '><div><a href="" class="no_expand">';
+					$tree_html .= '><div><a href="" class="no_expand js_no_expand">';
 				}
 				$tree_html .= '</a><div class="name">' . HTML::chars($node['name']) . '</div>'
 					. '<div class="links">'
-						. HTML::anchor($route->uri(array('action' => 'edit', 'id' => $node['id'])) . '?c_ajax=1', '', array('class' => 'cl4_edit edit_item', 'title' => 'Edit Item'))
-						. HTML::anchor($route->uri(array('action' => 'add', 'id' => $node['id'])) . '?c_ajax=1', '', array('class' => 'cl4_add add_sub_item', 'title' => 'Add Sub Item'))
-						. HTML::anchor($route->uri(array('action' => 'delete', 'id' => $node['id'])) . '?c_ajax=1', '', array('class' => 'cl4_delete delete_item', 'title' => 'Delete Item'))
+						. HTML::anchor($route->uri(array('action' => 'edit', 'id' => $node['id'])) . '?c_ajax=1', '', array('class' => 'cl4_edit edit_item js_edit_item', 'title' => 'Edit Item'))
+						. HTML::anchor($route->uri(array('action' => 'add', 'id' => $node['id'])) . '?c_ajax=1', '', array('class' => 'cl4_add add_sub_item js_add_sub_item', 'title' => 'Add Sub Item'))
+						. HTML::anchor($route->uri(array('action' => 'delete', 'id' => $node['id'])) . '?c_ajax=1', '', array('class' => 'cl4_delete delete_item js_delete_item', 'title' => 'Delete Item'))
 					. '</div>'
 				. '</div>';
 

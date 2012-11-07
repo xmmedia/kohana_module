@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die ('No direct script access.');
 
-class Model_XM_User extends Model_cl4_User {
+class Model_XM_User extends Model_CL4_User {
 	/**
 	 * Returns the user's name: first, last.
 	 *

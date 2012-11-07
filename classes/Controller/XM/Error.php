@@ -26,7 +26,7 @@ class Controller_XM_Error extends Controller_Public {
 			$this->message = 'The requested URL was not found.';
 		}
 
-		if (cl4::get_param('c_ajax', FALSE)) {
+		if (CL4::get_param('c_ajax', FALSE)) {
 			echo AJAX_Status::ajax(array(
 				'status' => AJAX_Status::NOT_FOUND_404,
 				'debug_msg' => 'Requested URL: ' . $_SERVER['REQUEST_URI'],

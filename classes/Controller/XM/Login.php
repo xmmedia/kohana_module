@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die ('No direct script access.');
 
-class Controller_XM_Login extends Controller_cl4_Login {
+class Controller_XM_Login extends Controller_CL4_Login {
 	/**
 	* A basic implementation of the "Forgot password" functionality
 	*/
@@ -86,9 +86,9 @@ class Controller_XM_Login extends Controller_cl4_Login {
 			// set the template title (see Controller_Base for implementation)
 			$this->template->page_title = 'Password Reset';
 
-			$username = cl4::get_param('username');
+			$username = CL4::get_param('username');
 			if ($username !== null) $username = trim($username);
-			$reset_token = cl4::get_param('reset_token');
+			$reset_token = CL4::get_param('reset_token');
 
 			// make sure that the reset_token has exactly 32 characters (not doing that would allow resets with token length 0)
 			// also make sure we aren't trying to reset the password for an admin
@@ -102,7 +102,7 @@ class Controller_XM_Login extends Controller_cl4_Login {
 				// admin passwords cannot be reset by email
 				if (is_numeric($user->id) && ! in_array($user->username, $default_options['admin_accounts'])) {
 					try {
-						$password = cl4_Auth::generate_password();
+						$password = CL4_Auth::generate_password();
 						$user->values(array(
 								'password' => $password,
 								// reset the failed login count

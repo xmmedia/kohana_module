@@ -140,7 +140,7 @@ class Controller_XM_Template_Admin extends Controller_Admin {
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'problem_preparing', NULL, Message::$error);
-			if ( ! cl4::is_dev()) $this->redirect_to_index();
+			if ( ! CL4::is_dev()) $this->redirect_to_index();
 		}
 	}
 
@@ -253,7 +253,7 @@ class Controller_XM_Template_Admin extends Controller_Admin {
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'error_preparing_add', NULL, Message::$error);
-			if ( ! cl4::is_dev()) $this->redirect_to_index();
+			if ( ! CL4::is_dev()) $this->redirect_to_index();
 		}
 	} // function action_add
 
@@ -280,7 +280,7 @@ class Controller_XM_Template_Admin extends Controller_Admin {
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'error_preparing_edit', NULL, Message::$error);
-			if ( ! cl4::is_dev()) $this->redirect_to_index();
+			if ( ! CL4::is_dev()) $this->redirect_to_index();
 		} // try
 	} // function action_edit
 
@@ -300,7 +300,7 @@ class Controller_XM_Template_Admin extends Controller_Admin {
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'problem_saving', NULL, Message::$error);
-			if ( ! cl4::is_dev()) $this->redirect_to_index();
+			if ( ! CL4::is_dev()) $this->redirect_to_index();
 		} // try
 	} // function save_model
 
@@ -319,7 +319,7 @@ class Controller_XM_Template_Admin extends Controller_Admin {
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'error_viewing', NULL, Message::$error);
-			if ( ! cl4::is_dev()) $this->redirect_to_index();
+			if ( ! CL4::is_dev()) $this->redirect_to_index();
 		}
 	} // function
 
@@ -363,7 +363,7 @@ class Controller_XM_Template_Admin extends Controller_Admin {
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'error_preparing_add', NULL, Message::$error);
-			if ( ! cl4::is_dev()) $this->redirect_to_index();
+			if ( ! CL4::is_dev()) $this->redirect_to_index();
 		}
 	} // function action_add_multiple
 
@@ -404,7 +404,7 @@ class Controller_XM_Template_Admin extends Controller_Admin {
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'error_preparing_edit', NULL, Message::$error);
-			if ( ! cl4::is_dev()) $this->redirect_to_index();
+			if ( ! CL4::is_dev()) $this->redirect_to_index();
 		}
 	} // function action_edit_multiple
 
@@ -433,7 +433,7 @@ class Controller_XM_Template_Admin extends Controller_Admin {
 					} catch (Exception $e) {
 						Kohana_Exception::caught_handler($e);
 						Message::message('cl4admin', 'error_deleting', NULL, Message::$error);
-						if ( ! cl4::is_dev()) $this->redirect_to_index();
+						if ( ! CL4::is_dev()) $this->redirect_to_index();
 					}
 				} else {
 					Message::message('cl4admin', 'item_not_deleted', NULL, Message::$notice);
@@ -452,7 +452,7 @@ class Controller_XM_Template_Admin extends Controller_Admin {
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'error_preparing_delete', NULL, Message::$error);
-			if ( ! cl4::is_dev()) $this->redirect_to_index();
+			if ( ! CL4::is_dev()) $this->redirect_to_index();
 		}
 	} // function action_delete
 
@@ -519,7 +519,7 @@ class Controller_XM_Template_Admin extends Controller_Admin {
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'error_preparing_search', NULL, Message::$error);
-			if ( ! cl4::is_dev()) $this->redirect_to_index();
+			if ( ! CL4::is_dev()) $this->redirect_to_index();
 		}
 	} // function
 
@@ -535,7 +535,7 @@ class Controller_XM_Template_Admin extends Controller_Admin {
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'error_clearing_search', NULL, Message::$error);
-			if ( ! cl4::is_dev()) $this->redirect_to_index();
+			if ( ! CL4::is_dev()) $this->redirect_to_index();
 		}
 	} // function action_cancel_search
 

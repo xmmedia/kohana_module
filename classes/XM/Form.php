@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die ('No direct script access.');
 
-class XM_Form extends cl4_Form {
+class XM_Form extends CL4_Form {
 	public static function month($name, $selected, $attributes = NULL, $options = array()) {
 		$options += array(
 			'include_month_number' => FALSE,

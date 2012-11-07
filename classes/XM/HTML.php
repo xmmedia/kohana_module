@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die ('No direct script access.');
 
-class XM_HTML extends cl4_HTML {
+class XM_HTML extends CL4_HTML {
 	/**
 	 * Creates a style sheet link element.
 	 * Same as Kohana_HTML::style() but supports using //example.com/path/to/file.css and doesn't add a type="text/css"

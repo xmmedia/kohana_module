@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die ('No direct script access.');
 
-class XM_Valid extends cl4_Valid {
+class XM_Valid extends CL4_Valid {
 	/**
 	 * Checks if the value of a field is a valid date. The date must be in the format of "YYYY-MM-DD".
 	 *

@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die ('No direct script access.');
 
-class XM_ORM extends cl4_ORM {
+class XM_ORM extends CL4_ORM {
 	/**
 	* The default layout for get_field_layout()
 	* @var  string

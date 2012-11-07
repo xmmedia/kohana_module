@@ -376,7 +376,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);
 			Message::message('useradmin', 'error_viewing', NULL, Message::$error);
-			if ( ! cl4::is_dev()) $this->redirect_to_index();
+			if ( ! CL4::is_dev()) $this->redirect_to_index();
 		}
 	} // function action_view
 
@@ -407,7 +407,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'error_preparing_add', NULL, Message::$error);
-			if ( ! cl4::is_dev()) $this->redirect_to_index();
+			if ( ! CL4::is_dev()) $this->redirect_to_index();
 		}
 	} // function action_add
 
@@ -447,7 +447,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'error_preparing_edit', NULL, Message::$error);
-			if ( ! cl4::is_dev()) $this->redirect_to_index();
+			if ( ! CL4::is_dev()) $this->redirect_to_index();
 		} // try
 	} // function action_edit
 
@@ -594,7 +594,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'problem_saving', NULL, Message::$error);
-			if ( ! cl4::is_dev()) $this->redirect_to_index();
+			if ( ! CL4::is_dev()) $this->redirect_to_index();
 		} // try
 	} // function save_user
 
@@ -630,7 +630,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 					} catch (Exception $e) {
 						Kohana_Exception::caught_handler($e);
 						Message::message('cl4admin', 'error_deleting', NULL, Message::$error);
-						if ( ! cl4::is_dev()) $this->redirect_to_index();
+						if ( ! CL4::is_dev()) $this->redirect_to_index();
 					}
 				} else {
 					Message::message('cl4admin', 'item_not_deleted', NULL, Message::$notice);
@@ -647,7 +647,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'error_preparing_delete', NULL, Message::$error);
-			if ( ! cl4::is_dev()) $this->redirect_to_index();
+			if ( ! CL4::is_dev()) $this->redirect_to_index();
 		}
 	} // function action_delete
 
@@ -697,7 +697,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);
 			Message::message('useradmin', 'error_preparing_email', NULL, Message::$error);
-			if ( ! cl4::is_dev()) $this->redirect_to_index();
+			if ( ! CL4::is_dev()) $this->redirect_to_index();
 		}
 	} // function action_email_password
 
@@ -810,7 +810,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);
 			Message::message('useradmin', 'error_viewing', NULL, Message::$error);
-			if ( ! cl4::is_dev()) $this->redirect_to_index();
+			if ( ! CL4::is_dev()) $this->redirect_to_index();
 		}
 	} // function action_view_group
 
@@ -838,7 +838,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'error_preparing_add', NULL, Message::$error);
-			if ( ! cl4::is_dev()) $this->redirect_to_group_list();
+			if ( ! CL4::is_dev()) $this->redirect_to_group_list();
 		}
 	} // function action_add
 
@@ -862,7 +862,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'error_preparing_edit', NULL, Message::$error);
-			if ( ! cl4::is_dev()) $this->redirect_to_group_list();
+			if ( ! CL4::is_dev()) $this->redirect_to_group_list();
 		} // try
 	} // function action_edit
 
@@ -886,7 +886,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'problem_saving', NULL, Message::$error);
-			if ( ! cl4::is_dev()) $this->redirect_to_group_list();
+			if ( ! CL4::is_dev()) $this->redirect_to_group_list();
 		} // try
 	} // function save_user
 
@@ -914,7 +914,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 					} catch (Exception $e) {
 						Kohana_Exception::caught_handler($e);
 						Message::message('cl4admin', 'error_deleting', NULL, Message::$error);
-						if ( ! cl4::is_dev()) $this->redirect_to_group_list();
+						if ( ! CL4::is_dev()) $this->redirect_to_group_list();
 					}
 				} else {
 					Message::message('cl4admin', 'item_not_deleted', NULL, Message::$notice);
@@ -931,7 +931,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'error_preparing_delete', NULL, Message::$error);
-			if ( ! cl4::is_dev()) $this->redirect_to_group_list();
+			if ( ! CL4::is_dev()) $this->redirect_to_group_list();
 		}
 	} // function action_delete
 
@@ -961,7 +961,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 			} catch (Exception $e) {
 				Kohana_Exception::caught_handler($e);
 				Message::message('cl4admin', 'problem_saving', NULL, Message::$error);
-				if ( ! cl4::is_dev()) $this->redirect_to_group_list();
+				if ( ! CL4::is_dev()) $this->redirect_to_group_list();
 			} // try
 		} // if
 
@@ -1032,7 +1032,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'error_preparing_edit', NULL, Message::$error);
-			if ( ! cl4::is_dev()) $this->redirect_to_group_list();
+			if ( ! CL4::is_dev()) $this->redirect_to_group_list();
 		} // try
 	} // function action_group_permissions
 
@@ -1048,7 +1048,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 			} catch (Exception $e) {
 				Kohana_Exception::caught_handler($e);
 				Message::message('cl4admin', 'problem_saving', NULL, Message::$error);
-				if ( ! cl4::is_dev()) $this->redirect_to_group_list();
+				if ( ! CL4::is_dev()) $this->redirect_to_group_list();
 			} // try
 		} // if
 
@@ -1095,7 +1095,7 @@ class Controller_XM_UserAdmin extends Controller_Admin {
 		} catch (Exception $e) {
 			Kohana_Exception::caught_handler($e);
 			Message::message('cl4admin', 'error_preparing_edit', NULL, Message::$error);
-			if ( ! cl4::is_dev()) $this->redirect_to_group_list();
+			if ( ! CL4::is_dev()) $this->redirect_to_group_list();
 		} // try
 	} // function action_group_users
 

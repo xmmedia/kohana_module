@@ -148,7 +148,7 @@ class Controller_XM_Base extends Controller_Template {
 				$this->template->message = Message::display();
 			}
 
-			if (cl4::is_dev()) {
+			if (CL4::is_dev()) {
 				// this is so a session isn't started needlessly when in debug mode
 				$this->template->session = Session::instance();
 			}
@@ -233,7 +233,7 @@ class Controller_XM_Base extends Controller_Template {
 
 	/**
 	 * If the login timeout post functionality is enabled, this will store the passed
-	 * GET and POST in the session key for use in Controller_cl4_Login to re-post the data.
+	 * GET and POST in the session key for use in Controller_CL4_Login to re-post the data.
 	 * If there is no get or post, this will unset the session key
 	 *
 	 * @return  void

@@ -97,9 +97,7 @@ class Controller_XM_Base extends Controller_Template {
 
 		parent::before();
 
-		if (PHP_SAPI != 'cli') {
-			$this->check_login();
-		}
+		$this->check_login();
 
 		// set up the default template values for the base template
 		if ($this->auto_render) {

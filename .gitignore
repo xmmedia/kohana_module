@@ -12,3 +12,4 @@ nbproject
 *.komodoproject
 build
 sftp-config.json
+.sass-cache

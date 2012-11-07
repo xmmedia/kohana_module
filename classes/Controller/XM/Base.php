@@ -18,9 +18,9 @@ class Controller_XM_Base extends Controller_Template {
 	public $page;
 
 	/**
-	 * Controls access for the whole controller
-	 * If the entire controller REQUIRES that the user be logged in, set this to TRUE
-	 * If some or all of the controller DOES NOT need to be logged in, set to this FALSE; to control which actions require authentication or a specific permission, us the $secure_actions array
+	 * Controls access for the whole controller.
+	 * If the entire controller REQUIRES that the user be logged in, set this to TRUE.
+	 * If some or all of the controller DOES NOT need to be logged in, set to this FALSE; to control which actions require authentication or a specific permission, us the $secure_actions array.
 	 */
 	public $auth_required = FALSE;
 

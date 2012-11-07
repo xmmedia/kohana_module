@@ -4,6 +4,10 @@
  * Public controller for public pages.
  */
 class Controller_XM_Public extends Controller_Base {
+	/**
+	 * The template to use. The string is replaced with the View in before().
+	 * @var  View
+	 */
 	public $template = 'public/template';
 
 	/**

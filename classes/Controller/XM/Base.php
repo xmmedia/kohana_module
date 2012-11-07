@@ -257,16 +257,12 @@ class Controller_XM_Base extends Controller_Template {
 	} // function process_timeout
 
 	/**
-	 * Sets up and adds some styles, including 1140 gride, normalize, jquery ui, cl4.css and base.css
+	 * Adds the base style, which is the compiled version of the SASS files.
 	 *
 	 * @return  Controller_Base
 	 */
 	public function add_template_styles() {
-		$this->add_style('1140', 'css/1140.css')
-			->add_style('normalize', 'css/normalize.css')
-			->add_style('jquery-ui', '//ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/themes/pepper-grinder/jquery-ui.css')
-			->add_style('cl4', 'cl4/css/cl4.css')
-			->add_style('base', 'css/base.css');
+		$this->add_style('base', 'css/base.css');
 
 		return $this;
 	} // function add_template_styles

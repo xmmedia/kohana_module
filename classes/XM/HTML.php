@@ -18,7 +18,7 @@ class XM_HTML extends CL4_HTML {
 	public static function style($file, array $attributes = NULL, $protocol = NULL, $index = FALSE) {
 		if (strpos($file, '://') === FALSE && strpos($file, '//') !== 0) {
 			// Add the base URL
-			$file = URL::site($file, $protocol, $index) . HTML::add_cache_buster($file);
+			$file = URL::site(HTML::add_cache_buster($file), $protocol, $index);
 		}
 
 		// Set the stylesheet link
@@ -47,7 +47,7 @@ class XM_HTML extends CL4_HTML {
 	public static function script($file, array $attributes = NULL, $protocol = NULL, $index = FALSE) {
 		if (strpos($file, '://') === FALSE && strpos($file, '//') !== 0) {
 			// Add the base URL
-			$file = URL::site($file, $protocol, $index) . HTML::add_cache_buster($file);
+			$file = URL::site(HTML::add_cache_buster($file), $protocol, $index);
 		}
 
 		// Set the script link
@@ -66,7 +66,7 @@ class XM_HTML extends CL4_HTML {
 	public static function add_cache_buster($file) {
 		if (file_exists(DOCROOT . $file)) {
 			$ext = pathinfo(DOCROOT . $file, PATHINFO_EXTENSION);
-			return str_replace($ext, '', $file) . filemtime(DOCROOT . $file) . '.' . $ext;
+			return substr($file, 0, strlen($ext) * -1) . filemtime(DOCROOT . $file) . '.' . $ext;
 		}
 	}
 } // class XM_HTML

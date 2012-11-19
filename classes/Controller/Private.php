@@ -1,3 +1,3 @@
 <?php defined('SYSPATH') or die ('No direct script access.');
 
-class Controller_Admin extends Controller_XM_Admin {}
+class Controller_Private extends Controller_XM_Private {}

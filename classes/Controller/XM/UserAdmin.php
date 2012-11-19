@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die ('No direct script access.');
 
-class Controller_XM_UserAdmin extends Controller_Admin {
+class Controller_XM_UserAdmin extends Controller_Private {
 	public $auth_required = TRUE;
 	public $secure_actions = array(
 		'index' => 'useradmin/index',

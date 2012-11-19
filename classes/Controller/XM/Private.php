@@ -3,7 +3,7 @@
 /**
  * Public controller for admin pages.
  */
-class Controller_XM_Admin extends Controller_Base {
+class Controller_XM_Private extends Controller_Base {
 	/**
 	 * Controls access for the whole controller.
 	 * If the entire controller REQUIRES that the user be logged in, set this to TRUE.

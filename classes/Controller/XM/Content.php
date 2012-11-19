@@ -11,7 +11,7 @@
  * @author     XM Media Inc.
  * @copyright  (c) 2012 XM Media Inc.
  */
-class Controller_XM_Content extends Controller_Admin {
+class Controller_XM_Content extends Controller_Private {
 	public $auth_required = TRUE;
 
 	public $secure_actions = array(

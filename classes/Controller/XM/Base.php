@@ -111,6 +111,8 @@ class Controller_XM_Base extends Controller_Template {
 				->add_template_js();
 
 			// set some empty variables
+			$this->template->page_title = '';
+			$this->template->body_class = '';
 			$this->template->pre_message = '';
 			$this->template->body_html = '';
 		} // if

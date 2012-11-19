@@ -13,5 +13,5 @@
 </div>
 <div class="clear"></div>
 
-<?php echo View::factory('cl4/base/footer')
+<?php echo View::factory('base/footer')
 	->set($kohana_view_data); ?>

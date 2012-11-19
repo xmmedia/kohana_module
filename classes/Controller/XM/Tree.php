@@ -7,7 +7,7 @@
  *    ));
  *
  */
-class Controller_XM_Tree extends Controller_Admin {
+class Controller_XM_Tree extends Controller_Private {
 	public $auth_required = TRUE;
 
 	public $no_auto_render_actions = array('add', 'edit', 'delete');

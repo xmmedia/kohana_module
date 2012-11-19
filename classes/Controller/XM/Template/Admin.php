@@ -5,7 +5,7 @@
  * Extend this and make the necessary changes.
  * This shouldn't be used directly; it will likely break and be a security hole.
  */
-class Controller_XM_Template_Admin extends Controller_Admin {
+class Controller_XM_Template_Admin extends Controller_Private {
 	public $page = 'cl4admin';
 
 	// true means users must be logged in to access this controller

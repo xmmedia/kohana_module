@@ -17,7 +17,7 @@ echo HTML::chars($page_title);
 	} // foreach
 } // if
 ?>
-	<!--[if lte IE 9]><link rel="stylesheet" href="/css/1140ie.css" type="text/css" media="screen" /><![endif]-->
+	<!--[if lte IE 9]><link href="/css/1140ie.css" rel="stylesheet"><![endif]-->
 <?php
 foreach ($styles as $file => $type) {
 	echo TAB, HTML::style($file, array('media' => $type)), EOL;

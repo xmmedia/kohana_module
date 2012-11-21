@@ -62,7 +62,7 @@
 	)); ?>
 	<?php echo Form::input_button(NULL, 'Cancel', array(
 		'class' => 'cl4_button_link',
-		'data-cl4_link' => URL::site(Route::get('useradmin')->uri(array('action' => 'cancel_group'))),
+		'data-cl4_link' => URL::site(Route::get('user_admin')->uri(array('action' => 'cancel_group'))),
 	)); ?>
 </div>
 

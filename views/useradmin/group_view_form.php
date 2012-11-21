@@ -21,7 +21,7 @@ if ($any_visible) {
 
 $submit_button_options = array(
 	'class' => 'cl4_button_link',
-	'data-cl4_link' => URL::site(Route::get('useradmin')->uri(array('action' => 'groups'))),
+	'data-cl4_link' => URL::site(Route::get('user_admin')->uri(array('action' => 'groups'))),
 );
 
 echo '<div class="cl4_buttons">' . Form::submit(NULL, __('Return to List'), $submit_button_options) . '</div>';

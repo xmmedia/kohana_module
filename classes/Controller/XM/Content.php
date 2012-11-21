@@ -4,7 +4,7 @@
  * Controller for the admin of the content items.
  * Deals with displaying the list, edit form, history list, and reverting.
  * Also adds the required history records.
- * The permission "contentadmin" is required for all actions.
+ * The permission "content_admin" is required for all actions.
  *
  * @package    XM
  * @category   Content Admin
@@ -15,17 +15,17 @@ class Controller_XM_Content extends Controller_Private {
 	public $auth_required = TRUE;
 
 	public $secure_actions = array(
-		'index' => 'contentadmin',
-		'edit' => 'contentadmin',
-		'cancel' => 'contentadmin',
-		'discard_draft' => 'contentadmin',
-		'history' => 'contentadmin',
-		'view_changes' => 'contentadmin',
-		'history_view' => 'contentadmin',
-		'restore' => 'contentadmin',
+		'index' => 'content_admin',
+		'edit' => 'content_admin',
+		'cancel' => 'content_admin',
+		'discard_draft' => 'content_admin',
+		'history' => 'content_admin',
+		'view_changes' => 'content_admin',
+		'history_view' => 'content_admin',
+		'restore' => 'content_admin',
 	);
 
-	public $page = 'contentadmin';
+	public $page = 'content_admin';
 
 	protected $no_auto_render_actions = array('history_view');
 
@@ -40,11 +40,11 @@ class Controller_XM_Content extends Controller_Private {
 		parent::before();
 
 		if ($this->auto_render) {
-			$this->add_style('contentadmin', 'xm/css/contentadmin.css');
+			$this->add_style('content_admin', 'xm/css/content.css');
 
 			$this->add_script('tiny_mce', 'js/tiny_mce/jquery.tinymce.js')
 				->add_script('tiny_mce_config', 'js/tiny_mce_config.js')
-				->add_script('contentadmin', 'xm/js/contentadmin.js');
+				->add_script('content_admin', 'xm/js/content.js');
 		}
 	} // function before
 
@@ -131,7 +131,7 @@ class Controller_XM_Content extends Controller_Private {
 
 			// load some extra CSS and onload JS if in a popup
 			if ($popup) {
-				$this->template->styles['xm/css/contentadmin_popup.css'] = NULL;
+				$this->template->styles['xm/css/content_admin_popup.css'] = NULL;
 				$this->add_on_load_js('$(\'.content_admin_cancel\').on(\'click\', function() {
 	window.close();
 });');

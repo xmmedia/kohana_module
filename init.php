@@ -2,10 +2,10 @@
 
 $routes = Kohana::$config->load('xm.routes');
 
-if ($routes['useradmin']) {
-	Route::set('useradmin', 'useradmin(/<action>(/<id>))')
+if ($routes['user_admin']) {
+	Route::set('user_admin', 'user_admin(/<action>(/<id>))')
 		->defaults(array(
-			'controller' => 'useradmin',
+			'controller' => 'UserAdmin',
 			'action' => NULL,
 	));
 }
@@ -14,15 +14,15 @@ if ($routes['content_admin']) {
 	// route for content admin
 	Route::set('content_admin', 'content_admin(/<action>(/<id>))')
 		->defaults(array(
-			'controller' => 'content',
+			'controller' => 'Content',
 			'action' => 'index',
 	));
 }
 
-if ($routes['dbchange']) {
-	Route::set('dbchange', 'dbchange(/<action>)')
+if ($routes['db_change']) {
+	Route::set('dbchange', 'db_change(/<action>)')
 		->defaults(array(
-			'controller' => 'dbchange',
+			'controller' => 'DB_Change',
 			'action' => NULL,
 	));
 }

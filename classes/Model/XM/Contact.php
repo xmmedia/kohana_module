@@ -21,7 +21,7 @@ class Model_XM_Contact extends ORM {
 			'is_nullable' => FALSE,
 		),
 		'name' => array(
-			'field_type' => 'text',
+			'field_type' => 'Text',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -32,7 +32,7 @@ class Model_XM_Contact extends ORM {
 			),
 		),
 		'email' => array(
-			'field_type' => 'text',
+			'field_type' => 'Text',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -43,7 +43,7 @@ class Model_XM_Contact extends ORM {
 			),
 		),
 		'phone' => array(
-			'field_type' => 'text',
+			'field_type' => 'Text',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -55,7 +55,7 @@ class Model_XM_Contact extends ORM {
 			),
 		),
 		'message' => array(
-			'field_type' => 'textarea',
+			'field_type' => 'TextArea',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -63,14 +63,14 @@ class Model_XM_Contact extends ORM {
 			'is_nullable' => FALSE,
 		),
 		'date_submitted' => array(
-			'field_type' => 'datetime',
+			'field_type' => 'DateTime',
 			'list_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
 		),
 		'ip_address' => array(
-			'field_type' => 'text',
+			'field_type' => 'Text',
 			'list_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,

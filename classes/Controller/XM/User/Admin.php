@@ -340,10 +340,10 @@ class Controller_XM_User_Admin extends Controller_Private {
 	 */
 	protected function get_user_list_buttons() {
 		$list_buttons = array(
-			Form::submit(NULL, 'Add New User', array('class' => 'cl4_button_link cl4_list_button', 'data-cl4_link' => URL::site($this->request->route()->uri(array('action' => 'add'))))),
+			Form::submit(NULL, 'Add New User', array('class' => 'js_cl4_button_link cl4_list_button', 'data-cl4_link' => URL::site($this->request->route()->uri(array('action' => 'add'))))),
 		);
 		if ( ! empty($this->sort_column) || $this->search_applied) {
-			$list_buttons[] = Form::input_button(NULL, 'Clear Search/Sort', array('class' => 'cl4_button_link cl4_list_button', 'data-cl4_link' => URL::site($this->request->route()->uri() . '?sort_column=&sort_direction=&search%5Btext%5D=&search%5Bgroup_id%5D&search%5Bonly_active%5D=1')));
+			$list_buttons[] = Form::input_button(NULL, 'Clear Search/Sort', array('class' => 'js_cl4_button_link cl4_list_button', 'data-cl4_link' => URL::site($this->request->route()->uri() . '?sort_column=&sort_direction=&search%5Btext%5D=&search%5Bgroup_id%5D&search%5Bonly_active%5D=1')));
 		}
 
 		$list_buttons[] = Form::open(NULL, array('method' => 'GET'))

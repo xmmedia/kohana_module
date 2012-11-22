@@ -1,5 +1,5 @@
 <div class="cl4_list_header">
-	<input type="submit" value="Add New Group" class="cl4_button_link cl4_list_button" data-cl4_link="<?php echo URL::site(Route::get('user_admin')->uri(array('action' => 'add_group'))); ?>">
+	<input type="submit" value="Add New Group" class="js_cl4_button_link cl4_list_button" data-cl4_link="<?php echo URL::site(Route::get('user_admin')->uri(array('action' => 'add_group'))); ?>">
 	<div class="clear"></div>
 </div>
 

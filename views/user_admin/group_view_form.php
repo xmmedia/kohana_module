@@ -20,7 +20,7 @@ if ($any_visible) {
 }
 
 $submit_button_options = array(
-	'class' => 'cl4_button_link',
+	'class' => 'js_cl4_button_link',
 	'data-cl4_link' => URL::site(Route::get('user_admin')->uri(array('action' => 'groups'))),
 );
 

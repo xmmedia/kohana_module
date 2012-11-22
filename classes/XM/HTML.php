@@ -67,6 +67,8 @@ class XM_HTML extends CL4_HTML {
 		if (file_exists(DOCROOT . $file)) {
 			$ext = pathinfo(DOCROOT . $file, PATHINFO_EXTENSION);
 			return substr($file, 0, strlen($ext) * -1) . filemtime(DOCROOT . $file) . '.' . $ext;
+		} else {
+			return $file;
 		}
 	}
 } // class XM_HTML

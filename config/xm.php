@@ -3,8 +3,8 @@
 return array(
 	'routes' => array(
 		'content_admin' => FALSE,
-		'dbchange' => TRUE,
-		'useradmin' => TRUE,
+		'db_change' => TRUE,
+		'user_admin' => TRUE,
 		'change_script' => FALSE,
 	),
 );

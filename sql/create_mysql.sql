@@ -402,24 +402,24 @@ INSERT INTO `state` VALUES(69, '0000-00-00 00:00:00', 40, 'Yukon', 'YT', '', 10)
 INSERT INTO `permission` VALUES(NULL, 'dbchange/index', 'DB Change', 'Allows the user to run SQL commands across multiple databases.');
 
 
--- Permission for User Admin (useradmin controller)
-INSERT INTO `permission` VALUES(NULL, 'useradmin/index', 'User Admin', 'Allows the user to access the list of users.');
+-- Permission for User Admin (user_admin controller)
+INSERT INTO `permission` VALUES(NULL, 'user_admin/index', 'User Admin', 'Allows the user to access the list of users.');
 
-INSERT INTO `permission` VALUES(NULL, 'useradmin/add', 'User Admin - Add User', 'Allows the user to add new users.');
-INSERT INTO `permission` VALUES(NULL, 'useradmin/edit', 'User Admin - Edit User', 'Allows the user to edit users, excluding their permissions.');
-INSERT INTO `permission` VALUES(NULL, 'useradmin/edit/permissions', 'User Admin - Edit User Permissions', 'Allows the user to edit a users permissions.');
-INSERT INTO `permission` VALUES(NULL, 'useradmin/user/group/*', 'User Admin - All Groups', 'Allows the user to add any permission group to a user.');
-INSERT INTO `permission` VALUES(NULL, 'useradmin/delete', 'User Admin - Delete User', 'Allows the user to delete users.');
-INSERT INTO `permission` VALUES(NULL, 'useradmin/email_password', 'User Admin - Email Password', 'Allows the user to email a new password to a user.');
-INSERT INTO `permission` VALUES(NULL, 'useradmin/group/index', 'User Admin - Groups List', 'Allows the user to access the list of permission groups.');
-INSERT INTO `permission` VALUES(NULL, 'useradmin/group/add', 'User Admin - Group Add', 'Allows the user to add a new permission group. Doesn''t allow the user to assign permissions to the group.');
-INSERT INTO `permission` VALUES(NULL, 'useradmin/group/edit', 'User Admin - Group Edit', 'Allows the user to edit the name and description of a permission group.');
-INSERT INTO `permission` VALUES(NULL, 'useradmin/group/permissions', 'User Admin - Group Permissions', 'Allows the user to add and remove permissions from the permission group.');
-INSERT INTO `permission` VALUES(NULL, 'useradmin/group/users', 'User Admin - Group Users', 'Allows the user to add and remove users from the permission group.');
-INSERT INTO `permission` VALUES(NULL, 'useradmin/group/delete', 'User Admin - Group Delete', 'Allows the user to delete a permission group.');
+INSERT INTO `permission` VALUES(NULL, 'user_admin/add', 'User Admin - Add User', 'Allows the user to add new users.');
+INSERT INTO `permission` VALUES(NULL, 'user_admin/edit', 'User Admin - Edit User', 'Allows the user to edit users, excluding their permissions.');
+INSERT INTO `permission` VALUES(NULL, 'user_admin/edit/permissions', 'User Admin - Edit User Permissions', 'Allows the user to edit a users permissions.');
+INSERT INTO `permission` VALUES(NULL, 'user_admin/user/group/*', 'User Admin - All Groups', 'Allows the user to add any permission group to a user.');
+INSERT INTO `permission` VALUES(NULL, 'user_admin/delete', 'User Admin - Delete User', 'Allows the user to delete users.');
+INSERT INTO `permission` VALUES(NULL, 'user_admin/email_password', 'User Admin - Email Password', 'Allows the user to email a new password to a user.');
+INSERT INTO `permission` VALUES(NULL, 'user_admin/group/index', 'User Admin - Groups List', 'Allows the user to access the list of permission groups.');
+INSERT INTO `permission` VALUES(NULL, 'user_admin/group/add', 'User Admin - Group Add', 'Allows the user to add a new permission group. Doesn''t allow the user to assign permissions to the group.');
+INSERT INTO `permission` VALUES(NULL, 'user_admin/group/edit', 'User Admin - Group Edit', 'Allows the user to edit the name and description of a permission group.');
+INSERT INTO `permission` VALUES(NULL, 'user_admin/group/permissions', 'User Admin - Group Permissions', 'Allows the user to add and remove permissions from the permission group.');
+INSERT INTO `permission` VALUES(NULL, 'user_admin/group/users', 'User Admin - Group Users', 'Allows the user to add and remove users from the permission group.');
+INSERT INTO `permission` VALUES(NULL, 'user_admin/group/delete', 'User Admin - Group Delete', 'Allows the user to delete a permission group.');
 
--- updates the description on useradmin/index if the permission already exists
-UPDATE `permission` SET `description` = 'Allows the user to access the list of users.' WHERE `permission`.`permission` = 'useradmin/index' LIMIT 1 ;
+-- updates the description on user_admin/index if the permission already exists
+UPDATE `permission` SET `description` = 'Allows the user to access the list of users.' WHERE `permission`.`permission` = 'user_admin/index' LIMIT 1 ;
 
 
 -- tables and permissions for the content admin

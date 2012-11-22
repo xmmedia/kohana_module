@@ -73,17 +73,17 @@ class Controller_XM_Content extends Controller_Private {
 			$route = Route::get('content_admin');
 			foreach ($content_items as $content_item) {
 				if (Content::allowed($content_item->code)) {
-					$links = HTML::anchor($route->uri(array('action' => 'edit', 'id' => $content_item->id)), '&nbsp;', array('class' => 'cl4_edit', 'title' => 'Edit'));
+					$links = HTML::anchor($route->uri(array('action' => 'edit', 'id' => $content_item->id)), '<span class="cl4_icon cl4_edit"></span>', array('title' => 'Edit'));
 					if ( ! empty($content_item->content_page_id) && ! empty($content_item->content_page->url)) {
-						$links .= HTML::anchor($content_item->content_page->url . '?content_admin_show=' . $content_item->code, '&nbsp;', array('class' => 'cl4_view', 'title' => 'View', 'target' => '_blank'));
+						$links .= HTML::anchor($content_item->content_page->url . '?content_admin_show=' . $content_item->code, '<span class="cl4_icon cl4_view"></span>', array('title' => 'View', 'target' => '_blank'));
 					} else {
-						$links .= '<span class="cl4_no_icon">&nbsp;</span>';
+						$links .= '<span class="cl4_icon"></span>';
 					}
-					$links .= HTML::anchor($route->uri(array('action' => 'history', 'id' => $content_item->id)), '&nbsp;', array('class' => 'cl4_info', 'title' => 'View History'));
+					$links .= HTML::anchor($route->uri(array('action' => 'history', 'id' => $content_item->id)), '<span class="cl4_icon cl4_info"></span>', array('title' => 'View History'));
 
 					if ($content_item->has_draft()) {
-						$draft_links = HTML::anchor($content_item->content_page->url . '?content_admin_show=' . $content_item->code . '&draft=1', '&nbsp;', array('class' => 'cl4_checked', 'title' => 'View the Draft', 'target' => '_blank'))
-							. HTML::anchor($route->uri(array('action' => 'discard_draft', 'id' => $content_item->id)), '&nbsp;', array('class' => 'cl4_delete', 'title' => 'Discard the Draft'));
+						$draft_links = HTML::anchor($content_item->content_page->url . '?content_admin_show=' . $content_item->code . '&draft=1', '<span class="cl4_icon cl4_checked"></span>', array('title' => 'View the Draft', 'target' => '_blank'))
+							. HTML::anchor($route->uri(array('action' => 'discard_draft', 'id' => $content_item->id)), '<span class="cl4_icon cl4_delete"></span>', array('title' => 'Discard the Draft'));
 					} else {
 						$draft_links = '';
 					}
@@ -296,16 +296,16 @@ setTimeout("window.close();", 2000);
 			$found_live_version = FALSE;
 			foreach ($content_history as $history) {
 				if ( ! $found_live_version && ! Form::check_date_empty_value($history->post_date)) {
-					$is_live_html = ' <span class="cl4_checked" title="This is the live version">&nbsp;</span>';
+					$is_live_html = ' <span class="cl4_icon cl4_checked" title="This is the live version"></span>';
 					$found_live_version = TRUE;
 				} else {
 					$is_live_html = '';
 				}
 
 				$content_history_table->add_row(array(
-					HTML::anchor(Route::get('content_admin')->uri(array('action' => 'view_changes', 'id' => $history->id)), '&nbsp;', array('class' => 'cl4_info', 'title' => 'View Changes'))
-						. HTML::anchor(Route::get('content_admin')->uri(array('action' => 'history_view', 'id' => $history->id)), '&nbsp;', array('class' => 'cl4_view js_history_view', 'title' => 'View this Version'))
-						. ( ! empty($is_live_html) ? HTML::anchor(Route::get('content_admin')->uri(array('action' => 'restore', 'id' => $history->id)), '&nbsp;', array('class' => 'cl4_refresh js_restore', 'title' => 'Restore this Version')) : '<span class="cl4_no_icon">&nbsp;</span>'),
+					HTML::anchor(Route::get('content_admin')->uri(array('action' => 'view_changes', 'id' => $history->id)), '<span class="cl4_icon cl4_info"></span>', array('title' => 'View Changes'))
+						. HTML::anchor(Route::get('content_admin')->uri(array('action' => 'history_view', 'id' => $history->id)), '<span class="cl4_icon cl4_view"></span>', array('class' => 'js_history_view', 'title' => 'View this Version'))
+						. ( ! empty($is_live_html) ? HTML::anchor(Route::get('content_admin')->uri(array('action' => 'restore', 'id' => $history->id)), '<span class="cl4_icon cl4_refresh"></span>', array('class' => 'js_restore', 'title' => 'Restore this Version')) : '<span class="cl4_icon"></span>'),
 					HTML::chars($history->creation_date) . $is_live_html,
 					HTML::chars($history->creation_user->name()),
 					HTML::chars($history->comments),

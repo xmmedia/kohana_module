@@ -5,7 +5,7 @@ $routes = Kohana::$config->load('xm.routes');
 if ($routes['user_admin']) {
 	Route::set('user_admin', 'user_admin(/<action>(/<id>))')
 		->defaults(array(
-			'controller' => 'UserAdmin',
+			'controller' => 'User_Admin',
 			'action' => NULL,
 	));
 }

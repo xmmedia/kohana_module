@@ -125,7 +125,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 	protected function add_css() {
 		if ($this->auto_render) {
 			$this->add_style('dbadmin', 'css/dbadmin.css')
-				->add_style('user_admin', 'xm/css/user.css');
+				->add_style('user_admin', 'xm/css/user_admin.css');
 		}
 
 		return $this;
@@ -133,7 +133,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 
 	public function add_js() {
 		if ($this->auto_render) {
-			$this->add_script('user_admin', 'xm/js/user.js');
+			$this->add_script('user_admin', 'xm/js/user_admin.js');
 		}
 
 		return $this;
@@ -301,36 +301,31 @@ class Controller_XM_User_Admin extends Controller_Private {
 	protected function get_list_row_links($user) {
 		$id = $user->id;
 
-		$first_col = HTML::anchor($this->request->route()->uri(array('action' => 'view', 'id' => $id)), '&nbsp;', array(
+		$first_col = HTML::anchor($this->request->route()->uri(array('action' => 'view', 'id' => $id)), '<span class="cl4_icon cl4_view"></span>', array(
 			'title' => __('View this user'),
-			'class' => 'cl4_view',
 		));
 
 		if (Auth::instance()->allowed('user_admin/edit')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'edit', 'id' => $id)), '&nbsp;', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'edit', 'id' => $id)), '<span class="cl4_icon cl4_edit"></span>', array(
 				'title' => __('Edit this user'),
-				'class' => 'cl4_edit',
 			));
 		}
 
 		if (Auth::instance()->allowed('user_admin/delete')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'delete', 'id' => $id)), '&nbsp;', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'delete', 'id' => $id)), '<span class="cl4_icon cl4_delete"></span>', array(
 				'title' => __('Delete this user'),
-				'class' => 'cl4_delete',
 			));
 		}
 
 		if (Auth::instance()->allowed('user_admin/add')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'add', 'id' => $id)), '&nbsp;', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'add', 'id' => $id)), '<span class="cl4_icon cl4_add"></span>', array(
 				'title' => __('Copy this user'),
-				'class' => 'cl4_add',
 			));
 		}
 
 		if (Auth::instance()->allowed('user_admin/email_password')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'email_password', 'id' => $id)), '&nbsp;', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'email_password', 'id' => $id)), '<span class="cl4_icon cl4_mail"></span>', array(
 				'title' => __('Email a new random password to this user'),
-				'class' => 'cl4_mail',
 			));
 		}
 
@@ -658,7 +653,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 				$this->redirect_to_index();
 			} // if
 
-			$new_password = cl4_Auth::generate_password();
+			$new_password = CL4_Auth::generate_password();
 
 			$user = ORM::factory('User', $this->id)
 				->values(array(
@@ -751,43 +746,37 @@ class Controller_XM_User_Admin extends Controller_Private {
 	protected function get_group_list_row_links($group) {
 		$id = $group->id;
 
-		$first_col = HTML::anchor($this->request->route()->uri(array('action' => 'view_group', 'id' => $id)), '&nbsp;', array(
+		$first_col = HTML::anchor($this->request->route()->uri(array('action' => 'view_group', 'id' => $id)), '<span class="cl4_icon cl4_view"></span>', array(
 			'title' => __('View this user'),
-			'class' => 'cl4_view',
 		));
 
 		if (Auth::instance()->allowed('user_admin/group/edit')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'edit_group', 'id' => $id)), '&nbsp;', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'edit_group', 'id' => $id)), '<span class="cl4_icon cl4_edit"></span>', array(
 				'title' => __('Edit this group'),
-				'class' => 'cl4_edit',
 			));
 		}
 
 		if (Auth::instance()->allowed('user_admin/group/delete')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'delete_group', 'id' => $id)), '&nbsp;', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'delete_group', 'id' => $id)), '<span class="cl4_icon cl4_delete"></span>', array(
 				'title' => __('Delete this group'),
-				'class' => 'cl4_delete',
 			));
 		}
 
 		if (Auth::instance()->allowed('user_admin/group/add')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'add_group', 'id' => $id)), '&nbsp;', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'add_group', 'id' => $id)), '<span class="cl4_icon cl4_add"></span>', array(
 				'title' => __('Copy this group'),
-				'class' => 'cl4_add',
 			));
 		}
 
 		if (Auth::instance()->allowed('user_admin/group/permissions')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'group_permissions', 'id' => $id)), '&nbsp;', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'group_permissions', 'id' => $id)), '<span class="cl4_icon cl4_lock"></span>', array(
 				'title' => __('Edit the permissions for this group'),
-				'class' => 'cl4_lock',
 			));
 		}
 
 		if (Auth::instance()->allowed('user_admin/group/users')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'group_users', 'id' => $id)), '&nbsp;', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'group_users', 'id' => $id)), '<span class="cl4_icon cl4_contact2"></span>', array(
 				'title' => __('Edit the users that have this permission group'),
-				'class' => 'cl4_contact2',
 			));
 		}
 

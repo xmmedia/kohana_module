@@ -165,7 +165,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 
 		$table_options = array(
 			'table_attributes' => array(
-				'class' => 'cl4_content',
+				'class' => 'cl4_content user_admin_list',
 			),
 			'heading' => array(),
 		);

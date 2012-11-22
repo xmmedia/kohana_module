@@ -125,7 +125,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 	protected function add_css() {
 		if ($this->auto_render) {
 			$this->add_style('dbadmin', 'css/dbadmin.css')
-				->add_style('user_admin', 'xm/css/user.css');
+				->add_style('user_admin', 'xm/css/user_admin.css');
 		}
 
 		return $this;
@@ -133,7 +133,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 
 	public function add_js() {
 		if ($this->auto_render) {
-			$this->add_script('user_admin', 'xm/js/user.js');
+			$this->add_script('user_admin', 'xm/js/user_admin.js');
 		}
 
 		return $this;
@@ -653,7 +653,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 				$this->redirect_to_index();
 			} // if
 
-			$new_password = cl4_Auth::generate_password();
+			$new_password = CL4_Auth::generate_password();
 
 			$user = ORM::factory('User', $this->id)
 				->values(array(

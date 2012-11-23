@@ -37,19 +37,19 @@ class XM_Task_Change_Script_Add extends Task_Change_Script {
 	protected function _execute(array $params) {
 		$this->configure($params);
 
-		echo PHP_EOL, 'Logging the change script...', PHP_EOL;
+		Minion_CLI::write(PHP_EOL . 'Logging the change script...');
 
 		$change_script = Arr::get($params, 'change_script');
 
 		$change_script_full_path = realpath(ABS_ROOT . $this->_config['script_path'] . DIRECTORY_SEPARATOR. $change_script);
 		if ( ! is_readable($change_script_full_path)) {
-			echo PHP_EOL, '!!! The change script is not reabled by PHP. Change the permissions on these before attempting to run the change scripts. !!!', PHP_EOL, PHP_EOL;
+			Minion_CLI::write(PHP_EOL . '!!! The change script is not reabled by PHP. Change the permissions on these before attempting to run the change scripts. !!!' . PHP_EOL);
 			return;
 		}
 
 		$file_contents = file_get_contents($change_script_full_path);
 		if (empty($file_contents)) {
-			echo PHP_EOL, '!!! The change script is an empty file. All change scripts need to have content (at a minimum, a description). !!!', PHP_EOL, PHP_EOL;
+			Minion_CLI::write(PHP_EOL . '!!! The change script is an empty file. All change scripts need to have content (at a minimum, a description). !!!' . PHP_EOL);
 			return;
 		}
 
@@ -61,26 +61,26 @@ class XM_Task_Change_Script_Add extends Task_Change_Script {
 		foreach ($this->_config['databases'] as $database) {
 			// skip any databases that aren't in the databases property/array if it's been set
 			if ($this->_databases !== NULL && ! in_array($database, $this->_databases)) {
-				echo PHP_EOL, '!!! Skipping ', $databases, ' because it\'s not in the list of configured databases', PHP_EOL;
+				Minion_CLI::write(PHP_EOL . '!!! Skipping ', $databases, ' because it\'s not in the list of configured databases');
 				continue;
 			}
 
-			echo PHP_EOL, '-------', PHP_EOL, $database, PHP_EOL;
+			fwrite(STDOUT, PHP_EOL . '-------' . PHP_EOL . $database);
 
 			try {
 				DB::query(NULL, "USE " . Database::instance()->quote_identifier($database))->execute();
 			} catch (Exception $e) {
-				echo PHP_EOL, '!!! Failed to select the database ', $database, ': ', Kohana_Exception::text($e), PHP_EOL;
+				Minion_CLI::write(PHP_EOL . '!!! Failed to select the database ' . $database . ': ' . Kohana_Exception::text($e));
 				continue;
 			}
 
 			DB::insert($this->_config['log_table'], array('filename', 'type', 'applied', 'description', 'log'))
 				->values(array($change_script, $script_type, DB::expr("NOW()"), $description, '@manual'))
 				->execute();
-			echo ' -- done', PHP_EOL;
+			fwrite(STDOUT, ' -- done');
 		} // foreach
 
-		echo PHP_EOL, 'The change script was logged successfully.', PHP_EOL, PHP_EOL;
+		Minion_CLI::write(PHP_EOL . 'The change script was logged successfully.' . PHP_EOL);
 	}
 
 	public function build_validation(Validation $validation) {

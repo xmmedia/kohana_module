@@ -37,15 +37,15 @@ class XM_Task_Change_Script_Run extends Task_Change_Script {
 	protected function _execute(array $params) {
 		$this->configure($params);
 
-		echo PHP_EOL, 'Running the change scripts...', PHP_EOL;
+		Minion_CLI::write(PHP_EOL . 'Running the change scripts...');
 
 		$change_scripts = $this->all_change_scripts();
 		if (empty($change_scripts)) {
-			echo 'No change scripts were found so no change scripts will be run.', PHP_EOL;
+			Minion_CLI::write('No change scripts were found so no change scripts will be run.');
 			return;
 		}
 
-		echo 'There are a total of ', count($change_scripts), ' change scripts.', PHP_EOL;
+		Minion_CLI::write('There are a total of ' . count($change_scripts) . ' change scripts.');
 
 		if ( ! $this->change_script_readable($change_scripts)) {
 			return;
@@ -54,29 +54,29 @@ class XM_Task_Change_Script_Run extends Task_Change_Script {
 		foreach ($this->_config['databases'] as $database) {
 			// skip any databases that aren't in the databases property/array if it's been set
 			if ($this->_databases !== NULL && ! in_array($database, $this->_databases)) {
-				echo PHP_EOL, '!!! Skipping ', $databases, ' because it\'s not in the list of configured databases', PHP_EOL;
+				Minion_CLI::write(PHP_EOL . '!!! Skipping ' . $databases . ' because it\'s not in the list of configured databases');
 				continue;
 			}
 
 			try {
 				DB::query(NULL, "USE " . Database::instance()->quote_identifier($database))->execute();
 			} catch (Exception $e) {
-				echo PHP_EOL, '!!! Failed to select the database ', $database, ': ', Kohana_Exception::text($e), PHP_EOL;
+				Minion_CLI::write(PHP_EOL . '!!! Failed to select the database ' . $database . ': ' . Kohana_Exception::text($e));
 				continue;
 			}
 
 			try {
 				$to_apply_change_scripts = $this->change_scripts_to_apply($change_scripts);
 
-				echo PHP_EOL, '-------', PHP_EOL, $database, PHP_EOL;
+				Minion_CLI::write(PHP_EOL . '-------' . PHP_EOL . $database);
 				if (empty($to_apply_change_scripts)) {
-					echo '** No changes scripts need to be run. **', PHP_EOL;
+					Minion_CLI::write('** No changes scripts need to be run. **');
 					continue;
 				}
 
-				echo 'Running change scripts...', PHP_EOL, PHP_EOL;
+				Minion_CLI::write('Running change scripts...' . PHP_EOL);
 				foreach ($to_apply_change_scripts as $change_script_full_path => $to_apply_change_script) {
-					echo '    ' . $to_apply_change_script;
+					fwrite(STDOUT, $to_apply_change_script);
 
 					$file_contents = file_get_contents($change_script_full_path);
 
@@ -84,7 +84,7 @@ class XM_Task_Change_Script_Run extends Task_Change_Script {
 					// so stop execution on this database and move to the next
 					$manual_command_pos = UTF8::strpos($file_contents, '@manual');
 					if ($manual_command_pos !== FALSE) {
-						echo ' -- !!! execution stopped !!!', PHP_EOL, '    -- The change script ', $to_apply_change_script, ' has the @manual command. Run this script manually and use the action "change_script/add" to add the script to change_script table.', PHP_EOL, PHP_EOL;
+						Minion_CLI::write(' -- !!! execution stopped !!!' . PHP_EOL . '    -- The change script ' . $to_apply_change_script . ' has the @manual command. Run this script manually and use the action "change_script/add" to add the script to change_script table.' . PHP_EOL);
 						continue 2;
 					}
 
@@ -101,15 +101,15 @@ class XM_Task_Change_Script_Run extends Task_Change_Script {
 					DB::insert($this->_config['log_table'], array('filename', 'type', 'applied', 'description', 'log'))
 						->values(array($to_apply_change_script, $script_type, DB::expr("NOW()"), $description, $log))
 						->execute();
-					echo ' -- done', PHP_EOL;
+					fwrite(STDOUT, ' -- done');
 				}
 
 			} catch (Exception $e) {
-				echo PHP_EOL . '!!! There was an error while running the change script "' . $to_apply_change_script . '" on `' . $database . '`: ' . Kohana_Exception::text($e) . PHP_EOL;
+				Minion_CLI::write(PHP_EOL . '!!! There was an error while running the change script "' . $to_apply_change_script . '" on `' . $database . '`: ' . Kohana_Exception::text($e));
 				continue;
 			}
 		}
 
-		echo PHP_EOL . 'The change scripts that needed to be run have been run successfully.' . PHP_EOL . PHP_EOL;
+		Minion_CLI::write(PHP_EOL . 'The change scripts that needed to be run have been run successfully.' . PHP_EOL);
 	}
 }

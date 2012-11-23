@@ -37,15 +37,15 @@ class XM_Task_Change_Script_List extends Task_Change_Script {
 	protected function _execute(array $params) {
 		$this->configure($params);
 
-		echo PHP_EOL, 'Checking which change scripts need to be run...', PHP_EOL;
+		Minion_CLI::write(PHP_EOL . 'Checking which change scripts need to be run...');
 
 		$change_scripts = $this->all_change_scripts();
 		if (empty($change_scripts)) {
-			echo 'No change scripts were found so no change scripts need to be run.', PHP_EOL;
+			Minion_CLI::write('No change scripts were found so no change scripts need to be run.');
 			return;
 		}
 
-		echo 'There are a total of ', count($change_scripts), ' change scripts.', PHP_EOL;
+		Minion_CLI::write('There are a total of ' . count($change_scripts) . ' change scripts.');
 
 		if ( ! $this->change_script_readable($change_scripts)) {
 			return;
@@ -54,44 +54,44 @@ class XM_Task_Change_Script_List extends Task_Change_Script {
 		foreach ($this->_config['databases'] as $database) {
 			// skip any databases that aren't in the databases property/array if it's been set
 			if ($this->_databases !== NULL && ! in_array($database, $this->_databases)) {
-				echo PHP_EOL, '!!! Skipping ', $databases, ' because it\'s not in the list of configured databases', PHP_EOL;
+				Minion_CLI::write(PHP_EOL . '!!! Skipping ' . $databases . ' because it\'s not in the list of configured databases');
 				continue;
 			}
 
 			try {
 				DB::query(NULL, "USE " . Database::instance()->quote_identifier($database))->execute();
 			} catch (Exception $e) {
-				echo PHP_EOL, '!!! Failed to select the database ', $database, ': ', Kohana_Exception::text($e), PHP_EOL;
+				Minion_CLI::write(PHP_EOL . '!!! Failed to select the database ' . $database . ': ' . Kohana_Exception::text($e));
 				continue;
 			}
 
 			try {
 				$to_apply_change_scripts = $this->change_scripts_to_apply($change_scripts);
 
-				echo PHP_EOL, '-------', PHP_EOL, $database, PHP_EOL;
+				Minion_CLI::write(PHP_EOL . '-------' . PHP_EOL . $database);
 				if ( ! empty($to_apply_change_scripts)) {
-					echo 'The following ', count($to_apply_change_scripts), ' change scripts need to be run on `', $database, '`:', PHP_EOL, PHP_EOL;
+					Minion_CLI::write('The following ' . count($to_apply_change_scripts) . ' change scripts need to be run on `' . $database . '`:' . PHP_EOL);
 					foreach ($to_apply_change_scripts as $change_script_full_path => $to_apply_change_script) {
 						$file_contents = file_get_contents($change_script_full_path);
 
 						$manual_command_pos = UTF8::strpos($file_contents, '@manual');
 						if ($manual_command_pos !== FALSE) {
-							echo '   ', $to_apply_change_script, ' -- change script execution will stop at this change script because of @manual in the file (the script will not be run)', PHP_EOL;
+							Minion_CLI::write('   ' . $to_apply_change_script . ' -- change script execution will stop at this change script because of @manual in the file (the script will not be run)');
 							// end the loop for the change scripts on this and move to the next db
 							continue 2;
 						} else {
-							echo '   ', $to_apply_change_script, PHP_EOL;
+							Minion_CLI::write('   ' . $to_apply_change_script);
 						}
 					} // foreach
 				} else {
-					echo '** No changes scripts need to be run. **' . PHP_EOL;
+					Minion_CLI::write('** No changes scripts need to be run. **');
 				}
 			} catch (Exception $e) {
-				echo PHP_EOL, '!!! Failed to check which change scripts need to be run on `', $database, '`: ', Kohana_Exception::text($e), PHP_EOL;
+				Minion_CLI::write(PHP_EOL . '!!! Failed to check which change scripts need to be run on `' . $database . '`: ' . Kohana_Exception::text($e));
 				continue;
 			}
 		}
 
-		echo PHP_EOL, 'To run the change scripts use the run task.', PHP_EOL, PHP_EOL;
+		Minion_CLI::write(PHP_EOL . 'To run the change scripts use the run task.' . PHP_EOL);
 	}
 }

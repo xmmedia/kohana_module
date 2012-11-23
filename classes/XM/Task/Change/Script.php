@@ -53,7 +53,9 @@ class XM_Task_Change_Script extends Minion_Task {
 	 **/
 	protected $_databases;
 
-	protected function _execute(array $params) {}
+	protected function _execute(array $params) {
+		Minion_CLI::write('To use the change scripts, use the list, run and add tasks.');
+	}
 
 	protected function configure(array $params) {
 		$default_config = (array) Kohana::$config->load('change_script.default');
@@ -76,7 +78,7 @@ class XM_Task_Change_Script extends Minion_Task {
 		}
 
 		if (empty($this->_config['databases'])) {
-			echo '!!! No databases are included in the config', PHP_EOL;
+			Minion_CLI::write('!!! No databases are included in the config');
 			exit(1);
 		}
 
@@ -228,7 +230,7 @@ class XM_Task_Change_Script extends Minion_Task {
 		foreach ($change_scripts as $change_script_full_path => $change_script) {
 			$script_type = strtoupper(pathinfo($change_script_full_path, PATHINFO_EXTENSION));
 			if ( ! in_array($script_type, $this->_config['supported_exts'])) {
-				echo PHP_EOL . '!!! The change script "' . $change_script . '" will be skipped because it\'s an unsupported extension. !!!' . PHP_EOL . PHP_EOL;
+				Minion_CLI::write(PHP_EOL . '!!! The change script "' . $change_script . '" will be skipped because it\'s an unsupported extension. !!!' . PHP_EOL);
 				unset($change_scripts[$change_script_full_path]);
 			}
 		}
@@ -250,24 +252,24 @@ class XM_Task_Change_Script extends Minion_Task {
 		foreach ($change_scripts as $change_script_full_path => $change_script) {
 			if ( ! is_readable($change_script_full_path)) {
 				$not_readable = TRUE;
-				echo PHP_EOL . 'The change script "' . $change_script . '" is not readable by PHP.' . PHP_EOL;
+				Minion_CLI::write(PHP_EOL . 'The change script "' . $change_script . '" is not readable by PHP.');
 				continue;
 			}
 
 			$file_contents = UTF8::trim(file_get_contents($change_script_full_path));
 			if (empty($file_contents)) {
 				$empty = TRUE;
-				echo PHP_EOL . 'The change script "' . $change_script . '" is empty.' . PHP_EOL;
+				Minion_CLI::write(PHP_EOL . 'The change script "' . $change_script . '" is empty.');
 				continue;
 			}
 		}
 
 		if ($not_readable) {
-			echo PHP_EOL . '!!! 1 or more of the change scripts are not reabled by PHP. Change the permissions on these before attempting to run the change scripts. !!!' . PHP_EOL . PHP_EOL;
+			Minion_CLI::write(PHP_EOL . '!!! 1 or more of the change scripts are not reabled by PHP. Change the permissions on these before attempting to run the change scripts. !!!' . PHP_EOL);
 			return FALSE;
 		}
 		if ($empty) {
-			echo PHP_EOL . '!!! 1 or more of the change scripts are empty files. All change scripts need to have content (at a minimum, a description). !!!' . PHP_EOL . PHP_EOL;
+			Minion_CLI::write(PHP_EOL . '!!! 1 or more of the change scripts are empty files. All change scripts need to have content (at a minimum, a description). !!!' . PHP_EOL);
 			return FALSE;
 		}
 

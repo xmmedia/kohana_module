@@ -557,7 +557,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 
 				$mail = new Mail();
 				$mail->IsHTML();
-				$mail->add_user($user->id);
+				$mail->AddUser($user->id);
 				$mail->Subject = SHORT_NAME . ' Login Information';
 				$editing_user = Auth::instance()->get_user();
 				if (Valid::email($editing_user->username)) {
@@ -666,7 +666,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 
 			$mail = new Mail();
 			$mail->IsHTML();
-			$mail->add_user($user->id);
+			$mail->AddUser($user->id);
 			$mail->Subject = SHORT_NAME . ' Login Information';
 			$editing_user = Auth::instance()->get_user();
 			if (Valid::email($editing_user->username)) {

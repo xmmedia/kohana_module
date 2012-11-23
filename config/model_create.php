@@ -1,6 +1,11 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 return array(
+	'model_comment' => array(
+		'author' => 'XM Media Inc.',
+		'copyright' => '(c) ' . date('Y') . ' XM Media Inc.',
+	),
+
 	'default_meta_data' => array(
 		'list_flag' => TRUE,      // displays the data for this column in get_list() and get_editable_list()
 		'edit_flag' => TRUE,      // displays this field in any edit forms and allows the user to save new values

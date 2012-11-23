@@ -182,44 +182,33 @@ class Model_XM_Contact extends ORM {
 					->set('ip_address', $_SERVER['REMOTE_ADDR'])
 					->save();
 
-				try {
-					$mail = new Mail();
-					$mail->AddAddress($to, $to_name);
-					if ($subject === NULL) {
-						$mail->Subject = 'Website Contact Us Submission - ' . date('Y-m-d H:m');
-					} else {
-						$mail->Subject = $subject;
-					}
-					$mail->IsHTML(TRUE);
-					if ( ! empty($this->email)) $mail->AddReplyTo($this->email, $this->name);
-
-					$mail->Body = '<p>The following submission was received from the Website Contact Us form:</p>';
-					$mail->Body .= $this->set_mode('view')
-						->set_view_options_for_email()
-						->get_view();
-
-					$mail->Send();
-
-					// clear the object because it's been sent
-					$this->clear();
-
-					Message::add(Kohana::message('contact', 'sent'), Message::$notice);
-
-				} catch (Exception $e) {
-					Kohana_Exception::caught_handler($e);
-					Message::add(Kohana::message('contact', 'problem_sending'), Message::$error);
-					$errors = TRUE;
+				$mail = new Mail();
+				$mail->AddAddress($to, $to_name);
+				if ($subject === NULL) {
+					$mail->Subject = 'Website Contact Us Submission - ' . date('Y-m-d H:m');
+				} else {
+					$mail->Subject = $subject;
 				}
+				$mail->IsHTML(TRUE);
+				if ( ! empty($this->email)) $mail->AddReplyTo($this->email, $this->name);
+
+				$mail->Body = '<p>The following submission was received from the Website Contact Us form:</p>';
+				$mail->Body .= $this->set_mode('view')
+					->set_view_options_for_email()
+					->get_view();
+
+				$mail->Send();
+
+				// clear the object because it's been sent
+				$this->clear();
+
+				Message::add(Kohana::message('contact', 'sent'), Message::$notice);
 			}
 
 			$this->set_mode('add');
 
 		} catch (ORM_Validation_Exception $e) {
 			Message::add('Please fix the following errors: ' . Message::add_validation_errors($e, ''), Message::$error);
-			$errors = TRUE;
-		} catch (Exception $e) {
-			Kohana_Exception::caught_handler($e);
-			Message::add(Kohana::message('contact', 'error'), Message::$error);
 			$errors = TRUE;
 		}
 

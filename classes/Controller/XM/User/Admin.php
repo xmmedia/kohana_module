@@ -357,93 +357,75 @@ class Controller_XM_User_Admin extends Controller_Private {
 	} // function get_user_list_buttons
 
 	public function action_view() {
-		try {
-			if ( ! ($this->id > 0)) {
-				throw new Kohana_Exception('No ID received for view');
-			}
-
-			$this->template->body_html = View::factory('user_admin/user_view')
-				->bind('user', $user);
-
-			$user = ORM::factory('User_Admin', $this->id)
-				->set_mode('view')
-				->set_option('get_view_view_file', 'user_admin/user_view_form');
-		} catch (Exception $e) {
-			Kohana_Exception::caught_handler($e);
-			Message::message('user_admin', 'error_viewing', NULL, Message::$error);
-			if ( ! CL4::is_dev()) $this->redirect_to_index();
+		if ( ! ($this->id > 0)) {
+			throw new Kohana_Exception('No ID received for view');
 		}
+
+		$this->template->body_html = View::factory('user_admin/user_view')
+			->bind('user', $user);
+
+		$user = ORM::factory('User_Admin', $this->id)
+			->set_mode('view')
+			->set_option('get_view_view_file', 'user_admin/user_view_form');
 	} // function action_view
 
 	/**
 	* Display an add form or add (save) a new record
 	*/
 	public function action_add() {
-		try {
-			$user = ORM::factory('User_Admin', $this->id)
-				->set_mode('add')
-				->set_option('get_form_view_file', 'user_admin/user_edit_form');
+		$user = ORM::factory('User_Admin', $this->id)
+			->set_mode('add')
+			->set_option('get_form_view_file', 'user_admin/user_edit_form');
 
-			$this->set_user_permission_edit($user);
+		$this->set_user_permission_edit($user);
 
-			if ( ! empty($_POST)) {
-				$this->save_user($user);
-			}
-
-			// don't show the failed login count on add as it should default to 0
-			$user->set_table_columns('failed_login_count', 'edit_flag', FALSE);
-
-			if ( ! empty($this->id)) {
-				$user->set_option('form_action', URL::site(Request::current()->route()->uri(array('action' => 'add'))) . URL::query());
-			}
-
-			$this->template->body_html = View::factory('user_admin/user_edit')
-				->bind('user', $user);
-		} catch (Exception $e) {
-			Kohana_Exception::caught_handler($e);
-			Message::message('cl4admin', 'error_preparing_add', NULL, Message::$error);
-			if ( ! CL4::is_dev()) $this->redirect_to_index();
+		if ( ! empty($_POST)) {
+			$this->save_user($user);
 		}
+
+		// don't show the failed login count on add as it should default to 0
+		$user->set_table_columns('failed_login_count', 'edit_flag', FALSE);
+
+		if ( ! empty($this->id)) {
+			$user->set_option('form_action', URL::site(Request::current()->route()->uri(array('action' => 'add'))) . URL::query());
+		}
+
+		$this->template->body_html = View::factory('user_admin/user_edit')
+			->bind('user', $user);
 	} // function action_add
 
 	/**
 	* Display an edit form for a record or update (save) an existing record
 	*/
 	public function action_edit() {
-		try {
-			$user = ORM::factory('User_Admin', $this->id)
-				->set_mode('edit')
-				->set_option('get_form_view_file', 'user_admin/user_edit_form');
+		$user = ORM::factory('User_Admin', $this->id)
+			->set_mode('edit')
+			->set_option('get_form_view_file', 'user_admin/user_edit_form');
 
-			// if the user can edit permissions groups, but doesn't have access to all groups
-			// look for groups that they don't have access to but are on this user and add a message
-			if ($this->set_user_permission_edit($user) && ! Auth::instance()->allowed('user_admin/user/group/*')) {
-				$user_groups = $user->group->find_all()->as_array('id', 'name');
-				$other_groups = '';
-				$other_count = 0;
-				foreach ($user_groups as $group_id => $group_name) {
-					if ( ! Auth::instance()->allowed('user_admin/user/group/' . $group_id)) {
-						if ($other_count > 0) $other_groups .= ', ';
-						$other_groups .= $group_name;
-						++$other_count;
-					}
+		// if the user can edit permissions groups, but doesn't have access to all groups
+		// look for groups that they don't have access to but are on this user and add a message
+		if ($this->set_user_permission_edit($user) && ! Auth::instance()->allowed('user_admin/user/group/*')) {
+			$user_groups = $user->group->find_all()->as_array('id', 'name');
+			$other_groups = '';
+			$other_count = 0;
+			foreach ($user_groups as $group_id => $group_name) {
+				if ( ! Auth::instance()->allowed('user_admin/user/group/' . $group_id)) {
+					if ($other_count > 0) $other_groups .= ', ';
+					$other_groups .= $group_name;
+					++$other_count;
 				}
-				if ($other_count > 0) {
-					Message::message('user_admin', 'other_groups', array(':other_groups' => HTML::chars($other_groups)), Message::$notice);
-				}
-			} // if
+			}
+			if ($other_count > 0) {
+				Message::message('user_admin', 'other_groups', array(':other_groups' => HTML::chars($other_groups)), Message::$notice);
+			}
+		} // if
 
-			if ( ! empty($_POST)) {
-				$this->save_user($user);
-			} // if
+		if ( ! empty($_POST)) {
+			$this->save_user($user);
+		} // if
 
-			$this->template->body_html = View::factory('user_admin/user_edit')
-				->bind('user', $user);
-		} catch (Exception $e) {
-			Kohana_Exception::caught_handler($e);
-			Message::message('cl4admin', 'error_preparing_edit', NULL, Message::$error);
-			if ( ! CL4::is_dev()) $this->redirect_to_index();
-		} // try
+		$this->template->body_html = View::factory('user_admin/user_edit')
+			->bind('user', $user);
 	} // function action_edit
 
 	/**
@@ -586,10 +568,6 @@ class Controller_XM_User_Admin extends Controller_Private {
 			Message::message('cl4admin', 'values_not_valid', array(
 				':validation_errors' => Message::add_validation_errors($e, '')
 			), Message::$error);
-		} catch (Exception $e) {
-			Kohana_Exception::caught_handler($e);
-			Message::message('cl4admin', 'problem_saving', NULL, Message::$error);
-			if ( ! CL4::is_dev()) $this->redirect_to_index();
 		} // try
 	} // function save_user
 
@@ -605,95 +583,76 @@ class Controller_XM_User_Admin extends Controller_Private {
 	* Delete a record with a confirm first
 	*/
 	public function action_delete() {
-		try {
-			if ( ! ($this->id > 0)) {
-				Message::message('cl4admin', 'no_id', NULL, Message::$error);
-				$this->redirect_to_index();
-			} // if
+		if ( ! ($this->id > 0)) {
+			Message::message('cl4admin', 'no_id', NULL, Message::$error);
+			$this->redirect_to_index();
+		} // if
 
-			if ( ! empty($_POST)) {
-				// see if they want to delete the item
-				if (strtolower($_POST['cl4_delete_confirm']) == 'yes') {
-					try {
-						$user = ORM::factory('User_Admin', $this->id);
-						if ($user->delete() == 0) {
-							Message::message('cl4admin', 'no_item_deleted', NULL, Message::$error);
-						} else {
-							Message::message('user_admin', 'user_deleted', array(), Message::$notice);
-							Message::message('cl4admin', 'record_id_deleted', array(':id' => $this->id), Message::$debug);
-						} // if
-					} catch (Exception $e) {
-						Kohana_Exception::caught_handler($e);
-						Message::message('cl4admin', 'error_deleting', NULL, Message::$error);
-						if ( ! CL4::is_dev()) $this->redirect_to_index();
-					}
+		if ( ! empty($_POST)) {
+			// see if they want to delete the item
+			if (strtolower($_POST['cl4_delete_confirm']) == 'yes') {
+				$user = ORM::factory('User_Admin', $this->id);
+				if ($user->delete() == 0) {
+					Message::message('cl4admin', 'no_item_deleted', NULL, Message::$error);
 				} else {
-					Message::message('cl4admin', 'item_not_deleted', NULL, Message::$notice);
-				}
-
-				$this->redirect_to_index();
-
+					Message::message('user_admin', 'user_deleted', array(), Message::$notice);
+					Message::message('cl4admin', 'record_id_deleted', array(':id' => $this->id), Message::$debug);
+				} // if
 			} else {
-				// the confirmation form goes in the messages
-				Message::add(View::factory('user_admin/confirm_delete'));
-
-				$this->action_view();
+				Message::message('cl4admin', 'item_not_deleted', NULL, Message::$notice);
 			}
-		} catch (Exception $e) {
-			Kohana_Exception::caught_handler($e);
-			Message::message('cl4admin', 'error_preparing_delete', NULL, Message::$error);
-			if ( ! CL4::is_dev()) $this->redirect_to_index();
+
+			$this->redirect_to_index();
+
+		} else {
+			// the confirmation form goes in the messages
+			Message::add(View::factory('user_admin/confirm_delete'));
+
+			$this->action_view();
 		}
 	} // function action_delete
 
 	public function action_email_password() {
-		try {
-			if ( ! ($this->id > 0)) {
-				Message::message('cl4admin', 'no_id', NULL, Message::$error);
-				$this->redirect_to_index();
-			} // if
-
-			$new_password = CL4_Auth::generate_password();
-
-			$user = ORM::factory('User', $this->id)
-				->values(array(
-					'password' => $new_password,
-					'force_update_password_flag' => 1,
-					'failed_login_count' => 0,
-					'last_failed_login' => 0,
-				))
-				->save();
-
-			$mail = new Mail();
-			$mail->IsHTML();
-			$mail->AddUser($user->id);
-			$mail->Subject = SHORT_NAME . ' Login Information';
-			$editing_user = Auth::instance()->get_user();
-			if (Valid::email($editing_user->username)) {
-				$mail->AddReplyTo($editing_user->username, $editing_user->first_name . ' ' . $editing_user->last_name);
-			}
-
-			// provide a link to the user including their username
-			$url = URL::site(Route::get('login')->uri(), TRUE) . '?' . http_build_query(array('username' => $user->username));
-
-			$mail->Body = View::factory('user_admin/login_information_email')
-				->set('app_name', LONG_NAME)
-				->set('username', $user->username)
-				->set('password', $new_password)
-				->set('url', $url)
-				->set('support_email', Kohana::$config->load('user_admin.support_email'));
-
-			$mail->Send();
-
-			Message::message('user_admin', 'email_password_sent', array(), Message::$notice);
-
+		if ( ! ($this->id > 0)) {
+			Message::message('cl4admin', 'no_id', NULL, Message::$error);
 			$this->redirect_to_index();
+		} // if
 
-		} catch (Exception $e) {
-			Kohana_Exception::caught_handler($e);
-			Message::message('user_admin', 'error_preparing_email', NULL, Message::$error);
-			if ( ! CL4::is_dev()) $this->redirect_to_index();
+		$new_password = CL4_Auth::generate_password();
+
+		$user = ORM::factory('User', $this->id)
+			->values(array(
+				'password' => $new_password,
+				'force_update_password_flag' => 1,
+				'failed_login_count' => 0,
+				'last_failed_login' => 0,
+			))
+			->save();
+
+		$mail = new Mail();
+		$mail->IsHTML();
+		$mail->AddUser($user->id);
+		$mail->Subject = SHORT_NAME . ' Login Information';
+		$editing_user = Auth::instance()->get_user();
+		if (Valid::email($editing_user->username)) {
+			$mail->AddReplyTo($editing_user->username, $editing_user->first_name . ' ' . $editing_user->last_name);
 		}
+
+		// provide a link to the user including their username
+		$url = URL::site(Route::get('login')->uri(), TRUE) . '?' . http_build_query(array('username' => $user->username));
+
+		$mail->Body = View::factory('user_admin/login_information_email')
+			->set('app_name', LONG_NAME)
+			->set('username', $user->username)
+			->set('password', $new_password)
+			->set('url', $url)
+			->set('support_email', Kohana::$config->load('user_admin.support_email'));
+
+		$mail->Send();
+
+		Message::message('user_admin', 'email_password_sent', array(), Message::$notice);
+
+		$this->redirect_to_index();
 	} // function action_email_password
 
 	/**
@@ -784,75 +743,57 @@ class Controller_XM_User_Admin extends Controller_Private {
 	} // function get_group_list_row_links
 
 	public function action_view_group() {
-		try {
-			if ( ! ($this->id > 0)) {
-				throw new Kohana_Exception('No ID received for view');
-			}
-
-			$this->template->body_html = View::factory('user_admin/group_view')
-				->bind('group', $group);
-
-			$group = ORM::factory('Group', $this->id)
-				->set_mode('view')
-				->set_option('get_view_view_file', 'user_admin/group_view_form')
-				->set_option('display_buttons', FALSE);
-		} catch (Exception $e) {
-			Kohana_Exception::caught_handler($e);
-			Message::message('user_admin', 'error_viewing', NULL, Message::$error);
-			if ( ! CL4::is_dev()) $this->redirect_to_index();
+		if ( ! ($this->id > 0)) {
+			throw new Kohana_Exception('No ID received for view');
 		}
+
+		$this->template->body_html = View::factory('user_admin/group_view')
+			->bind('group', $group);
+
+		$group = ORM::factory('Group', $this->id)
+			->set_mode('view')
+			->set_option('get_view_view_file', 'user_admin/group_view_form')
+			->set_option('display_buttons', FALSE);
 	} // function action_view_group
 
 	/**
 	* Display an add form or add (save) a new record
 	*/
 	public function action_add_group() {
-		try {
-			$group = ORM::factory('Group', $this->id)
-				->set_mode('add')
-				->set_option('cancel_button_attributes', array(
-					'data-cl4_link' => URL::site(Route::get('user_admin')->uri(array('action' => 'cancel_group'))),
-				));
+		$group = ORM::factory('Group', $this->id)
+			->set_mode('add')
+			->set_option('cancel_button_attributes', array(
+				'data-cl4_link' => URL::site(Route::get('user_admin')->uri(array('action' => 'cancel_group'))),
+			));
 
-			if ( ! empty($_POST)) {
-				$this->save_group($group);
-			}
-
-			if ( ! empty($this->id)) {
-				$group->set_option('form_action', URL::site($this->request->route()->uri(array('action' => $this->request->action()))) . URL::query());
-			}
-
-			$this->template->body_html = View::factory('user_admin/group_edit')
-				->bind('group', $group);
-		} catch (Exception $e) {
-			Kohana_Exception::caught_handler($e);
-			Message::message('cl4admin', 'error_preparing_add', NULL, Message::$error);
-			if ( ! CL4::is_dev()) $this->redirect_to_group_list();
+		if ( ! empty($_POST)) {
+			$this->save_group($group);
 		}
+
+		if ( ! empty($this->id)) {
+			$group->set_option('form_action', URL::site($this->request->route()->uri(array('action' => $this->request->action()))) . URL::query());
+		}
+
+		$this->template->body_html = View::factory('user_admin/group_edit')
+			->bind('group', $group);
 	} // function action_add
 
 	/**
 	* Display an edit form for a record or update (save) an existing record
 	*/
 	public function action_edit_group() {
-		try {
-			$group = ORM::factory('Group', $this->id)
-				->set_mode('edit')
-				->set_option('cancel_button_attributes', array(
-					'data-cl4_link' => URL::site(Route::get('user_admin')->uri(array('action' => 'cancel_group'))),
-				));
+		$group = ORM::factory('Group', $this->id)
+			->set_mode('edit')
+			->set_option('cancel_button_attributes', array(
+				'data-cl4_link' => URL::site(Route::get('user_admin')->uri(array('action' => 'cancel_group'))),
+			));
 
-			if ( ! empty($_POST)) {
-				$this->save_group($group);
-			} // if
+		if ( ! empty($_POST)) {
+			$this->save_group($group);
+		} // if
 
-			$this->template->body_html = View::factory('user_admin/group_edit')
-				->bind('group', $group);
-		} catch (Exception $e) {
-			Kohana_Exception::caught_handler($e);
-			Message::message('cl4admin', 'error_preparing_edit', NULL, Message::$error);
-			if ( ! CL4::is_dev()) $this->redirect_to_group_list();
-		} // try
+		$this->template->body_html = View::factory('user_admin/group_edit')
+			->bind('group', $group);
 	} // function action_edit
 
 	/**
@@ -872,55 +813,39 @@ class Controller_XM_User_Admin extends Controller_Private {
 			Message::message('cl4admin', 'values_not_valid', array(
 				':validation_errors' => Message::add_validation_errors($e, '')
 			), Message::$error);
-		} catch (Exception $e) {
-			Kohana_Exception::caught_handler($e);
-			Message::message('cl4admin', 'problem_saving', NULL, Message::$error);
-			if ( ! CL4::is_dev()) $this->redirect_to_group_list();
-		} // try
+		}
 	} // function save_user
 
 	/**
 	* Delete a record with a confirm first
 	*/
 	public function action_delete_group() {
-		try {
-			if ( ! ($this->id > 0)) {
-				Message::message('cl4admin', 'no_id', NULL, Message::$error);
-				$this->redirect_to_group_list();
-			} // if
+		if ( ! ($this->id > 0)) {
+			Message::message('cl4admin', 'no_id', NULL, Message::$error);
+			$this->redirect_to_group_list();
+		} // if
 
-			if ( ! empty($_POST)) {
-				// see if they want to delete the item
-				if (strtolower($_POST['cl4_delete_confirm']) == 'yes') {
-					try {
-						$group = ORM::factory('Group', $this->id);
-						if ($group->delete() == 0) {
-							Message::message('cl4admin', 'no_item_deleted', NULL, Message::$error);
-						} else {
-							Message::message('user_admin', 'user_deleted', array(), Message::$notice);
-							Message::message('cl4admin', 'record_id_deleted', array(':id' => $this->id), Message::$debug);
-						} // if
-					} catch (Exception $e) {
-						Kohana_Exception::caught_handler($e);
-						Message::message('cl4admin', 'error_deleting', NULL, Message::$error);
-						if ( ! CL4::is_dev()) $this->redirect_to_group_list();
-					}
+		if ( ! empty($_POST)) {
+			// see if they want to delete the item
+			if (strtolower($_POST['cl4_delete_confirm']) == 'yes') {
+				$group = ORM::factory('Group', $this->id);
+				if ($group->delete() == 0) {
+					Message::message('cl4admin', 'no_item_deleted', NULL, Message::$error);
 				} else {
-					Message::message('cl4admin', 'item_not_deleted', NULL, Message::$notice);
-				}
-
-				$this->redirect_to_group_list();
-
+					Message::message('user_admin', 'user_deleted', array(), Message::$notice);
+					Message::message('cl4admin', 'record_id_deleted', array(':id' => $this->id), Message::$debug);
+				} // if
 			} else {
-				// the confirmation form goes in the messages
-				Message::add(View::factory('user_admin/confirm_delete'));
-
-				$this->action_view_group();
+				Message::message('cl4admin', 'item_not_deleted', NULL, Message::$notice);
 			}
-		} catch (Exception $e) {
-			Kohana_Exception::caught_handler($e);
-			Message::message('cl4admin', 'error_preparing_delete', NULL, Message::$error);
-			if ( ! CL4::is_dev()) $this->redirect_to_group_list();
+
+			$this->redirect_to_group_list();
+
+		} else {
+			// the confirmation form goes in the messages
+			Message::add(View::factory('user_admin/confirm_delete'));
+
+			$this->action_view_group();
 		}
 	} // function action_delete
 
@@ -940,152 +865,124 @@ class Controller_XM_User_Admin extends Controller_Private {
 
 	public function action_group_permissions() {
 		if ( ! empty($_POST)) {
-			try {
-				ORM::factory('Group', $this->id)
-					->save_through('permission', 'current_permissions', $save_through_counts);
+			ORM::factory('Group', $this->id)
+				->save_through('permission', 'current_permissions', $save_through_counts);
 
-				Message::message('user_admin', 'group_permissions_updated', array(':count' => $this->get_count_msg('permission', $save_through_counts)), Message::$notice);
-				$this->redirect_to_group_list();
-
-			} catch (Exception $e) {
-				Kohana_Exception::caught_handler($e);
-				Message::message('cl4admin', 'problem_saving', NULL, Message::$error);
-				if ( ! CL4::is_dev()) $this->redirect_to_group_list();
-			} // try
+			Message::message('user_admin', 'group_permissions_updated', array(':count' => $this->get_count_msg('permission', $save_through_counts)), Message::$notice);
+			$this->redirect_to_group_list();
 		} // if
 
-		try {
-			$group = ORM::factory('Group', $this->id);
+		$group = ORM::factory('Group', $this->id);
 
-			$select_perm_id = 'permission.id';
-			$select_perm_name = array(DB::expr("CONCAT_WS('', permission.name, ' (', permission.permission, ')')"), 'permission_name');
+		$select_perm_id = 'permission.id';
+		$select_perm_name = array(DB::expr("CONCAT_WS('', permission.name, ' (', permission.permission, ')')"), 'permission_name');
 
-			$all_permissions = ORM::factory('Permission')
-				->select($select_perm_id)
-				->select($select_perm_name)
-				->find_all()
-				->as_array('id', 'permission_name');
+		$all_permissions = ORM::factory('Permission')
+			->select($select_perm_id)
+			->select($select_perm_name)
+			->find_all()
+			->as_array('id', 'permission_name');
 
-			$current_permissions = ORM::factory('Group', $this->id)
-				->permission
-				->select($select_perm_id)
-				->select($select_perm_name)
-				->find_all()
-				->as_array('id', 'permission_name');
+		$current_permissions = ORM::factory('Group', $this->id)
+			->permission
+			->select($select_perm_id)
+			->select($select_perm_name)
+			->find_all()
+			->as_array('id', 'permission_name');
 
-			// remove all the current permissions from the all list
-			foreach ($current_permissions as $perm_id => $perm_name) {
-				if (isset($all_permissions[$perm_id])) {
-					unset($all_permissions[$perm_id]);
+		// remove all the current permissions from the all list
+		foreach ($current_permissions as $perm_id => $perm_name) {
+			if (isset($all_permissions[$perm_id])) {
+				unset($all_permissions[$perm_id]);
+			}
+		}
+
+		$available_perms_select = Form::select('available_permissions[]', $all_permissions, array(), array(
+			'size' => 10,
+			'class' => 'xm_permission_edit_select',
+		));
+		$current_perms_select = Form::select('current_permissions[]', $current_permissions, array(), array(
+			'size' => 10,
+			'class' => 'xm_permission_edit_select xm_include_in_save',
+		));
+
+		// now attempt to generate the permission group drop downs
+		if (class_exists('Model_Permission_Group')) {
+			$permission_groups = ORM::factory('Permission_Group')
+				->find_all();
+
+			if (count($permission_groups) > 0) {
+				$perm_group_data = array();
+				foreach ($permission_groups as $permission_group) {
+					$permission_ids = $permission_group
+						->permission_id
+						->select('permission_group_permission.id')
+						->find_all()
+						->as_array(NULL, 'id');
+
+					$perm_group_data[implode(',', $permission_ids)] = $permission_group->name;
 				}
-			}
 
-			$available_perms_select = Form::select('available_permissions[]', $all_permissions, array(), array(
-				'size' => 10,
-				'class' => 'xm_permission_edit_select',
-			));
-			$current_perms_select = Form::select('current_permissions[]', $current_permissions, array(), array(
-				'size' => 10,
-				'class' => 'xm_permission_edit_select xm_include_in_save',
-			));
+				$perm_group_select_add = Form::select('add_group_select', $perm_group_data, NULL, array(), array('select_one' => TRUE));
+				$perm_group_select_remove = Form::select('remove_group_select', $perm_group_data, NULL, array(), array('select_one' => TRUE));
+			} // if
+		}
 
-			// now attempt to generate the permission group drop downs
-			if (class_exists('Model_Permission_Group')) {
-				$permission_groups = ORM::factory('Permission_Group')
-					->find_all();
-
-				if (count($permission_groups) > 0) {
-					$perm_group_data = array();
-					foreach ($permission_groups as $permission_group) {
-						$permission_ids = $permission_group
-							->permission_id
-							->select('permission_group_permission.id')
-							->find_all()
-							->as_array(NULL, 'id');
-
-						$perm_group_data[implode(',', $permission_ids)] = $permission_group->name;
-					}
-
-					$perm_group_select_add = Form::select('add_group_select', $perm_group_data, NULL, array(), array('select_one' => TRUE));
-					$perm_group_select_remove = Form::select('remove_group_select', $perm_group_data, NULL, array(), array('select_one' => TRUE));
-				} // if
-			}
-
-			$this->template->body_html = View::factory('user_admin/group_permission_edit')
-				->bind('group', $group)
-				->bind('available_perms_select', $available_perms_select)
-				->bind('current_perms_select', $current_perms_select)
-				->bind('permission_group_select_add', $perm_group_select_add)
-				->bind('permission_group_select_remove', $perm_group_select_remove);
-
-		} catch (Exception $e) {
-			Kohana_Exception::caught_handler($e);
-			Message::message('cl4admin', 'error_preparing_edit', NULL, Message::$error);
-			if ( ! CL4::is_dev()) $this->redirect_to_group_list();
-		} // try
+		$this->template->body_html = View::factory('user_admin/group_permission_edit')
+			->bind('group', $group)
+			->bind('available_perms_select', $available_perms_select)
+			->bind('current_perms_select', $current_perms_select)
+			->bind('permission_group_select_add', $perm_group_select_add)
+			->bind('permission_group_select_remove', $perm_group_select_remove);
 	} // function action_group_permissions
 
 	public function action_group_users() {
 		if ( ! empty($_POST)) {
-			try {
-				ORM::factory('Group', $this->id)
-					->save_through('user', 'current_users', $save_through_counts);
+			ORM::factory('Group', $this->id)
+				->save_through('user', 'current_users', $save_through_counts);
 
-				Message::message('user_admin', 'group_users_updated', array(':count' => $this->get_count_msg('user', $save_through_counts)), Message::$notice);
-				$this->redirect_to_group_list();
-
-			} catch (Exception $e) {
-				Kohana_Exception::caught_handler($e);
-				Message::message('cl4admin', 'problem_saving', NULL, Message::$error);
-				if ( ! CL4::is_dev()) $this->redirect_to_group_list();
-			} // try
+			Message::message('user_admin', 'group_users_updated', array(':count' => $this->get_count_msg('user', $save_through_counts)), Message::$notice);
+			$this->redirect_to_group_list();
 		} // if
 
-		try {
-			$group = ORM::factory('Group', $this->id);
+		$group = ORM::factory('Group', $this->id);
 
-			$select_user_id = 'user.id';
-			$select_user_name = array(DB::expr("CONCAT_WS('', user.first_name, ' ', user.last_name)"), 'name');
+		$select_user_id = 'user.id';
+		$select_user_name = array(DB::expr("CONCAT_WS('', user.first_name, ' ', user.last_name)"), 'name');
 
-			$all_users = ORM::factory('User')
-				->select($select_user_id)
-				->select($select_user_name)
-				->find_all()
-				->as_array('id', 'name');
+		$all_users = ORM::factory('User')
+			->select($select_user_id)
+			->select($select_user_name)
+			->find_all()
+			->as_array('id', 'name');
 
-			$current_users = ORM::factory('Group', $this->id)
-				->user
-				->select($select_user_id)
-				->select($select_user_name)
-				->find_all()
-				->as_array('id', 'name');
+		$current_users = ORM::factory('Group', $this->id)
+			->user
+			->select($select_user_id)
+			->select($select_user_name)
+			->find_all()
+			->as_array('id', 'name');
 
-			// remove all the current permissions from the all list
-			foreach ($current_users as $user_id => $user_name) {
-				if (isset($all_users[$user_id])) {
-					unset($all_users[$user_id]);
-				}
+		// remove all the current permissions from the all list
+		foreach ($current_users as $user_id => $user_name) {
+			if (isset($all_users[$user_id])) {
+				unset($all_users[$user_id]);
 			}
+		}
 
-			$available_users_select = Form::select('available_users[]', $all_users, array(), array(
-				'size' => 10,
-				'class' => 'xm_permission_edit_select',
-			));
-			$current_users_select = Form::select('current_users[]', $current_users, array(), array(
-				'size' => 10,
-				'class' => 'xm_permission_edit_select xm_include_in_save',
-			));
+		$available_users_select = Form::select('available_users[]', $all_users, array(), array(
+			'size' => 10,
+			'class' => 'xm_permission_edit_select',
+		));
+		$current_users_select = Form::select('current_users[]', $current_users, array(), array(
+			'size' => 10,
+			'class' => 'xm_permission_edit_select xm_include_in_save',
+		));
 
-			$this->template->body_html = View::factory('user_admin/group_user_edit')
-				->bind('group', $group)
-				->bind('available_users_select', $available_users_select)
-				->bind('current_users_select', $current_users_select);
-
-		} catch (Exception $e) {
-			Kohana_Exception::caught_handler($e);
-			Message::message('cl4admin', 'error_preparing_edit', NULL, Message::$error);
-			if ( ! CL4::is_dev()) $this->redirect_to_group_list();
-		} // try
+		$this->template->body_html = View::factory('user_admin/group_user_edit')
+			->bind('group', $group)
+			->bind('available_users_select', $available_users_select)
+			->bind('current_users_select', $current_users_select);
 	} // function action_group_users
 
 	/**

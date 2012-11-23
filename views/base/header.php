@@ -20,14 +20,14 @@
 						<li class="cl4admin"><?php echo HTML::anchor(Route::get('cl4admin')->uri(), __('DB Admin')); ?></li>
 						<?php } ?>
 						<?php if (Auth::instance()->allowed('userguide') && Kohana::$environment == Kohana::DEVELOPMENT) { ?>
-						<li class="userguide"><?php echo HTML::anchor(Route::get('docs/guide')->uri(), __('Kohana User Guide')); ?></li>
-						<li class="userguide_api"><?php echo HTML::anchor(Route::get('docs/api')->uri(), __('Kohana API Browser')); ?></li>
+						<li class="user_guide"><?php echo HTML::anchor(Route::get('docs/guide')->uri(), __('Kohana User Guide')); ?></li>
+						<li class="user_guide_api"><?php echo HTML::anchor(Route::get('docs/api')->uri(), __('Kohana API Browser')); ?></li>
 						<?php } ?>
 						<?php if (CL4::is_dev() && Auth::instance()->allowed('cl4admin/model_create')) { ?>
-						<li class="modelcreate"><?php echo HTML::anchor(Route::get('cl4admin')->uri(array('model' => 'a', 'action' => 'model_create')), __('Model Create')); ?></li>
+						<li class="model_create"><?php echo HTML::anchor(Route::get('model_create')->uri(), __('Model Create')); ?></li>
 						<?php } ?>
 						<?php if (Auth::instance()->allowed('dbchange/index')) { ?>
-						<li class="dbchange"><?php echo HTML::anchor(Route::get('dbchange')->uri(), __('DB Change')); ?></li>
+						<li class="db_change"><?php echo HTML::anchor(Route::get('dbchange')->uri(), __('DB Change')); ?></li>
 						<?php } ?>
 					</ul>
 				</li>

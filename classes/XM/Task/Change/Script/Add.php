@@ -34,6 +34,18 @@
  * @copyright  (c) 2012 XM Media Inc.
  */
 class XM_Task_Change_Script_Add extends Task_Change_Script {
+	/**
+	 * Adds the change script to the `change_script` table without actually running the change script.
+	 * Useful for @manual scripts.
+	 * "change_script" is the file path relative to the change_script directory.
+	 * Does **NOT** check to see if the script has already been run.
+	 * "@manual" will be added as the log for the change script.
+	 * If there is a problem switching to a database (using USE), the database will be skipped, along with an error being displayed.
+	 *
+	 *     php index.php --uri="change_script/add" --change_script="path/filename"
+	 *
+	 * @return void
+	 */
 	protected function _execute(array $params) {
 		$this->configure($params);
 

@@ -34,6 +34,17 @@
  * @copyright  (c) 2012 XM Media Inc.
  */
 class XM_Task_Change_Script_List extends Task_Change_Script {
+	/**
+	 * Lists of scripts that will be run when action run is called.
+	 * Gets a list of all the change scripts and then checks to make sure all of them are readable.
+	 * The loops through the databases loading the entire `change_script` table and then checking it against the scripts in the folder.
+	 * A list of the changes to will be applied to each database is echo'd.
+	 * If there is a problem switching to a database (using USE), the database will be skipped, along with an error being displayed.
+	 *
+	 *     php index.php --uri="change_script/list"
+	 *
+	 * @return void
+	 */
 	protected function _execute(array $params) {
 		$this->configure($params);
 

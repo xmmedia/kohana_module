@@ -34,6 +34,19 @@
  * @copyright  (c) 2012 XM Media Inc.
  */
 class XM_Task_Change_Script_Run extends Task_Change_Script {
+	/**
+	 * Runs the change scripts.
+	 * Gets a list of all the change scripts and then checks to make sure all of them are readable.
+	 * The loops through the databases, loading the entire change_script table and then checking it against the list of change scripts.
+	 * Each script that hasn't been run us run using a method named "run_[script type]", ie, run_sql or run_sh.
+	 * Once the script is a complete, a record will be added to the `change_script` table along with any output from the change script.
+	 * If there is a problem switching to a database (using USE), the database will be skipped, along with an error being displayed.
+	 * If a change script fails, change scripts will stop being run for the current database and it'll move to the next database.
+	 *
+	 *     php index.php --uri="change_script/run"
+	 *
+	 * @return void
+	 */
 	protected function _execute(array $params) {
 		$this->configure($params);
 

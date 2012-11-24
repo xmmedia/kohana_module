@@ -20,7 +20,7 @@ if ($routes['content_admin']) {
 }
 
 if ($routes['db_change']) {
-	Route::set('dbchange', 'db_change(/<action>)')
+	Route::set('db_change', 'db_change(/<action>)')
 		->defaults(array(
 			'controller' => 'DB_Change',
 			'action' => NULL,

@@ -4,7 +4,7 @@ class Controller_XM_DB_Change extends Controller_Private {
 	public $auth_required = TRUE;
 
 	public $secure_actions = array(
-		'index' => 'dbchange/index',
+		'index' => 'db_change/index',
 	);
 
 	public $page = 'admin';
@@ -18,7 +18,7 @@ class Controller_XM_DB_Change extends Controller_Private {
 	}
 
 	public function action_index() {
-		$this->template->body_html = View::factory('dbchange/index')
+		$this->template->body_html = View::factory('db_change/index')
 			->bind('db_change_sql', $db_change_sql)
 			->bind('db_checkboxes', $db_checkboxes);
 

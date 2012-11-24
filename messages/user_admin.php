@@ -5,6 +5,7 @@ return array(
 	'error_preparing_email' => 'There was a problem preparing to send the email.',
 	'email_password_sent' => 'The login information and new password has been sent to the user.',
 	'email_account_info' => 'The user\'s login information was sent in an email.',
+	'user_saved' => 'The user has been saved.',
 	'user_deleted' => 'The user was deleted.',
 	'group_permissions_updated' => 'The permissions for the group were updated:count',
 	'group_users_updated' => 'The users in the group were updated:count',

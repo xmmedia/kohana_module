@@ -561,7 +561,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 				Message::message('user_admin', 'email_account_info', array(), Message::$notice);
 			}
 
-			Message::message('cl4admin', 'item_saved', NULL, Message::$notice);
+			Message::message('user_admin', 'user_saved', NULL, Message::$notice);
 			$this->redirect_to_index();
 
 		} catch (ORM_Validation_Exception $e) {

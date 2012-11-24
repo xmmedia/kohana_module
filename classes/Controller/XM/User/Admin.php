@@ -62,8 +62,9 @@ class Controller_XM_User_Admin extends Controller_Private {
 		$sort_direction = Arr::get($_REQUEST, 'sort_direction');
 		$search = Arr::get($_REQUEST, 'search');
 
-		if ( ! isset($this->session['user_admin'])) {
-			$this->session['user_admin'] = array(
+		$this->user_admin_session = Session::instance()->get('user_admin');
+		if (empty($this->user_admin_session)) {
+			$this->user_admin_session = array(
 				'users' => array(
 					'page_offset' => 0,
 					'sort_column' => NULL,
@@ -75,7 +76,6 @@ class Controller_XM_User_Admin extends Controller_Private {
 				),
 			);
 		}
-		$this->user_admin_session = & $this->session['user_admin'];
 
 		$this->add_css()
 			->add_js();
@@ -122,6 +122,12 @@ class Controller_XM_User_Admin extends Controller_Private {
 		}
 	} // function before
 
+	public function after() {
+		$this->set_session();
+
+		parent::after();
+	}
+
 	protected function add_css() {
 		if ($this->auto_render) {
 			$this->add_style('dbadmin', 'css/dbadmin.css')
@@ -137,6 +143,16 @@ class Controller_XM_User_Admin extends Controller_Private {
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Sets the values from the controller property in the session.
+	 * Otherwise we'll loose the values.
+	 *
+	 * @return void
+	 */
+	protected function set_session() {
+		Session::instance()->set('user_admin', $this->user_admin_session);
 	}
 
 	public function action_index() {
@@ -666,6 +682,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 	}
 
 	public function redirect_to_index() {
+		$this->set_session();
 		$this->redirect(Route::get(Route::name(Request::current()->route()))->uri());
 	}
 
@@ -860,6 +877,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 	} // function
 
 	public function redirect_to_group_list() {
+		$this->set_session();
 		$this->redirect(Route::get(Route::name(Request::current()->route()))->uri(array('action' => 'groups')));
 	}
 

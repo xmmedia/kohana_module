@@ -47,12 +47,12 @@ class Model_XM_Content_History extends ORM {
 		* see the modules/cl4/config/cl4orm.php for a full list of cl4-specific options and documentation on what the options do
 		*/
 		'id' => array(
-			'field_type' => 'hidden',
+			'field_type' => 'Hidden',
 			'edit_flag' => TRUE,
 			'is_nullable' => FALSE,
 		),
 		'expiry_date' => array(
-			'field_type' => 'datetime',
+			'field_type' => 'DateTime',
 			'is_nullable' => FALSE,
 		),
 		'content_id' => array(
@@ -65,12 +65,12 @@ class Model_XM_Content_History extends ORM {
 			'field_options' => array(
 				'source' => array(
 					'source' => 'model',
-					'data' => 'content',
+					'data' => 'Content',
 				),
 			),
 		),
 		'creation_date' => array(
-			'field_type' => 'datetime',
+			'field_type' => 'DateTime',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -78,7 +78,7 @@ class Model_XM_Content_History extends ORM {
 			'is_nullable' => FALSE,
 		),
 		'creation_user_id' => array(
-			'field_type' => 'select',
+			'field_type' => 'Select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -92,7 +92,7 @@ class Model_XM_Content_History extends ORM {
 			),
 		),
 		'post_date' => array(
-			'field_type' => 'datetime',
+			'field_type' => 'DateTime',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -100,7 +100,7 @@ class Model_XM_Content_History extends ORM {
 			'is_nullable' => FALSE,
 		),
 		'post_user_id' => array(
-			'field_type' => 'select',
+			'field_type' => 'Select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -114,7 +114,7 @@ class Model_XM_Content_History extends ORM {
 			),
 		),
 		'history_date' => array(
-			'field_type' => 'datetime',
+			'field_type' => 'DateTime',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -122,7 +122,7 @@ class Model_XM_Content_History extends ORM {
 			'is_nullable' => FALSE,
 		),
 		'history_user_id' => array(
-			'field_type' => 'select',
+			'field_type' => 'Select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -136,7 +136,7 @@ class Model_XM_Content_History extends ORM {
 			),
 		),
 		'content' => array(
-			'field_type' => 'html',
+			'field_type' => 'HTML',
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -146,7 +146,7 @@ class Model_XM_Content_History extends ORM {
 			),
 		),
 		'comments' => array(
-			'field_type' => 'textarea',
+			'field_type' => 'TextArea',
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,

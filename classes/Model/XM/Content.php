@@ -43,16 +43,16 @@ class Model_XM_Content extends ORM {
 		* see the modules/cl4/config/cl4orm.php for a full list of cl4-specific options and documentation on what the options do
 		*/
 		'id' => array(
-			'field_type' => 'hidden',
+			'field_type' => 'Hidden',
 			'edit_flag' => TRUE,
 			'is_nullable' => FALSE,
 		),
 		'expiry_date' => array(
-			'field_type' => 'datetime',
+			'field_type' => 'DateTime',
 			'is_nullable' => FALSE,
 		),
 		'last_update' => array(
-			'field_type' => 'datetime',
+			'field_type' => 'DateTime',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -60,7 +60,7 @@ class Model_XM_Content extends ORM {
 			'is_nullable' => FALSE,
 		),
 		'last_update_user_id' => array(
-			'field_type' => 'select',
+			'field_type' => 'Select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -74,7 +74,7 @@ class Model_XM_Content extends ORM {
 			),
 		),
 		'code' => array(
-			'field_type' => 'text',
+			'field_type' => 'Text',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -87,7 +87,7 @@ class Model_XM_Content extends ORM {
 			'view_in_edit_mode' => TRUE,
 		),
 		'name' => array(
-			'field_type' => 'text',
+			'field_type' => 'Text',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -99,7 +99,7 @@ class Model_XM_Content extends ORM {
 			),
 		),
 		'content_page_id' => array(
-			'field_type' => 'select',
+			'field_type' => 'Select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -108,12 +108,12 @@ class Model_XM_Content extends ORM {
 			'field_options' => array(
 				'source' => array(
 					'source' => 'model',
-					'data' => 'content_page',
+					'data' => 'Content_Page',
 				),
 			),
 		),
 		'description' => array(
-			'field_type' => 'text',
+			'field_type' => 'Text',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -125,7 +125,7 @@ class Model_XM_Content extends ORM {
 			),
 		),
 		'instructions' => array(
-			'field_type' => 'textarea',
+			'field_type' => 'TextArea',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -136,7 +136,7 @@ class Model_XM_Content extends ORM {
 			),
 		),
 		'content' => array(
-			'field_type' => 'html',
+			'field_type' => 'HTML',
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -146,7 +146,7 @@ class Model_XM_Content extends ORM {
 			),
 		),
 		'text_only_flag' => array(
-			'field_type' => 'checkbox',
+			'field_type' => 'Checkbox',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -259,7 +259,7 @@ class Model_XM_Content extends ORM {
 		$return = parent::_load_result($multiple);
 
 		if ($multiple !== TRUE && $this->text_only_flag) {
-			$this->_table_columns['content']['field_type'] = 'textarea';
+			$this->_table_columns['content']['field_type'] = 'TextArea';
 			if (isset($this->_table_columns['content']['field_attributes']['class'])) {
 				$this->_table_columns['content']['field_attributes']['class'] = UTF8::substr_replace('tiny_mce', 'content_text_only', $this->_table_columns['content']['field_attributes']['class']);
 			}

@@ -43,18 +43,18 @@ class Model_XM_State extends ORM {
 		* see the modules/cl4/config/cl4orm.php for a full list of cl4-specific options and documentation on what the options do
 		*/
 		'id' => array(
-			'field_type' => 'hidden',
+			'field_type' => 'Hidden',
 			'edit_flag' => TRUE,
 			'display_order' => 10,
 			'is_nullable' => FALSE,
 		),
 		'expiry_date' => array(
-			'field_type' => 'datetime',
+			'field_type' => 'DateTime',
 			'display_order' => 20,
 			'is_nullable' => FALSE,
 		),
 		'country_id' => array(
-			'field_type' => 'select',
+			'field_type' => 'Select',
 			'display_order' => 30,
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -69,7 +69,7 @@ class Model_XM_State extends ORM {
 			),
 		),
 		'name' => array(
-			'field_type' => 'text',
+			'field_type' => 'Text',
 			'display_order' => 40,
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -81,7 +81,7 @@ class Model_XM_State extends ORM {
 			),
 		),
 		'abbrev' => array(
-			'field_type' => 'text',
+			'field_type' => 'Text',
 			'display_order' => 50,
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -94,7 +94,7 @@ class Model_XM_State extends ORM {
 			),
 		),
 		'alternate' => array(
-			'field_type' => 'text',
+			'field_type' => 'Text',
 			'display_order' => 60,
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
@@ -103,7 +103,7 @@ class Model_XM_State extends ORM {
 			'is_nullable' => FALSE,
 		),
 		'display_order' => array(
-			'field_type' => 'text',
+			'field_type' => 'Text',
 			'display_order' => 70,
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,

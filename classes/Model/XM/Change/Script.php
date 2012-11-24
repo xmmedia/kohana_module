@@ -18,12 +18,12 @@ class Model_XM_Change_Script extends ORM {
 		* see the modules/cl4/config/cl4orm.php for a full list of cl4-specific options and documentation on what the options do
 		*/
 		'id' => array(
-			'field_type' => 'hidden',
+			'field_type' => 'Hidden',
 			'edit_flag' => TRUE,
 			'is_nullable' => FALSE,
 		),
 		'filename' => array(
-			'field_type' => 'text',
+			'field_type' => 'Text',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'view_flag' => TRUE,
@@ -34,7 +34,7 @@ class Model_XM_Change_Script extends ORM {
 			),
 		),
 		'type' => array(
-			'field_type' => 'text',
+			'field_type' => 'Text',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -46,7 +46,7 @@ class Model_XM_Change_Script extends ORM {
 			),
 		),
 		'applied' => array(
-			'field_type' => 'datetime',
+			'field_type' => 'DateTime',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -54,7 +54,7 @@ class Model_XM_Change_Script extends ORM {
 			'is_nullable' => FALSE,
 		),
 		'description' => array(
-			'field_type' => 'textarea',
+			'field_type' => 'TextArea',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -62,7 +62,7 @@ class Model_XM_Change_Script extends ORM {
 			'is_nullable' => FALSE,
 		),
 		'log' => array(
-			'field_type' => 'textarea',
+			'field_type' => 'TextArea',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,

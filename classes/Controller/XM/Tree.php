@@ -39,93 +39,87 @@ class Controller_XM_Tree extends Controller_Private {
 	 * @return void
 	 */
 	public function action_index() {
-		try {
-			// get a list of all the nodes with each one's depth
-			$all_nodes = Tree::all_nodes($this->table_name);
+		// get a list of all the nodes with each one's depth
+		$all_nodes = Tree::all_nodes($this->table_name);
 
-			// determine which nodes have children
-			$children_array = array();
-			$current_depth = 0;
-			$last_node_id = NULL;
-			foreach ($all_nodes as $node) {
-				$node_depth = $node['depth'];
-				// skip the "root" node
-				if ($node_depth == 0) {
-					continue;
-				}
+		// determine which nodes have children
+		$children_array = array();
+		$current_depth = 0;
+		$last_node_id = NULL;
+		foreach ($all_nodes as $node) {
+			$node_depth = $node['depth'];
+			// skip the "root" node
+			if ($node_depth == 0) {
+				continue;
+			}
 
-				if ($node_depth > $current_depth) {
-					$children_array[$last_node_id] = TRUE;
-				}
+			if ($node_depth > $current_depth) {
+				$children_array[$last_node_id] = TRUE;
+			}
 
-				if ($node_depth > $current_depth) {
-					$current_depth = $current_depth + ($node_depth - $current_depth);
-				} else if ($node_depth < $current_depth) {
-					$current_depth = $current_depth - ($current_depth - $node_depth);
-				}
+			if ($node_depth > $current_depth) {
+				$current_depth = $current_depth + ($node_depth - $current_depth);
+			} else if ($node_depth < $current_depth) {
+				$current_depth = $current_depth - ($current_depth - $node_depth);
+			}
 
-				$children_array[$node['id']] = FALSE;
+			$children_array[$node['id']] = FALSE;
 
-				$last_node_id = $node['id'];
-			} // foreach
+			$last_node_id = $node['id'];
+		} // foreach
 
-			$route = Route::get($this->route_name);
+		$route = Route::get($this->route_name);
 
-			// create the tree
-			$current_depth = $node_depth = 0;
-			$counter = 0;
-			$tree_html = '<ul class="tree js_tree">';
-			foreach($all_nodes as $node){
-				$node_depth = $node['depth'];
-				// skip the "root" node
-				if ($node_depth == 0) {
-					continue;
-				}
+		// create the tree
+		$current_depth = $node_depth = 0;
+		$counter = 0;
+		$tree_html = '<ul class="tree js_tree">';
+		foreach($all_nodes as $node){
+			$node_depth = $node['depth'];
+			// skip the "root" node
+			if ($node_depth == 0) {
+				continue;
+			}
 
-				if ($node_depth == $current_depth) {
-					if ($counter > 0) $tree_html .= '</li>';
+			if ($node_depth == $current_depth) {
+				if ($counter > 0) $tree_html .= '</li>';
 
-				} else if ($node_depth > $current_depth) {
-					$tree_html .= '<ul>';
-					$current_depth = $current_depth + ($node_depth - $current_depth);
+			} else if ($node_depth > $current_depth) {
+				$tree_html .= '<ul>';
+				$current_depth = $current_depth + ($node_depth - $current_depth);
 
-				} else if ($node_depth < $current_depth) {
-					$tree_html .= str_repeat('</li></ul>', $current_depth - $node_depth) . '</li>';
-					$current_depth = $current_depth - ($current_depth - $node_depth);
-				}
+			} else if ($node_depth < $current_depth) {
+				$tree_html .= str_repeat('</li></ul>', $current_depth - $node_depth) . '</li>';
+				$current_depth = $current_depth - ($current_depth - $node_depth);
+			}
 
-				$tree_html .= '<li rel="' . $node['id'] . '"';
-				if ($children_array[$node['id']]) {
-					$tree_html .= ' class="has_children js_has_children"><div><a href="" class="expand js_expand" rel="' . $node['id'] . '">';
-				} else {
-					$tree_html .= '><div><a href="" class="no_expand js_no_expand">';
-				}
-				$tree_html .= '</a><div class="name">' . HTML::chars($node['name']) . '</div>'
-					. '<div class="links">'
-						. HTML::anchor($route->uri(array('action' => 'edit', 'id' => $node['id'])) . '?c_ajax=1', '<span class="cl4_icon cl4_edit"></span>', array('class' => 'edit_item js_edit_item', 'title' => 'Edit Item'))
-						. HTML::anchor($route->uri(array('action' => 'add', 'id' => $node['id'])) . '?c_ajax=1', '<span class="cl4_icon cl4_add"></span>', array('class' => 'add_sub_item js_add_sub_item', 'title' => 'Add Sub Item'))
-						. HTML::anchor($route->uri(array('action' => 'delete', 'id' => $node['id'])) . '?c_ajax=1', '<span class="cl4_icon cl4_delete"></span>', array('class' => 'delete_item js_delete_item', 'title' => 'Delete Item'))
-					. '</div>'
-				. '</div>';
+			$tree_html .= '<li rel="' . $node['id'] . '"';
+			if ($children_array[$node['id']]) {
+				$tree_html .= ' class="has_children js_has_children"><div><a href="" class="expand js_expand" rel="' . $node['id'] . '">';
+			} else {
+				$tree_html .= '><div><a href="" class="no_expand js_no_expand">';
+			}
+			$tree_html .= '</a><div class="name">' . HTML::chars($node['name']) . '</div>'
+				. '<div class="links">'
+					. HTML::anchor($route->uri(array('action' => 'edit', 'id' => $node['id'])) . '?c_ajax=1', '<span class="cl4_icon cl4_edit"></span>', array('class' => 'edit_item js_edit_item', 'title' => 'Edit Item'))
+					. HTML::anchor($route->uri(array('action' => 'add', 'id' => $node['id'])) . '?c_ajax=1', '<span class="cl4_icon cl4_add"></span>', array('class' => 'add_sub_item js_add_sub_item', 'title' => 'Add Sub Item'))
+					. HTML::anchor($route->uri(array('action' => 'delete', 'id' => $node['id'])) . '?c_ajax=1', '<span class="cl4_icon cl4_delete"></span>', array('class' => 'delete_item js_delete_item', 'title' => 'Delete Item'))
+				. '</div>'
+			. '</div>';
 
-				++ $counter;
-			} // foreach
-			$tree_html .= str_repeat('</li></ul>', $node_depth) . '</li>'
-				. '</ul>';
+			++ $counter;
+		} // foreach
+		$tree_html .= str_repeat('</li></ul>', $node_depth) . '</li>'
+			. '</ul>';
 
-			$root_node = ORM::factory($this->model_name)
-				->where('lft', '=', 1)
-				->find();
+		$root_node = ORM::factory($this->model_name)
+			->where('lft', '=', 1)
+			->find();
 
-			$this->template->body_html = View::factory($this->view_path . '/index')
-				->bind('route_name', $this->route_name)
-				->bind('tree_html', $tree_html)
-				->bind('root_node', $root_node);
-
-		} catch (Exception $e) {
-			Kohana_Exception::caught_handler($e);
-			Message::add('There was a problem preparing the tree.', Message::$error);
-		}
+		$this->template->body_html = View::factory($this->view_path . '/index')
+			->bind('route_name', $this->route_name)
+			->bind('tree_html', $tree_html)
+			->bind('root_node', $root_node);
 	} // function action_index
 
 	/**
@@ -311,23 +305,6 @@ class Controller_XM_Tree extends Controller_Private {
 			$this->exception($e, $msg, $is_ajax);
 		}
 	} // function action_delete
-
-	protected function exception($e, $msg, $is_ajax = FALSE) {
-		if ($is_ajax) {
-			Kohana_Exception::caught_handler($e, FALSE, FALSE);
-
-			$ajax_data = array(
-				'status' => AJAX_Status::UNKNOWN_ERROR,
-				'error_msg' => $msg,
-				'html' => $msg,
-				'debug_msg' => Kohana_Exception::text($e),
-			);
-			AJAX_Status::echo_json(AJAX_Status::ajax($ajax_data));
-		} else {
-			Kohana_Exception::caught_handler($e);
-			Message::add($msg, Message::$error);
-		}
-	} // function exception
 
 	/**
 	 * Redirects the user based to the action on the tree route.

@@ -39,16 +39,16 @@ class Model_XM_Content_Page extends ORM {
 		* see the modules/cl4/config/cl4orm.php for a full list of cl4-specific options and documentation on what the options do
 		*/
 		'id' => array(
-			'field_type' => 'hidden',
+			'field_type' => 'Hidden',
 			'edit_flag' => TRUE,
 			'is_nullable' => FALSE,
 		),
 		'expiry_date' => array(
-			'field_type' => 'datetime',
+			'field_type' => 'DateTime',
 			'is_nullable' => FALSE,
 		),
 		'name' => array(
-			'field_type' => 'text',
+			'field_type' => 'Text',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -59,7 +59,7 @@ class Model_XM_Content_Page extends ORM {
 			),
 		),
 		'url' => array(
-			'field_type' => 'text',
+			'field_type' => 'Text',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,

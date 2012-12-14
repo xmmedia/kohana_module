@@ -2,8 +2,8 @@
 
 return array(
 	'model_list' => array(
-		'content' => 'Content',
-		'content_history' => 'Content - History',
-		'content_page' => 'Content - Page',
+		'Content' => 'Content',
+		'Content_History' => 'Content - History',
+		'Content_Page' => 'Content - Page',
 	),
 );

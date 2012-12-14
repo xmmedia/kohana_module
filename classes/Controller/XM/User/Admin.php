@@ -117,7 +117,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 		}
 
 		if ( ! empty($page_title)) {
-			$this->template->pre_message = View::factory('user_admin/menu')
+			$this->template->pre_message = View::factory('user_admin/page_title')
 				->set('page_title', $page_title);
 		}
 	} // function before

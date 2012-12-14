@@ -1,0 +1,1 @@
+<h1><?php echo HTML::chars($page_title); ?></h1>

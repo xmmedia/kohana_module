@@ -24,7 +24,7 @@ class Controller_XM_Tree extends Controller_Private {
 
 		if ($this->auto_render) {
 			$this->add_style('tree', 'xm/css/tree.css', 'screen');
-			$this->add_script('json2', 'xm/js/json2.min.js')
+			$this->add_script('json3', 'xm/js/json3.min.js')
 				->add_script('jstorage', 'xm/js/jstorage.min.js')
 				->add_script('tree', 'xm/js/tree.js');
 		}

@@ -353,7 +353,7 @@ setTimeout("window.close();", 2000);
 		$tmp_xml_path = tempnam('', 'diff_xml_');
 
 		// execute a shell command to generate the diff XML
-		$cmd = 'java -jar ' . MODPATH . 'xmmedia/vendor/daisydiff.jar ' . $tmp_old_path . ' ' . $tmp_new_path . ' --output=xml --file=' . $tmp_xml_path . ' --q && cat ' . $tmp_xml_path;
+		$cmd = 'java -jar ' . MODPATH . 'xm/vendor/daisydiff.jar ' . $tmp_old_path . ' ' . $tmp_new_path . ' --output=xml --file=' . $tmp_xml_path . ' --q && cat ' . $tmp_xml_path;
 		$daisy_xml = shell_exec($cmd);
 
 		// remove the first bit of the XML diff

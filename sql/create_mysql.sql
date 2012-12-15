@@ -464,8 +464,8 @@ CREATE TABLE `content_page` (
   KEY `expiry_date` (`expiry_date`,`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `permission` VALUES(NULL, 'contentadmin', 'Content Admin', 'Allows the user to access the content admin. Required for users to edit content.');
-INSERT INTO `permission` VALUES(NULL, 'contentadmin/*', 'Content Admin - All Content', 'Allows the user to make changes to all content.');
+INSERT INTO `permission` VALUES(NULL, 'content_admin', 'Content Admin', 'Allows the user to access the content admin. Required for users to edit content.');
+INSERT INTO `permission` VALUES(NULL, 'content_admin/*', 'Content Admin - All Content', 'Allows the user to make changes to all content.');
 
 
 -- a template for the tree table

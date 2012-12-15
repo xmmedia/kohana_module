@@ -27,12 +27,10 @@ class Model_XM_State extends ORM {
 	);
 
 	// relationships
-	protected $_has_one = array(
+	protected $_belongs_to = array(
 		'country' => array(
-			'model' => 'country',
-			'through' => 'country',
-			'foreign_key' => 'id',
-			'far_key' => 'country_id',
+			'model' => 'Country',
+			'foreign_key' => 'country_id',
 		),
 	);
 
@@ -64,7 +62,7 @@ class Model_XM_State extends ORM {
 			'field_options' => array(
 				'source' => array(
 					'source' => 'model',
-					'data' => 'country',
+					'data' => 'Country',
 				),
 			),
 		),

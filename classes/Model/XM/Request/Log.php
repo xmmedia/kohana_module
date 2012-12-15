@@ -14,7 +14,7 @@ class Model_XM_Request_Log extends ORM {
 	// relationships
 	protected $_belongs_to = array(
 		'user' => array(
-			'model' => 'user',
+			'model' => 'User',
 			'foreign_key' => 'user_id',
 		),
 	);

@@ -21,11 +21,11 @@ class Model_XM_Content_Page extends ORM {
 	// relationships
 	protected $_has_many = array(
 		'content' => array(
-			'model' => 'content',
+			'model' => 'Content',
 			'foreign_key' => 'content_page_id',
 		),
 		'content_history' => array(
-			'model' => 'content_history',
+			'model' => 'Content_History',
 			'through' => 'content',
 			'foreign_key' => 'content_page_id',
 			'far_key' => 'content_id',

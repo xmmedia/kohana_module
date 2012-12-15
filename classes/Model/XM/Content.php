@@ -21,17 +21,17 @@ class Model_XM_Content extends ORM {
 	// relationships
 	protected $_has_many = array(
 		'content_history' => array(
-			'model' => 'content_history',
+			'model' => 'Content_History',
 			'foreign_key' => 'content_id',
 		),
 	);
 	protected $_belongs_to = array(
 		'last_update_user' => array(
-			'model' => 'user',
+			'model' => 'User',
 			'foreign_key' => 'last_update_user_id',
 		),
 		'content_page' => array(
-			'model' => 'content_page',
+			'model' => 'Content_Page',
 			'foreign_key' => 'content_page_id',
 		),
 	);

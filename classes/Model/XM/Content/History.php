@@ -23,19 +23,19 @@ class Model_XM_Content_History extends ORM {
 	// relationships
 	protected $_belongs_to = array(
 		'content_item' => array(
-			'model' => 'content',
+			'model' => 'Content',
 			'foreign_key' => 'content_id',
 		),
 		'creation_user' => array(
-			'model' => 'user',
+			'model' => 'User',
 			'foreign_key' => 'creation_user_id',
 		),
 		'post_user' => array(
-			'model' => 'user',
+			'model' => 'User',
 			'foreign_key' => 'post_user_id',
 		),
 		'history_user' => array(
-			'model' => 'user',
+			'model' => 'User',
 			'foreign_key' => 'history_user_id',
 		),
 	);

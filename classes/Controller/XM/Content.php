@@ -124,7 +124,7 @@ class Controller_XM_Content extends Controller_Private {
 
 		// load some extra CSS and onload JS if in a popup
 		if ($popup) {
-			$this->template->styles['xm/css/content_admin_popup.css'] = NULL;
+			$this->add_style('content_admin_popup', 'xm/css/content_popup.css');
 			$this->add_on_load_js('$(\'.content_admin_cancel\').on(\'click\', function() {
 window.close();
 });');

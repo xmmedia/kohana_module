@@ -4,7 +4,7 @@
 			<ul class="left">
 				<li class="home"><?php echo HTML::anchor('', __('Home')); ?></li>
 				<?php if ($logged_in) { ?>
-				<?php if (Auth::instance()->allowed('contentadmin') || Auth::instance()->allowed('user_admin/index') || Auth::instance()->allowed('cl4admin') || (Auth::instance()->allowed('userguide') && Kohana::$environment == Kohana::DEVELOPMENT) || Auth::instance()->allowed('cl4admin/model_create') || Auth::instance()->allowed('db_change/index')) { ?>
+				<?php if (Auth::instance()->allowed('content_admin') || Auth::instance()->allowed('user_admin/index') || Auth::instance()->allowed('cl4admin') || (Auth::instance()->allowed('userguide') && Kohana::$environment == Kohana::DEVELOPMENT) || Auth::instance()->allowed('cl4admin/model_create') || Auth::instance()->allowed('db_change/index')) { ?>
 				<li class="dbadmin has_subnav"><?php echo HTML::anchor(Route::get('cl4admin')->uri(), __('DB Admin') . '<span class="more"></span>'); ?>
 					<ul class="sub_nav">
 						<?php if (Auth::instance()->allowed('user_admin/index')) { ?>
@@ -13,7 +13,7 @@
 						<?php if (Auth::instance()->allowed('user_admin/group/index')) { ?>
 						<li class="user_admin_groups"><?php echo HTML::anchor(Route::get('user_admin')->uri(array('action' => 'groups')), __('Groups / Permissions')); ?></li>
 						<?php } ?>
-						<?php if (Auth::instance()->allowed('contentadmin')) { ?>
+						<?php if (Auth::instance()->allowed('content_admin')) { ?>
 						<li class="content_admin"><?php echo HTML::anchor(Route::get('content_admin')->uri(), __('Content Admin')); ?></li>
 						<?php } ?>
 						<?php if (Auth::instance()->allowed('cl4admin')) { ?>

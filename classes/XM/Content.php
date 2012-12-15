@@ -27,7 +27,7 @@ class XM_Content {
 			if (Auth::instance()->logged_in() && Content::allowed($content_item->code)) {
 				if (Arr::get($_REQUEST, 'content_admin_show') == $content_item->code && ! $content_item->text_only_flag) {
 					$highlight_content_item = TRUE;
-					$html = '<div class="contentadmin_show">';
+					$html = '<div class="content_admin_show">';
 				} else {
 					$highlight_content_item = FALSE;
 					$html = '';
@@ -42,7 +42,7 @@ class XM_Content {
 				}
 
 				if ( ! $content_item->text_only_flag) {
-					$html .= '<div class="contentadmin_edit_links">' . HTML::anchor(Route::get('content_admin')->uri(array('action' => 'edit', 'id' => $content_item->id)) . '?popup=1', '<span class="cl4_icon cl4_edit"></span>Edit', array('class' => 'contentadmin_edit js_contentadmin_edit'))
+					$html .= '<div class="content_admin_edit_links">' . HTML::anchor(Route::get('content_admin')->uri(array('action' => 'edit', 'id' => $content_item->id)) . '?popup=1', '<span class="cl4_icon cl4_edit"></span>Edit', array('class' => 'content_admin_edit js_content_admin_edit'))
 						. '<div class="last_update">Last Update: ' . HTML::chars($content_item->last_update()) . '</div>';
 				}
 
@@ -60,7 +60,7 @@ class XM_Content {
 				}
 
 				if ($highlight_content_item && ! $content_item->text_only_flag) {
-					// close the contentadmin_show div
+					// close the content_admin_show div
 					$html .= '</div>';
 				}
 			} else {
@@ -76,14 +76,14 @@ class XM_Content {
 	/**
 	 * Returns TRUE if the user is allowed to edit the content item.
 	 *
-	 * Required permission: contentadmin
+	 * Required permission: content_admin
 	 *
-	 * Required either of: contentadmin/* or contentadmin/[code]
+	 * Required either of: content_admin/* or content_admin/[code]
 	 *
 	 * @param   string  $code  The code for the content item.
 	 * @return  boolean
 	 */
 	public static function allowed($code) {
-		return (Auth::instance()->allowed('contentadmin') && (Auth::instance()->allowed('contentadmin/*') || Auth::instance()->allowed('contentadmin/' . $code)));
+		return (Auth::instance()->allowed('content_admin') && (Auth::instance()->allowed('content_admin/*') || Auth::instance()->allowed('content_admin/' . $code)));
 	}
 }

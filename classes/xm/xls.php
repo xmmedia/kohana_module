@@ -19,7 +19,7 @@ class XM_XLS {
 		// set all the headings to bold
 		// uses the column counter from the previous foreach
 		$columns = array();
-		for($i = 0; $i <= $col; $i ++) {
+		for($i = 0; $i < $col; $i ++) {
 			$columns[] = XLS::number_to_excel_col($i);
 		}
 		foreach ($columns as $column) {

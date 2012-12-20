@@ -28,4 +28,23 @@ class Controller_XM_Base extends Controller_CL4_Base {
 
 		parent::before();
 	} // function before
+
+	/**
+	 * Sets up the template script var, add's jquery, jquery ui, cl4.js and base.js if they are not already set.
+	 *
+	 * @return  Controller_Base
+	 */
+	public function add_template_js() {
+		$this->add_script('jquery', '//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js')
+			->add_script('jquery_ui', '//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js');
+		if (DEBUG_FLAG) {
+			$this->add_script('xm_debug', 'xm/js/debug.js');
+		}
+		$this->add_script('jquery_outside', 'js/jquery.outside.min.js')
+			->add_script('cl4', 'cl4/js/cl4.js')
+			->add_script('cl4_ajax', 'cl4/js/ajax.js')
+			->add_script('base', 'js/base.js');
+
+		return $this;
+	} // function add_template_js
 }

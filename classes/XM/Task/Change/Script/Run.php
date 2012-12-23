@@ -89,7 +89,7 @@ class XM_Task_Change_Script_Run extends Task_Change_Script {
 
 				Minion_CLI::write('Running change scripts...' . PHP_EOL);
 				foreach ($to_apply_change_scripts as $change_script_full_path => $to_apply_change_script) {
-					fwrite(STDOUT, $to_apply_change_script);
+					fwrite(STDOUT, '   ' . $to_apply_change_script);
 
 					$file_contents = file_get_contents($change_script_full_path);
 
@@ -114,7 +114,7 @@ class XM_Task_Change_Script_Run extends Task_Change_Script {
 					DB::insert($this->_config['log_table'], array('filename', 'type', 'applied', 'description', 'log'))
 						->values(array($to_apply_change_script, $script_type, DB::expr("NOW()"), $description, $log))
 						->execute();
-					fwrite(STDOUT, ' -- done');
+					fwrite(STDOUT, ' -- done' . PHP_EOL);
 				}
 
 			} catch (Exception $e) {

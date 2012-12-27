@@ -1,24 +1,17 @@
-<?php defined('SYSPATH') or die ('No direct script access.');
+<?php defined('SYSPATH') OR die('No direct script access.');
 
 /**
- * This model was created using cl4_ORM and should provide
- * standard Kohana ORM features in additon to cl4-specific features.
+ * Model for `state`.
+ *
+ * @package    XM
+ * @category   Models
+ * @author     XM Media Inc.
+ * @copyright  (c) 2012 XM Media Inc.
  */
 class Model_XM_State extends ORM {
 	protected $_table_names_plural = FALSE;
 	protected $_table_name = 'state';
-	public $_table_name_display = 'State'; // cl4-specific
-
-	// column labels
-	protected $_labels = array(
-		'id' => 'ID',
-		'expiry_date' => 'Expiry Date',
-		'country_id' => 'Country',
-		'name' => 'Name',
-		'abbrev' => 'Abbrev',
-		'alternate' => 'Alternate',
-		'display_order' => 'Display Order',
-	);
+	public $_table_name_display = 'State'; // cl4 specific
 
 	// default sorting
 	protected $_sorting = array(
@@ -36,24 +29,17 @@ class Model_XM_State extends ORM {
 
 	// column definitions
 	protected $_table_columns = array(
-		/**
-		* see http://v3.kohanaphp.com/guide/api/Database_MySQL#list_columns for all possible column attributes
-		* see the modules/cl4/config/cl4orm.php for a full list of cl4-specific options and documentation on what the options do
-		*/
 		'id' => array(
 			'field_type' => 'Hidden',
 			'edit_flag' => TRUE,
-			'display_order' => 10,
 			'is_nullable' => FALSE,
 		),
 		'expiry_date' => array(
 			'field_type' => 'DateTime',
-			'display_order' => 20,
 			'is_nullable' => FALSE,
 		),
 		'country_id' => array(
 			'field_type' => 'Select',
-			'display_order' => 30,
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -68,7 +54,6 @@ class Model_XM_State extends ORM {
 		),
 		'name' => array(
 			'field_type' => 'Text',
-			'display_order' => 40,
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -80,7 +65,6 @@ class Model_XM_State extends ORM {
 		),
 		'abbrev' => array(
 			'field_type' => 'Text',
-			'display_order' => 50,
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -93,16 +77,17 @@ class Model_XM_State extends ORM {
 		),
 		'alternate' => array(
 			'field_type' => 'Text',
-			'display_order' => 60,
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
+			'field_attributes' => array(
+				'maxlength' => 255,
+			),
 		),
 		'display_order' => array(
 			'field_type' => 'Text',
-			'display_order' => 70,
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -116,13 +101,29 @@ class Model_XM_State extends ORM {
 	);
 
 	/**
-	 * @var timestamp $_expires_column The time this row expires and is no longer returned in standard searches.
-	 *
+	 * @var  array  $_expires_column  The time this row expires and is no longer returned in standard searches.
 	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
 	 */
 	protected $_expires_column = array(
 		'column' 	=> 'expiry_date',
-		'format' 	=> 'Y-m-j H:i:s',
 		'default'	=> 0,
 	);
+
+
+	/**
+	 * Labels for columns.
+	 *
+	 * @return  array
+	 */
+	public function labels() {
+		return array(
+			'id' => 'ID',
+			'expiry_date' => 'Expiry Date',
+			'country_id' => 'Country',
+			'name' => 'Name',
+			'abbrev' => 'Abbrev',
+			'alternate' => 'Alternate',
+			'display_order' => 'Display Order',
+		);
+	}
 } // class

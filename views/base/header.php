@@ -53,7 +53,5 @@
 
 	<div class="page_top">
 		<div class="page_top_logo"><a href="<?php echo URL::base(); ?>"><?php echo HTML::chars(SHORT_NAME . ' v' . APP_VERSION); if (isset($pageTitle) && trim($pageTitle) != '') echo ' - ' . HTML::chars($pageTitle); ?></a></div>
-		<div class="clear"></div>
 	</div>
-	<div class="clear"></div>
 </header>

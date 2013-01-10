@@ -56,7 +56,7 @@ class Model_XM_Content_History extends ORM {
 			'is_nullable' => FALSE,
 		),
 		'content_id' => array(
-			'field_type' => 'select',
+			'field_type' => 'Select',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,

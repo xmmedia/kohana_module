@@ -2,7 +2,7 @@
 
 /**
  * A default base Controller class.
- * Some of the functionality is required by cl4 and other modules.
+ * Some of the functionality is required by CL4 and other modules.
  */
 class Controller_XM_Base extends Controller_CL4_Base {
 	/**
@@ -30,7 +30,8 @@ class Controller_XM_Base extends Controller_CL4_Base {
 	} // function before
 
 	/**
-	 * Sets up the template script var, add's jquery, jquery ui, cl4.js and base.js if they are not already set.
+	 * Sets up the template script var, add's jquery, jquery ui, and base.js if they are not already set.
+	 * If not in dev, base.min.js will be added instead of base.
 	 *
 	 * @return  Controller_Base
 	 */
@@ -40,10 +41,11 @@ class Controller_XM_Base extends Controller_CL4_Base {
 		if (DEBUG_FLAG) {
 			$this->add_script('xm_debug', 'xm/js/debug.js');
 		}
-		$this->add_script('jquery_outside', 'js/jquery.outside.min.js')
-			->add_script('cl4', 'cl4/js/cl4.js')
-			->add_script('cl4_ajax', 'cl4/js/ajax.js')
-			->add_script('base', 'js/base.js');
+		if (CL4::is_dev()) {
+			$this->add_script('base', 'js/base.js');
+		} else {
+			$this->add_script('base', 'js/base.min.js');
+		}
 
 		return $this;
 	} // function add_template_js

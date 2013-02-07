@@ -8,7 +8,7 @@ class XM_ORM_Weekday extends ORM_Select {
 		4 => 'Wednesday',
 		5 => 'Thursday',
 		6 => 'Friday',
-		7 => 'Saturay',
+		7 => 'Saturday',
 	);
 
 	public static function edit($column_name, $html_name, $selected, array $attributes = NULL, array $options = array(), ORM $orm_model = NULL) {

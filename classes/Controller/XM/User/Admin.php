@@ -221,6 +221,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 			$table->add_row($this->get_list_row($user));
 		} // foreach
 
+		$this->template->page_title = 'User Admin - ' . $this->page_title_append;
 		$this->template->body_html = View::factory('user_admin/user_list')
 			->set('user_list', $table->get_html())
 			->set('nav_html', $pagination->render())
@@ -377,12 +378,13 @@ class Controller_XM_User_Admin extends Controller_Private {
 			throw new Kohana_Exception('No ID received for view');
 		}
 
-		$this->template->body_html = View::factory('user_admin/user_view')
-			->bind('user', $user);
-
 		$user = ORM::factory('User_Admin', $this->id)
 			->set_mode('view')
 			->set_option('get_view_view_file', 'user_admin/user_view_form');
+
+		$this->template->page_title = $user->first_name . ' ' . $user->last_name . ' - View User - User Admin - ' . $this->page_title_append;
+		$this->template->body_html = View::factory('user_admin/user_view')
+			->bind('user', $user);
 	} // function action_view
 
 	/**
@@ -406,6 +408,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 			$user->set_option('form_action', URL::site(Request::current()->route()->uri(array('action' => 'add'))) . URL::query());
 		}
 
+		$this->template->page_title = 'Add User - User Admin - ' . $this->page_title_append;
 		$this->template->body_html = View::factory('user_admin/user_edit')
 			->bind('user', $user);
 	} // function action_add
@@ -440,6 +443,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 			$this->save_user($user);
 		} // if
 
+		$this->template->page_title = $user->first_name . ' ' . $user->last_name . ' - Edit User - User Admin - ' . $this->page_title_append;
 		$this->template->body_html = View::factory('user_admin/user_edit')
 			->bind('user', $user);
 	} // function action_edit
@@ -706,6 +710,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 			$table->add_row($this->get_group_list_row($group));
 		} // foreach
 
+		$this->template->page_title = 'Permission Groups - ' . $this->page_title_append;
 		$this->template->body_html = View::factory('user_admin/group_list')
 			->set('group_list', $table->get_html())
 			->set('group_count', $group_count);
@@ -764,13 +769,14 @@ class Controller_XM_User_Admin extends Controller_Private {
 			throw new Kohana_Exception('No ID received for view');
 		}
 
-		$this->template->body_html = View::factory('user_admin/group_view')
-			->bind('group', $group);
-
 		$group = ORM::factory('Group', $this->id)
 			->set_mode('view')
 			->set_option('get_view_view_file', 'user_admin/group_view_form')
 			->set_option('display_buttons', FALSE);
+
+		$this->template->page_title = $group->name . ' - View Group - Permission Groups - ' . $this->page_title_append;
+		$this->template->body_html = View::factory('user_admin/group_view')
+			->bind('group', $group);
 	} // function action_view_group
 
 	/**
@@ -791,6 +797,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 			$group->set_option('form_action', URL::site($this->request->route()->uri(array('action' => $this->request->action()))) . URL::query());
 		}
 
+		$this->template->page_title = 'Add Group - Permission Groups - ' . $this->page_title_append;
 		$this->template->body_html = View::factory('user_admin/group_edit')
 			->bind('group', $group);
 	} // function action_add
@@ -809,6 +816,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 			$this->save_group($group);
 		} // if
 
+		$this->template->page_title = $group->name . ' - Edit Group - Permission Groups - ' . $this->page_title_append;
 		$this->template->body_html = View::factory('user_admin/group_edit')
 			->bind('group', $group);
 	} // function action_edit
@@ -946,6 +954,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 			} // if
 		}
 
+		$this->template->page_title = $group->name . ' - Edit Permissions - Permission Groups - ' . $this->page_title_append;
 		$this->template->body_html = View::factory('user_admin/group_permission_edit')
 			->bind('group', $group)
 			->bind('available_perms_select', $available_perms_select)
@@ -997,6 +1006,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 			'class' => 'xm_permission_edit_select xm_include_in_save',
 		));
 
+		$this->template->page_title = $group->name . ' - Edit Users - Permission Groups - ' . $this->page_title_append;
 		$this->template->body_html = View::factory('user_admin/group_user_edit')
 			->bind('group', $group)
 			->bind('available_users_select', $available_users_select)

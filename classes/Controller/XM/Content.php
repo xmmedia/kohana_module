@@ -97,6 +97,7 @@ class Controller_XM_Content extends Controller_Private {
 			}
 		}
 
+		$this->template->page_title = 'Content Admin - ' . $this->page_title_append;
 		$this->template->body_html .= View::factory('content_admin/index')
 			->set('content_html', $content_table->get_html());
 	} // function action_index
@@ -205,6 +206,7 @@ setTimeout("window.close();", 2000);
 			$content_item->content = $draft->content;
 		} // if
 
+		$this->template->page_title = 'Edit - ' . $content_item->name . ' - Content Admin - ' . $this->page_title_append;
 		$this->template->body_html .= View::factory('content_admin/edit')
 			->set('form_open', Form::open($this->request->uri()))
 			->bind('popup', $popup)
@@ -293,6 +295,7 @@ setTimeout("window.close();", 2000);
 			));
 		} // foreach
 
+		$this->template->page_title = 'History - ' . $content_item->name . ' - Content Admin - ' . $this->page_title_append;
 		$this->template->body_html = View::factory('content_admin/history')
 			->bind('content_item', $content_item)
 			->set('content_history_html', $content_history_table->get_html());
@@ -375,12 +378,13 @@ setTimeout("window.close();", 2000);
 		}
 		$history_select = Form::select('compare_to', $content_history_array, $prev_content_history->id, array('id' => 'compare_to', 'class' => 'js_compare_to'));
 
-			$this->template->body_html = View::factory('content_admin/diff')
-				->bind('content_item', $content_item)
-				->bind('content_history', $content_history)
-				->bind('prev_content_history', $prev_content_history)
-				->bind('history_select', $history_select)
-				->bind('diff', $diff);
+		$this->template->page_title = 'View Changes - ' . $content_item->name . ' - Content Admin - ' . $this->page_title_append;
+		$this->template->body_html = View::factory('content_admin/diff')
+			->bind('content_item', $content_item)
+			->bind('content_history', $content_history)
+			->bind('prev_content_history', $prev_content_history)
+			->bind('history_select', $history_select)
+			->bind('diff', $diff);
 	} // function action_view_changes
 
 	/**

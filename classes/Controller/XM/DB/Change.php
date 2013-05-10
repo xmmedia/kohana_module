@@ -18,6 +18,7 @@ class Controller_XM_DB_Change extends Controller_Private {
 	}
 
 	public function action_index() {
+		$this->template->page_title = 'DB Change - ' . $this->page_title_append;
 		$this->template->body_html = View::factory('db_change/index')
 			->bind('db_change_sql', $db_change_sql)
 			->bind('db_checkboxes', $db_checkboxes);

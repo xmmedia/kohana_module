@@ -72,6 +72,8 @@ class Controller_XM_Template_Admin extends Controller_Private {
 	public function before() {
 		parent::before();
 
+		$this->page_title_append = 'Administration - ' . $this->page_title_append;
+
 		// set the information from the route/get/post parameters
 		$this->id = $this->request->param('id');
 		$page_offset = Arr::get($_REQUEST, 'page');
@@ -135,6 +137,7 @@ class Controller_XM_Template_Admin extends Controller_Private {
 	* Just displays the editable list using display_editable_list()
 	*/
 	public function action_index() {
+		$this->template->page_title = $this->page_title_append;
 		$this->display_editable_list();
 	}
 
@@ -240,8 +243,8 @@ class Controller_XM_Template_Admin extends Controller_Private {
 			$form_options['form_action'] = URL::site($this->request->route()->uri(array('action' => 'add'))) . URL::query();
 		}
 
+		$this->template->page_title = 'Add - ' . $this->page_title_append;
 		$view_content = $this->model->get_form($form_options);
-
 		$this->add_default_view($view_title, $view_content);
 	} // function action_add
 
@@ -259,6 +262,7 @@ class Controller_XM_Template_Admin extends Controller_Private {
 			$this->save_model();
 		}
 
+		$this->template->page_title = 'Edit - ' . $this->page_title_append;
 		$view_title = $this->get_page_title_message('editing_item');
 		$view_content = $this->model->get_form(array(
 			'mode' => 'edit',
@@ -292,6 +296,7 @@ class Controller_XM_Template_Admin extends Controller_Private {
 
 		$this->load_model('view');
 
+		$this->template->page_title = 'View - ' . $this->page_title_append;
 		$this->add_default_view(HTML::chars($this->model_display_name), $this->model->get_view());
 	} // function
 
@@ -327,6 +332,7 @@ class Controller_XM_Template_Admin extends Controller_Private {
 		$view_content = $orm_multiple->get_add_multiple($count);
 
 		// Add view to template
+		$this->template->page_title = 'Add - ' . $this->page_title_append;
 		$this->add_default_view($view_title, $view_content);
 	} // function action_add_multiple
 
@@ -357,6 +363,7 @@ class Controller_XM_Template_Admin extends Controller_Private {
 			$ids = $_POST['ids'];
 		} // if
 
+		$this->template->page_title = 'Edit - ' . $this->page_title_append;
 		$view_title = $this->get_page_title_message('multiple_edit_item', $orm_multiple->_table_name_display);
 		$view_content = $orm_multiple->get_edit_multiple($ids);
 		$this->add_default_view($view_title, $view_content);
@@ -394,6 +401,7 @@ class Controller_XM_Template_Admin extends Controller_Private {
 				'object_name' => $this->model_display_name,
 			)));
 
+			$this->template->page_title = 'Delete - ' . $this->page_title_append;
 			$this->add_default_view(HTML::chars($this->model_display_name), $this->model->get_view());
 		}
 	} // function action_delete
@@ -446,6 +454,7 @@ class Controller_XM_Template_Admin extends Controller_Private {
 			$this->redirect_to_index();
 
 		} else {
+			$this->template->page_title = 'Search - ' . $this->page_title_append;
 			$view_title = $this->get_page_title_message('search');
 			$view_content = $this->model->get_form(array(
 				'mode' => 'search',

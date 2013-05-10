@@ -116,6 +116,7 @@ class Controller_XM_Tree extends Controller_Private {
 			->where('lft', '=', 1)
 			->find();
 
+		$this->template->page_title = 'Tree Admin - ' . $this->page_title_append;
 		$this->template->body_html = View::factory($this->view_path . '/index')
 			->bind('route_name', $this->route_name)
 			->bind('tree_html', $tree_html)

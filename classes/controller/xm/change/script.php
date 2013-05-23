@@ -44,6 +44,13 @@ class Controller_XM_Change_Script extends Controller {
 	protected $databases;
 
 	/**
+	 * The current database name.
+	 * Set when looping through databases
+	 * @var  string
+	 **/
+	protected $current_database;
+
+	/**
 	 * Checks for CLI and loads the config.
 	 * The default config is merged with the config specified inside the key `CHANGE_SCRIPT_CONFIG`.
 	 * Also loads the database list from CLI command.
@@ -128,6 +135,8 @@ class Controller_XM_Change_Script extends Controller {
 					continue;
 				}
 
+				$this->current_database = $database;
+
 				try {
 					DB::query(NULL, "USE " . Database::instance()->quote_identifier($database))->execute();
 				} catch (Exception $e) {
@@ -204,6 +213,8 @@ class Controller_XM_Change_Script extends Controller {
 				if ($this->databases !== NULL && ! in_array($database, $this->databases)) {
 					continue;
 				}
+
+				$this->current_database = $database;
 
 				try {
 					DB::query(NULL, "USE " . Database::instance()->quote_identifier($database))->execute();
@@ -311,6 +322,8 @@ class Controller_XM_Change_Script extends Controller {
 				}
 
 				echo PHP_EOL . '-------' . PHP_EOL . $database . PHP_EOL;
+
+				$this->current_database = $database;
 
 				try {
 					DB::query(NULL, "USE " . Database::instance()->quote_identifier($database))->execute();

@@ -53,6 +53,13 @@ class XM_Task_Change_Script extends Minion_Task {
 	 **/
 	protected $_databases;
 
+	/**
+	 * The current database name.
+	 * Set when looping through databases
+	 * @var  string
+	 **/
+	protected $current_database;
+
 	protected function _execute(array $params) {
 		Minion_CLI::write('To use the change scripts, use the list, run and add tasks.');
 	}

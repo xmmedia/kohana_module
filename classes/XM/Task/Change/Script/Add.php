@@ -79,6 +79,8 @@ class XM_Task_Change_Script_Add extends Task_Change_Script {
 
 			fwrite(STDOUT, PHP_EOL . '-------' . PHP_EOL . $database);
 
+			$this->current_database = $database;
+
 			try {
 				DB::query(NULL, "USE " . Database::instance()->quote_identifier($database))->execute();
 			} catch (Exception $e) {
@@ -91,6 +93,8 @@ class XM_Task_Change_Script_Add extends Task_Change_Script {
 				->execute();
 			fwrite(STDOUT, ' -- done');
 		} // foreach
+
+		$this->current_database = NULL;
 
 		Minion_CLI::write(PHP_EOL . 'The change script was logged successfully.' . PHP_EOL);
 	}

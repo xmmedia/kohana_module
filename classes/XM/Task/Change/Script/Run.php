@@ -71,6 +71,8 @@ class XM_Task_Change_Script_Run extends Task_Change_Script {
 				continue;
 			}
 
+			$this->current_database = $database;
+
 			try {
 				DB::query(NULL, "USE " . Database::instance()->quote_identifier($database))->execute();
 			} catch (Exception $e) {
@@ -122,6 +124,8 @@ class XM_Task_Change_Script_Run extends Task_Change_Script {
 				continue;
 			}
 		}
+
+		$this->current_database = NULL;
 
 		Minion_CLI::write(PHP_EOL . 'The change scripts that needed to be run have been run successfully.' . PHP_EOL);
 	}

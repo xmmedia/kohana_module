@@ -125,7 +125,7 @@ class XM_Task_Change_Script_Run extends Task_Change_Script {
 				} else {
 					$msg = 'There was an error while running the change scripts on `' . $database . '`';
 				}
-				Minion_CLI::write(PHP_EOL . '!!! There was an error while running the change script "' . $to_apply_change_script . '" on `' . $database . '`: ' . Kohana_Exception::text($e));
+				Minion_CLI::write(PHP_EOL . '!!! ' . $msg . ': ' . Kohana_Exception::text($e));
 				continue;
 			}
 		}

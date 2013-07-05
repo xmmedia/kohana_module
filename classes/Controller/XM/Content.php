@@ -133,71 +133,75 @@ window.close();
 
 		// save if post is not empty
 		if ( ! empty($_POST)) {
-			$content = Arr::path($_POST, 'c_record.content.0.content');
-			// check to see if any changes were made
-			if ($content !== NULL && ($content !== $content_item->content || $content_item->has_draft())) {
-				$immediately_live = (bool) Arr::get($_POST, 'immediately_live');
+			try {
+				$content = Arr::path($_POST, 'c_record.content.0.content');
+				// check to see if any changes were made
+				if ($content !== NULL && ($content !== $content_item->content || $content_item->has_draft())) {
+					$immediately_live = (bool) Arr::get($_POST, 'immediately_live');
 
-				// store the content in the model, even though we may not save it (depending on immediately_live)
-				$content_item->content = $content;
+					// store the content in the model, even though we may not save it (depending on immediately_live)
+					$content_item->content = $content;
 
-				// make all existing records in the content history table as history if they haven't already
-				$existing_content_history = $content_item->content_history
-					->where('history_date', '=', 0)
-					->find_all();
-				foreach ($existing_content_history as $content_history) {
-					$content_history->values(array(
-							'history_date' => DB::expr("NOW()"),
-							'history_user_id' => Auth::instance()->get_user()->pk(),
-						))
-						->save();
-				}
+					// make all existing records in the content history table as history if they haven't already
+					$existing_content_history = $content_item->content_history
+						->where('history_date', '=', 0)
+						->find_all();
+					foreach ($existing_content_history as $content_history) {
+						$content_history->values(array(
+								'history_date' => DB::expr("NOW()"),
+								'history_user_id' => Auth::instance()->get_user()->pk(),
+							))
+							->save();
+					}
 
-				$content_history = ORM::factory('Content_History')
-					->values(array(
-						'content_id' => $content_item->id,
-						'creation_user_id' => Auth::instance()->get_user()->pk(),
-						'content' => $content_item->content,
-						'comments' => Arr::path($_POST, 'c_record.content_history.0.comments', ''),
-					));
-				// only set the post date and user when we are going live with this immediately
-				if ($immediately_live) {
-					$content_history->values(array(
-							'post_date' => DB::expr("NOW()"),
-							'post_user_id' => Auth::instance()->get_user()->pk(),
+					$content_history = ORM::factory('Content_History')
+						->values(array(
+							'content_id' => $content_item->id,
+							'creation_user_id' => Auth::instance()->get_user()->pk(),
+							'content' => $content_item->content,
+							'comments' => Arr::path($_POST, 'c_record.content_history.0.comments', ''),
 						));
-				}
-				$content_history->save();
+					// only set the post date and user when we are going live with this immediately
+					if ($immediately_live) {
+						$content_history->values(array(
+								'post_date' => DB::expr("NOW()"),
+								'post_user_id' => Auth::instance()->get_user()->pk(),
+							));
+					}
+					$content_history->save();
 
-				// if making it live immediately, update the last update fields
-				if ($immediately_live) {
-					$content_item->values(array(
-							'last_update' => DB::expr("NOW()"),
-							'last_update_user_id' => Auth::instance()->get_user()->pk(),
-						))
-						->save();
-				}
+					// if making it live immediately, update the last update fields
+					if ($immediately_live) {
+						$content_item->values(array(
+								'last_update' => DB::expr("NOW()"),
+								'last_update_user_id' => Auth::instance()->get_user()->pk(),
+							))
+							->save();
+					}
 
-				if ( ! $immediately_live) {
-					Message::add('The content for "' . HTML::chars($content_item->name) . '" was saved as a draft. To activated, edit the content again.', Message::$warning);
+					if ( ! $immediately_live) {
+						Message::add('The content for "' . HTML::chars($content_item->name) . '" was saved as a draft. To activated, edit the content again.', Message::$warning);
+					} else {
+						Message::add('The content "' . HTML::chars($content_item->name) . '" was successfully updated.', Message::$notice);
+					}
+
+				// no changes made
 				} else {
-					Message::add('The content "' . HTML::chars($content_item->name) . '" was successfully updated.', Message::$notice);
-				}
+					Message::add('No changes were made to the content "' . HTML::chars($content_item->name) . '" so no changes were record.', Message::$notice);
+				} // if
 
-			// no changes made
-			} else {
-				Message::add('No changes were made to the content "' . HTML::chars($content_item->name) . '" so no changes were record.', Message::$notice);
-			} // if
-
-			// if it's a popup, refresh the parent page and close the window after 2s
-			if ($popup) {
-				$this->template->body_html .= '<script>
+				// if it's a popup, refresh the parent page and close the window after 2s
+				if ($popup) {
+					$this->template->body_html .= '<script>
 setTimeout("window.opener.location.href = window.opener.location.href;", 500);
 setTimeout("window.close();", 2000);
 </script>';
-				return;
-			} else {
-				$this->redirect_to_index();
+					return;
+				} else {
+					$this->redirect_to_index();
+				}
+			} catch (ORM_Validation_Exception $e) {
+				Message::add('Please correct the following before submitting: ' . Message::add_validation_errors($e, ''), Message::$error);
 			}
 
 		// there is a draft, so put the draft's content into the content item

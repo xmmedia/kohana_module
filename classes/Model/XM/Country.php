@@ -137,4 +137,39 @@ class Model_XM_Country extends ORM {
 			'display_order' => 'Display Order',
 		);
 	}
+
+	/**
+	 * Rule definitions for validation.
+	 *
+	 * @return  array
+	 */
+	public function rules() {
+		return array(
+			'name' => array(
+				array('not_empty'),
+			),
+		);
+	}
+
+	/**
+	 * Filter definitions, run everytime a field is set.
+	 *
+	 * @return  array
+	 */
+	public function filters() {
+		return array(
+			'name' => array(
+				array('trim'),
+			),
+			'symbol' => array(
+				array('trim'),
+			),
+			'code' => array(
+				array('trim'),
+			),
+			'currency_code' => array(
+				array('trim'),
+			),
+		);
+	}
 } // class

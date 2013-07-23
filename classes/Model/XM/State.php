@@ -126,4 +126,36 @@ class Model_XM_State extends ORM {
 			'display_order' => 'Display Order',
 		);
 	}
+
+	/**
+	 * Rule definitions for validation.
+	 *
+	 * @return  array
+	 */
+	public function rules() {
+		return array(
+			'name' => array(
+				array('not_empty'),
+			),
+		);
+	}
+
+	/**
+	 * Filter definitions, run everytime a field is set.
+	 *
+	 * @return  array
+	 */
+	public function filters() {
+		return array(
+			'name' => array(
+				array('trim'),
+			),
+			'abbrev' => array(
+				array('trim'),
+			),
+			'alternate' => array(
+				array('trim'),
+			),
+		);
+	}
 } // class

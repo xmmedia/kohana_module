@@ -525,6 +525,6 @@ class Controller_XM_Template_Admin extends Controller_Private {
 	* Redirects the user to the index for the current model based on the current route
 	*/
 	function redirect_to_index() {
-		$this->request->redirect(Route::get($this->route)->uri());
+		$this->redirect(Route::get($this->route)->uri());
 	} // function
 } // class

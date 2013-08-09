@@ -105,6 +105,9 @@ class XM_Task_Change_Script extends Minion_Task {
 		$log = '';
 
 		// set the charset in the globals to the same as the database for use in the sql parser
+		$GLOBALS['userlink'] = mysql_connect();
+		$GLOBALS['cfg']['DBG']['sql'] = FALSE;
+		$GLOBALS['server'] = (string) Database::instance();
 		$GLOBALS['charset'] = Kohana::$config->load('database.' . (string) Database::instance() . '.charset');
 		$GLOBALS['cfg']['Server']['extension'] = 'mysql';
 		$GLOBALS['cfg']['MaxCharactersInDisplayedSQL'] = 1000;

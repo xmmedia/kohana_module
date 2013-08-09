@@ -5,9 +5,6 @@
  *
  * @package PhpMyAdmin
  */
-if (! defined('PHPMYADMIN')) {
-    exit;
-}
 
 /**
  * This class tracks changes on databases, tables and views.

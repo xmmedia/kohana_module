@@ -28,6 +28,7 @@
  */
 
 require_once 'core.lib.php';
+require_once 'Tracker.class.php';
 
 /**
  * Include the string library as we use it heavily

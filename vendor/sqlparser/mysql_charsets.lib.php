@@ -4,15 +4,16 @@
  *
  * @package PhpMyAdmin
  */
-if (! defined('PHPMYADMIN')) {
-    exit;
+
+if (! defined('PMA_DRIZZLE')) {
+    define('PMA_DRIZZLE', 0);
 }
 
 /**
  *
  */
 
-if (! PMA_Util::cacheExists('mysql_charsets', true)) {
+if (TRUE || ! PMA_cacheExists('mysql_charsets_count', true)) {
     global $mysql_charsets, $mysql_charsets_descriptions,
         $mysql_charsets_available, $mysql_collations, $mysql_collations_available,
         $mysql_default_collations, $mysql_collations_flat;

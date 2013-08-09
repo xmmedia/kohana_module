@@ -6,11 +6,7 @@
  * @package    PhpMyAdmin-DBI
  * @subpackage MySQL
  */
-if (! defined('PHPMYADMIN')) {
-    exit;
-}
 
-require_once './libraries/logging.lib.php';
 
 /**
  * MySQL client API

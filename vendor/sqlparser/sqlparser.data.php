@@ -16,9 +16,6 @@
  *
  * @package PhpMyAdmin
  */
-if (! defined('PHPMYADMIN')) {
-    exit;
-}
 
 if (! isset($GLOBALS['sql_delimiter'])) {
         $GLOBALS['sql_delimiter'] = ';';
@@ -27,7 +24,7 @@ if (! isset($GLOBALS['sql_delimiter'])) {
 /**
  * @global array MySQL function names
  */
-$PMA_SQPdata_function_name = array (
+$GLOBALS['PMA_SQPdata_function_name'] = array (
     'ABS',
     'ACOS',
     'ADDDATE',
@@ -331,7 +328,7 @@ $PMA_SQPdata_function_name = array (
 /**
  * @global array MySQL attributes
  */
-$PMA_SQPdata_column_attrib = array (
+$GLOBALS['PMA_SQPdata_column_attrib'] = array (
     'ARCHIVE',          // Engine
     'ASCII',
     'AUTO_INCREMENT',
@@ -372,7 +369,7 @@ $PMA_SQPdata_column_attrib = array (
  *
  * @global array MySQL reserved words
  */
-$PMA_SQPdata_reserved_word = array (
+$GLOBALS['PMA_SQPdata_reserved_word'] = array (
     'ACCESSIBLE',       // 5.1
     'ACTION',
     'ADD',
@@ -680,7 +677,7 @@ $PMA_SQPdata_reserved_word = array (
  *
  * @global array MySQL forbidden words
  */
-$PMA_SQPdata_forbidden_word = array (
+$GLOBALS['PMA_SQPdata_forbidden_word'] = array (
     'ACCESSIBLE',
     'ADD',
     'ALL',
@@ -929,7 +926,7 @@ $PMA_SQPdata_forbidden_word = array (
  *
  * @global array MySQL column types
  */
-$PMA_SQPdata_column_type = array (
+$GLOBALS['PMA_SQPdata_column_type'] = array (
     'BIGINT',
     'BINARY',
     'BIT',
@@ -989,7 +986,7 @@ $PMA_SQPdata_column_type = array (
 /**
  * Documentation links for operators.
  */
-$PMA_SQPdata_operators_docs = array(
+$GLOBALS['PMA_SQPdata_operators_docs'] = array(
    '!=' => array(
         'link' => 'comparison-operators',
         'anchor' => 'operator_not-equal',
@@ -1093,7 +1090,7 @@ $PMA_SQPdata_operators_docs = array(
 /**
  * Documentation links for functions.
  */
-$PMA_SQPdata_functions_docs = array(
+$GLOBALS['PMA_SQPdata_functions_docs'] = array(
    'ABS' => array(
         'link' => 'mathematical-functions',
         'anchor' => 'function_abs',

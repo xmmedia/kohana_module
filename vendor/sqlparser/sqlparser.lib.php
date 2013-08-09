@@ -26,25 +26,28 @@
  *
  * @package PhpMyAdmin
  */
-if (! defined('PHPMYADMIN')) {
-    exit;
-}
+
+require_once 'core.lib.php';
 
 /**
  * Include the string library as we use it heavily
  */
-require_once './libraries/string.lib.php';
+require_once 'string.lib.php';
 
 /**
  * Include data for the SQL Parser
  */
-require_once './libraries/sqlparser.data.php';
+require_once 'sqlparser.data.php';
+
+require_once 'database_interface.lib.php';
+require_once 'Util.class.php';
+require_once 'url_generating.lib.php';
 
 /**
  * Charset information
  */
 if (!defined('TESTSUITE')) {
-    include_once './libraries/mysql_charsets.lib.php';
+    include_once 'mysql_charsets.lib.php';
 }
 if (! isset($mysql_charsets)) {
     $mysql_charsets = array();

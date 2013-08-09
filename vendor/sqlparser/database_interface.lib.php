@@ -5,9 +5,6 @@
  *
  * @package PhpMyAdmin-DBI
  */
-if (! defined('PHPMYADMIN')) {
-    exit;
-}
 
 /**
  * Force STORE_RESULT method, ignored by classic MySQL.
@@ -48,7 +45,7 @@ if (defined('TESTSUITE')) {
     /**
      * For testsuite we use dummy driver which can fake some queries.
      */
-    include_once './libraries/dbi/dummy.lib.php';
+    include_once 'dbi/dummy.lib.php';
 } else {
 
     /**
@@ -91,7 +88,7 @@ if (defined('TESTSUITE')) {
     /**
      * Including The DBI Plugin
      */
-    include_once './libraries/dbi/'
+    include_once 'dbi/'
         . $GLOBALS['cfg']['Server']['extension'] . '.dbi.lib.php';
 
 }
@@ -298,7 +295,7 @@ function PMA_DBI_convert_message($message)
             && (@strcasecmp(ICONV_IMPL, 'unknown') == 0)
             && (@strcasecmp(ICONV_VERSION, 'unknown') == 0)
         ) {
-            include_once './libraries/iconv_wrapper.lib.php';
+            include_once 'iconv_wrapper.lib.php';
             $message = PMA_aix_iconv_wrapper(
                 $encoding,
                 'utf-8' . $GLOBALS['cfg']['IconvExtraParams'],
@@ -963,7 +960,7 @@ function PMA_DBI_get_databases_full($database = null, $force_stats = false,
             $databases[$database_name]['SCHEMA_NAME']      = $database_name;
 
             if ($force_stats) {
-                include_once './libraries/mysql_charsets.lib.php';
+                include_once 'mysql_charsets.lib.php';
 
                 $databases[$database_name]['DEFAULT_COLLATION_NAME']
                     = PMA_getDbCollation($database_name);

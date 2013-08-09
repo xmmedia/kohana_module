@@ -12,9 +12,6 @@
  * @package    PhpMyAdmin-String
  * @subpackage Native
  */
-if (! defined('PHPMYADMIN')) {
-    exit;
-}
 
 /**
  * Checks if a character is an alphanumeric one

@@ -10,9 +10,6 @@
  * @package    PhpMyAdmin-DBI
  * @subpackage Dummy
  */
-if (! defined('PHPMYADMIN')) {
-    exit;
-}
 
 /**
  * Array of queries this "driver" supports

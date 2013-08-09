@@ -12,27 +12,24 @@
  * @todo a .lib filename should not have code in main(), split or rename file
  * @package PhpMyAdmin-String
  */
-if (! defined('PHPMYADMIN')) {
-    exit;
-}
 
 /**
  * Load proper code for handling input.
  */
 if (@function_exists('mb_strlen')) {
     mb_internal_encoding('utf-8');
-    include './libraries/string_mb.lib.php';
+    include 'string_mb.lib.php';
 } else {
-    include './libraries/string_native.lib.php';
+    include 'string_native.lib.php';
 }
 
 /**
  * Load ctype handler.
  */
 if (@extension_loaded('ctype')) {
-    include './libraries/string_type_ctype.lib.php';
+    include 'string_type_ctype.lib.php';
 } else {
-    include './libraries/string_type_native.lib.php';
+    include 'string_type_native.lib.php';
 }
 
 /**

@@ -4,9 +4,6 @@
  *
  * @package PhpMyAdmin
  */
-if (! defined('PHPMYADMIN')) {
-    exit;
-}
 
 /**
  * GNU iconv code set to IBM AIX libiconv code set table

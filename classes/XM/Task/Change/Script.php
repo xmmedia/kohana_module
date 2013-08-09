@@ -106,6 +106,9 @@ class XM_Task_Change_Script extends Minion_Task {
 
 		// set the charset in the globals to the same as the database for use in the sql parser
 		$GLOBALS['charset'] = Kohana::$config->load('database.' . (string) Database::instance() . '.charset');
+		$GLOBALS['cfg']['Server']['extension'] = 'mysql';
+		$GLOBALS['cfg']['MaxCharactersInDisplayedSQL'] = 1000;
+		$GLOBALS['is_ajax_request'] = FALSE;
 
 		if ( ! function_exists('PMA_SQP_parse')) {
 			Kohana::load(Kohana::find_file('vendor', 'sqlparser/sqlparser.lib'));

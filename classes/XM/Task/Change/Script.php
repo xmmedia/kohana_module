@@ -105,7 +105,13 @@ class XM_Task_Change_Script extends Minion_Task {
 		$log = '';
 
 		// set the charset in the globals to the same as the database for use in the sql parser
+		$GLOBALS['userlink'] = mysql_connect();
+		$GLOBALS['cfg']['DBG']['sql'] = FALSE;
+		$GLOBALS['server'] = (string) Database::instance();
 		$GLOBALS['charset'] = Kohana::$config->load('database.' . (string) Database::instance() . '.charset');
+		$GLOBALS['cfg']['Server']['extension'] = 'mysql';
+		$GLOBALS['cfg']['MaxCharactersInDisplayedSQL'] = 1000;
+		$GLOBALS['is_ajax_request'] = FALSE;
 
 		if ( ! function_exists('PMA_SQP_parse')) {
 			Kohana::load(Kohana::find_file('vendor', 'sqlparser/sqlparser.lib'));
@@ -154,7 +160,11 @@ class XM_Task_Change_Script extends Minion_Task {
 				$queries[$i]['query'] .= ';';
 				++ $i;
 			} else {
-				$queries[$i]['query'] .= ($queries[$i]['query'] != '' ? ' ' : '') . $sql_part['data'];
+				// don't add a space at the start of the query, or before or after a bracket
+				if ($queries[$i]['query'] != '' && $sql_part['type'] != 'punct_bracket_open_round' && $sql_part['type'] != 'punct_bracket_close_round' ? ' ' : '') {
+					$queries[$i]['query'] .= ' ';
+				}
+				$queries[$i]['query'] .= $sql_part['data'];
 			}
 		} // foreach
 

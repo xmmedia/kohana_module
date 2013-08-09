@@ -160,7 +160,11 @@ class XM_Task_Change_Script extends Minion_Task {
 				$queries[$i]['query'] .= ';';
 				++ $i;
 			} else {
-				$queries[$i]['query'] .= ($queries[$i]['query'] != '' ? ' ' : '') . $sql_part['data'];
+				// don't add a space at the start of the query, or before or after a bracket
+				if ($queries[$i]['query'] != '' && $sql_part['type'] != 'punct_bracket_open_round' && $sql_part['type'] != 'punct_bracket_close_round' ? ' ' : '') {
+					$queries[$i]['query'] .= ' ';
+				}
+				$queries[$i]['query'] .= $sql_part['data'];
 			}
 		} // foreach
 

@@ -76,9 +76,9 @@ class Controller_XM_Template_Admin extends Controller_Private {
 
 		// set the information from the route/get/post parameters
 		$this->id = $this->request->param('id');
-		$page_offset = Arr::get($_REQUEST, 'page');
-		$sort_column = Arr::get($_REQUEST, 'sort_by_column');
-		$sort_order = Arr::get($_REQUEST, 'sort_by_order');
+		$page_offset = $this->request->query('page');
+		$sort_column = $this->request->query('sort_by_column');
+		$sort_order = $this->request->query('sort_by_order');
 
 		$this->controller_session = (array) Session::instance()->get($this->session_key);
 		$this->controller_session += $this->default_session;

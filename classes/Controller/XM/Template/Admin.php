@@ -76,17 +76,12 @@ class Controller_XM_Template_Admin extends Controller_Private {
 
 		// set the information from the route/get/post parameters
 		$this->id = $this->request->param('id');
-		$page_offset = Arr::get($_REQUEST, 'page');
-		$sort_column = Arr::get($_REQUEST, 'sort_by_column');
-		$sort_order = Arr::get($_REQUEST, 'sort_by_order');
+		$page_offset = $this->request->query('page');
+		$sort_column = $this->request->query('sort_by_column');
+		$sort_order = $this->request->query('sort_by_order');
 
-		// the first time to the page, so set all the defaults
-		if ( ! isset($this->session[$this->session_key])) {
-			// set all the defaults for this model/object
-			$this->session[$this->session_key] = $this->default_session;
-		}
-
-		$this->controller_session =& $this->session[$this->session_key];
+		$this->controller_session = (array) Session::instance()->get($this->session_key);
+		$this->controller_session += $this->default_session;
 
 		// check to see if anything came in from the page parameters
 		// if we did, then set it in the session
@@ -118,6 +113,8 @@ class Controller_XM_Template_Admin extends Controller_Private {
 		$this->controller_session['sort_by_column'] = $this->sort_column;
 		$this->controller_session['sort_by_order'] = $this->sort_order;
 		$this->controller_session['search'] = $this->search;
+
+		Session::instance()->set($this->session_key, $this->controller_session);
 
 		parent::after();
 	} // function after
@@ -468,7 +465,7 @@ class Controller_XM_Template_Admin extends Controller_Private {
 	*/
 	public function action_cancel_search() {
 		// reset the search and search in the session
-		$this->controller_session = Kohana::$config->load('cl4admin.default_list_options');
+		$this->controller_session = $this->default_session;
 
 		$this->redirect_to_index();
 	} // function action_cancel_search

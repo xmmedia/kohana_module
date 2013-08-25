@@ -2,6 +2,18 @@
 
 class XM_Database_MySQL extends Kohana_Database_MySQL {
 	/**
+	 * Returns the current connection resource.
+	 *
+	 * @return  The MySQL connection resource.
+	 */
+	public function connection() {
+		// Make sure the database is connected
+		$this->_connection or $this->connect();
+
+		return $this->_connection;
+	}
+
+	/**
 	* Changes the current database
 	*
 	* @param  string  $database  The new database name

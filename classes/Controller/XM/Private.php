@@ -21,7 +21,8 @@ class Controller_XM_Private extends Controller_CL4_Private {
 			$this->add_script('jquery_outside', 'js/jquery.outside.min.js')
 				->add_script('cl4', 'cl4/js/cl4.js')
 				->add_script('cl4_ajax', 'cl4/js/ajax.js')
-				->add_script('base', 'js/base.js');
+				->add_script('base', 'js/base.js')
+				->add_script('private', 'js/private.js');
 		} else {
 			$this->add_script('private', 'js/private.min.js');
 		}

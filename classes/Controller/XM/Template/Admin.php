@@ -114,7 +114,7 @@ class Controller_XM_Template_Admin extends Controller_Private {
 		$this->controller_session['sort_by_order'] = $this->sort_order;
 		$this->controller_session['search'] = $this->search;
 
-		Session::instance()->set($this->session_key, $this->controller_session);
+		$this->save_session();
 
 		parent::after();
 	} // function after
@@ -447,6 +447,8 @@ class Controller_XM_Template_Admin extends Controller_Private {
 			// store the post (the search) in the session and the object
 			$this->search = $this->controller_session['search'] = $_POST;
 
+			$this->save_session();
+
 			// redirect to the index page so the nav will work properly
 			$this->redirect_to_index();
 
@@ -466,6 +468,8 @@ class Controller_XM_Template_Admin extends Controller_Private {
 	public function action_cancel_search() {
 		// reset the search and search in the session
 		$this->controller_session = $this->default_session;
+
+		$this->save_session();
 
 		$this->redirect_to_index();
 	} // function action_cancel_search
@@ -524,4 +528,13 @@ class Controller_XM_Template_Admin extends Controller_Private {
 	function redirect_to_index() {
 		$this->redirect(Route::get($this->route)->uri());
 	} // function
+
+	/**
+	 * Saves the property "controller_session" to the session.
+	 *
+	 * @return void
+	 */
+	protected function save_session() {
+		Session::instance()->set($this->session_key, $this->controller_session);
+	}
 } // class

@@ -142,7 +142,7 @@ class Model_XM_Content_History extends ORM {
 			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
 			'field_attributes' => array(
-				'class' => 'tiny_mce',
+				'class' => 'tinymce',
 			),
 		),
 		'comments' => array(

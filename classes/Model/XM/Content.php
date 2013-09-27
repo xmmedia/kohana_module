@@ -142,7 +142,7 @@ class Model_XM_Content extends ORM {
 			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
 			'field_attributes' => array(
-				'class' => 'tiny_mce',
+				'class' => 'tinymce',
 			),
 		),
 		'text_only_flag' => array(
@@ -249,7 +249,7 @@ class Model_XM_Content extends ORM {
 
 	/**
 	 * Same as parent _load_result(), but after the result is load, when not multiple, a check is made for text only content.
-	 * If it's text only, then the field is changed to a text area and the "tiny_mce" class is changed to "content_text_only" (if class is set).
+	 * If it's text only, then the field is changed to a text area and the "tinymce" class is changed to "content_text_only" (if class is set).
 	 *
 	 * @chainable
 	 * @param  bool $multiple Return an iterator or load a single row
@@ -261,7 +261,7 @@ class Model_XM_Content extends ORM {
 		if ($multiple !== TRUE && $this->text_only_flag) {
 			$this->_table_columns['content']['field_type'] = 'TextArea';
 			if (isset($this->_table_columns['content']['field_attributes']['class'])) {
-				$this->_table_columns['content']['field_attributes']['class'] = UTF8::substr_replace('tiny_mce', 'content_text_only', $this->_table_columns['content']['field_attributes']['class']);
+				$this->_table_columns['content']['field_attributes']['class'] = UTF8::substr_replace('tinymce', 'content_text_only', $this->_table_columns['content']['field_attributes']['class']);
 			}
 		}
 

@@ -42,8 +42,9 @@ class Controller_XM_Content extends Controller_Private {
 		if ($this->auto_render) {
 			$this->add_style('content_admin', 'xm/css/content.css');
 
-			$this->add_script('tiny_mce', 'js/tiny_mce/jquery.tinymce.js')
-				->add_script('tiny_mce_config', 'js/tiny_mce_config.js')
+			$this->add_script('tinymce_jquery', 'js/tinymce/jquery.tinymce.min.js')
+				->add_script('tinymce', 'js/tinymce/tinymce.min.js')
+				->add_script('tinymce_config', 'js/tinymce_config.min.js')
 				->add_script('content_admin', 'xm/js/content.js');
 		}
 	} // function before

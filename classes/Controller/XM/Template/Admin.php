@@ -518,7 +518,7 @@ class Controller_XM_Template_Admin extends Controller_Private {
 		// is a CSV
 		} else {
 			$export_result->close_csv()
-				->get_csv($output_name . '.csv');
+				->get_csv($this->response, $output_name . '.csv');
 		}
 	} // function action_export
 

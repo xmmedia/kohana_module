@@ -8,7 +8,7 @@ class Model_XM_User_Token extends ORM {
 	protected $_table_names_plural = FALSE;
 	protected $_table_name = 'user_token';
 	protected $_primary_val = 'user_id'; // default: name (column used as primary value)
-	public $_table_name_display = 'User Token'; // cl4-specific
+	public $_table_name_display = 'User Token'; // xm-specific
 
 	// relationships
 	protected $_belongs_to = array(
@@ -22,7 +22,7 @@ class Model_XM_User_Token extends ORM {
 	protected $_table_columns = array(
 		/**
 		* see http://v3.kohanaphp.com/guide/api/Database_MySQL#list_columns for all possible column attributes
-		* see the modules/xm/config/xmorm.php for a full list of cl4-specific options and documentation on what the options do
+		* see the modules/xm/config/xmorm.php for a full list of xm-specific options and documentation on what the options do
 		*/
 		'id' => array(
 			'field_type' => 'Hidden',

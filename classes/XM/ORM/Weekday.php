@@ -56,10 +56,10 @@ class XM_ORM_Weekday extends ORM_Select {
 			return ORM_Weekday::prepare_html(__($found_value), $options['nbsp']);
 		} else if ($value > 0) {
 			// the value is still > 0 but we don't know what the value is because it's not in the data
-			return '<span class="cl4_unknown">' . __('unknown') . '</span>';
+			return '<span class="xm_unknown">' . __('unknown') . '</span>';
 		} else {
 			// the value is not set (0 or NULL likely)
-			return '<span class="cl4_not_set">' . __('not set') . '</span>';
+			return '<span class="xm_not_set">' . __('not set') . '</span>';
 		}
 	}
 } // class XM_ORM_Weekday

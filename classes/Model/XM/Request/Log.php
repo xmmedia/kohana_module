@@ -7,7 +7,7 @@
 class Model_XM_Request_Log extends ORM {
 	protected $_table_name = 'request_log';
 	//protected $_primary_val = 'name'; // default: name (column used as primary value)
-	public $_table_name_display = 'Request Log'; // cl4-specific
+	public $_table_name_display = 'Request Log'; // xm-specific
 
 	protected $_log = FALSE;
 
@@ -23,7 +23,7 @@ class Model_XM_Request_Log extends ORM {
 	protected $_table_columns = array(
 		/**
 		* see http://v3.kohanaphp.com/guide/api/Database_MySQL#list_columns for all possible column attributes
-		* see the modules/xm/config/xmorm.php for a full list of cl4-specific options and documentation on what the options do
+		* see the modules/xm/config/xmorm.php for a full list of xm-specific options and documentation on what the options do
 		*/
 		'id' => array(
 			'field_type' => 'Hidden',

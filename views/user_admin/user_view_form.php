@@ -1,7 +1,7 @@
 <?php
 
 if ($form_options['display_buttons'] && $form_options['display_buttons_at_top']) {
-	echo '<div class="cl4_buttons cl4_buttons_top">' . implode('', $form_buttons) . '</div>' . EOL;
+	echo '<div class="xm_buttons xm_buttons_top">' . implode('', $form_buttons) . '</div>' . EOL;
 }
 
 // If any fields are visible
@@ -24,5 +24,5 @@ if ($any_visible) {
 }
 
 if ($form_options['display_buttons']) {
-	echo '<div class="cl4_buttons">' . implode('', $form_buttons) . '</div>';
+	echo '<div class="xm_buttons">' . implode('', $form_buttons) . '</div>';
 }

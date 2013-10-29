@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-// cl4-specific model meta data options and defaults
+// xm-specific model meta data options and defaults
 return array(
 	// default meta data for all columns
 	// if you want to specify a default for a specific field, use default_meta_data_field_type
@@ -144,7 +144,7 @@ return array(
 		'field_label' => NULL, // the label to display beside the field values
 		'through_model' => NULL, // the model for the through/pivot table, used to add() or delete()
 		/* commented out so that it will use the model instead of using this source data
-		 * see the source array comments under config/cl4orm/default_meta_data_field_type.select.field_options for details on how to use this array
+		 * see the source array comments under config/xmorm/default_meta_data_field_type.select.field_options for details on how to use this array
 		'source' => array(
 			'source' => 'model',
 			'data' => NULL,
@@ -155,7 +155,7 @@ return array(
 		*/
 	),
 
-	// cl4_ORM class default options
+	// XM_ORM class default options
 	'default_options' => array(
 		'db_group' => NULL, // the database instance name to be used as a default, if null, default is used
 
@@ -168,7 +168,7 @@ return array(
 
 		// used to generate all links, should have model, action, id parameters
 		// defaults to the current route
-		// the default is set in cl4ORM::set_target_route() of this is NULL
+		// the default is set in xmorm::set_target_route() of this is NULL
 		// don't use Route::instance() to set it within the config because you can't use ORM before doing the main request
 		'target_route' => NULL,
 
@@ -179,9 +179,9 @@ return array(
 
 		// form options used when generating forms
 		// todo: figure out how to specify that a select should have 'none' or 'select one' for selects
-		'get_form_view_file' => 'cl4/orm_form_table', // the default view to use when displaying the edit or search form
-		'get_view_view_file' => 'cl4/orm_view_table', // the default view to use when displaying a view of a record
-		'edit_multiple_view_file' => 'cl4/orm_edit_multiple_table',
+		'get_form_view_file' => 'xm/orm_form_table', // the default view to use when displaying the edit or search form
+		'get_view_view_file' => 'xm/orm_view_table', // the default view to use when displaying a view of a record
+		'edit_multiple_view_file' => 'xm/orm_edit_multiple_table',
 		// with the default value of NULL, the form will default to the current page
 		// this will be use anywhere in OMR or MultiORM where there is a form tag generated
 		'form_action' => NULL,
@@ -191,7 +191,7 @@ return array(
 			'method' => 'post',
 			'name' => '', // empty string will default to table name
 			'id' => '', // empty string will default to table name
-			'class' => 'cl4_form',
+			'class' => 'xm_form',
 		),
 		'field_name_prefix' => 'c_record', // for all fields, default is c_record
 		'custom_field_name_prefix' => NULL, // if set and field_name_include_array is TRUE, then this will be used before the column name
@@ -229,25 +229,25 @@ return array(
 		// used in get_form() and get_view()
 		'table_options' => array(
 			'table_attributes' => array(
-				'class' => 'cl4_form',
+				'class' => 'xm_form',
 			),
 		),
 
 		// formatting for views
 		'nbsp' => FALSE, // replace spaces with &nbsp; in the data to avoid wrapping in view_html()
 		'escape_label' => TRUE, // escape the labels in view_html(); useful when you have a label (ie, on radios) that has HTML in it; the option is also on some fields, such as radios and checkboxes
-		'checkmark_icons' => TRUE, // will display check mark icons (using a span with class cl4_check or cl4_no_check) when TRUE or Y/N when FALSE in view_html()
+		'checkmark_icons' => TRUE, // will display check mark icons (using a span with class xm_check or xm_no_check) when TRUE or Y/N when FALSE in view_html()
 		'nl2br' => TRUE, // if set to true, new lines in textareas (and possibly others) will be converted to br's in view_html()
 
 		// editable_list options
 		'editable_list_options' => array(
-			'view' => 'cl4/orm_editable_list',
+			'view' => 'xm/orm_editable_list',
 			// prefix for for table ID
 			'table_id_prefix' => NULL,
 			'form_attributes' => array(
 				'method' => 'post',
 				'enctype' => 'multipart/form-data',
-				'class' => 'js_cl4_multiple_edit_form',
+				'class' => 'js_xm_multiple_edit_form',
 				'name' => NULL, // will be set in get_editable_list() if not provided
 				'id' => NULL, // will be set in get_editable_list() if not provided
 			),
@@ -338,7 +338,7 @@ return array(
 			// table options that will be passed to HTMLTable
 			'table_options' => array(
 				'table_attributes' => array(
-					'class' => 'cl4_edit_multiple',
+					'class' => 'xm_edit_multiple',
 				),
 			),
 		),
@@ -384,7 +384,7 @@ return array(
 		'field_types_treaded_as_textarea' => array('textarea'),
 		'record_changes' => TRUE, // if set to TRUE, Model_Change_Log will be used to record changes; set this to FALSE to disable the change_log logging for all models; use _log and _log_next_query in ORM to affect only the model or save
 		'add_field_help' => FALSE, // enabling this will display the field help as found in ORM::_field_help
-		'field_help_view' => 'cl4/field_help', // the view used to generate the help for the field
+		'field_help_view' => 'xm/field_help', // the view used to generate the help for the field
 		'additional_view_data' => NULL, // additional data to be passed to the edit or view Views; the option is passed exactly as is
 	),
 );

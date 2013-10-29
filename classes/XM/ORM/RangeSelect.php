@@ -69,7 +69,7 @@ class XM_ORM_RangeSelect extends ORM_FieldType {
 			return $found_value;
 		} else {
 			// the value is not set (0 or NULL likely)
-			return __(Kohana::message('cl4', 'cl4_not_set_html'));
+			return __(Kohana::message('xm', 'xm_not_set_html'));
 		}
 	}
 

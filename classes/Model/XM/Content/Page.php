@@ -11,7 +11,7 @@
 class Model_XM_Content_Page extends ORM {
 	protected $_table_names_plural = FALSE;
 	protected $_table_name = 'content_page';
-	public $_table_name_display = 'Content Page'; // cl4 specific
+	public $_table_name_display = 'Content Page'; // xm specific
 
 	// default sorting
 	protected $_sorting = array(
@@ -36,7 +36,7 @@ class Model_XM_Content_Page extends ORM {
 	protected $_table_columns = array(
 		/**
 		* see http://v3.kohanaphp.com/guide/api/Database_MySQL#list_columns for all possible column attributes
-		* see the modules/xm/config/xmorm.php for a full list of cl4-specific options and documentation on what the options do
+		* see the modules/xm/config/xmorm.php for a full list of xm-specific options and documentation on what the options do
 		*/
 		'id' => array(
 			'field_type' => 'Hidden',

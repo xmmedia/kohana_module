@@ -1,8 +1,10 @@
-# cl4
+# XM
 
-cl4 extends the existing Kohana ORM and other built-in classes to provide additional tools that facilitate the creation of dynamic websites.
+### This is largely out-of-date.
 
-Here is a quick summary of how you might want to use cl4:
+XM extends the existing Kohana ORM and other built-in classes to provide additional tools that facilitate the creation of dynamic websites.
+
+Here is a quick summary of how you might want to use XM:
 
 * use ORM model additional features to:
   * generate flexible HTML forms from ORM models (one-line fully featured forms, including relationships, multiple record edits, select fields, date pickers, etc.)
@@ -11,7 +13,7 @@ Here is a quick summary of how you might want to use cl4:
   * generate stand-alone admin panes from models that include a full-featured list of records with pagination, search, add, edit, etc.
 * create HTML tables with the new htmltable class
 * use Form to create a wide range of common form elements
-* use additional cl4 helper functions that are not available in Kohana to facilitate:
+* use additional XM helper functions that are not available in Kohana to facilitate:
   * uploading and manipulating files
   * writing and reading CSV files
   * writing and reading XML files

@@ -13,7 +13,7 @@
 
 $table = new HTMLTable(array(
 	'table_attributes' => array(
-		'class' => 'cl4_form',
+		'class' => 'xm_form',
 	),
 ));
 
@@ -34,10 +34,10 @@ echo $table->get_html();
 
 ?>
 
-<div class="cl4_buttons">
+<div class="xm_buttons">
 <?php
-echo Form::submit('cl4_submit', 'Save');
-echo Form::input('cl4_cancel', __('Cancel'), array(
+echo Form::submit('xm_submit', 'Save');
+echo Form::input('xm_cancel', __('Cancel'), array(
 	'type' => 'button',
 	'class' => 'js_xm_button_link',
 	'data-xm_link' => URL::site(Route::get(Route::name(Request::current()->route()))->uri(array('action' => 'cancel'))),

@@ -3,7 +3,7 @@
 /**
  * Extended session class.
  *
- * @package    cl4
+ * @package    XM
  * @category   Session
  * @author     Claero Systems
  * @copyright  (c) 2010 Claero Systems

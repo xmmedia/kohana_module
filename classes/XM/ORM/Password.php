@@ -19,6 +19,6 @@ class XM_ORM_Password extends ORM_FieldType {
 	}
 
 	public static function view_html($value, $column_name, ORM $orm_model = NULL, array $options = array(), $source = NULL) {
-		return '<span class="cl4_hidden_value">' . __('hidden') . '</span>';
+		return '<span class="xm_hidden_value">' . __('hidden') . '</span>';
 	}
 } // class

@@ -7,7 +7,7 @@ echo implode(EOL, $form_fields_hidden) . EOL;
 
 // display the search specfic stuff
 if ($mode == 'search') { ?>
-	<fieldset class="cl4_tools">
+	<fieldset class="xm_tools">
 		Search with: <?php echo $search_type_html; ?><br />
 		Search method: <?php echo $like_type_html; ?>
 	</fieldset>
@@ -18,13 +18,13 @@ if ($mode == 'search') { ?>
 if ($any_visible) {
 	if ($form_options['display_buttons'] && $form_options['display_buttons_at_top']) {
 		// the buttons
-		echo '<div class="cl4_buttons cl4_buttons_top">' . implode('', $form_buttons) . '</div>' . EOL;
+		echo '<div class="xm_buttons xm_buttons_top">' . implode('', $form_buttons) . '</div>' . EOL;
 	}
 
 	// generate the table
 	$table = new HTMLTable(array(
 		'table_attributes' => array(
-			'class' => 'cl4_form'
+			'class' => 'xm_form'
 		)
 	));
 
@@ -39,7 +39,7 @@ if ($any_visible) {
 
 	if ($form_options['display_buttons']) {
 		// the buttons
-		echo '<div class="cl4_buttons">' . implode('', $form_buttons) . '</div>' . EOL;
+		echo '<div class="xm_buttons">' . implode('', $form_buttons) . '</div>' . EOL;
 	}
 
 // If no fields are visible

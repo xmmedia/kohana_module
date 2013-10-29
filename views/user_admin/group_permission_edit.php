@@ -54,7 +54,7 @@
 </div>
 <?php } ?>
 
-<div class="cl4_buttons">
+<div class="xm_buttons">
 	<?php echo Form::submit(NULL, 'Save', array('class' => 'permission_form_save')); ?>
 	<?php echo Form::input_button(NULL, 'Reset', array(
 		'class' => 'js_xm_button_link',

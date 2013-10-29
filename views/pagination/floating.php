@@ -1,5 +1,5 @@
-<div class="cl4_nav">
-	<div class="cl4_nav_pages">
+<div class="xm_nav">
+	<div class="xm_nav_pages">
 <?php
 
 // the ellipsis var needs to have a spaces on either end for formatting
@@ -9,9 +9,9 @@ $ellipsis = ' <span class="ellipsis">...</span> ';
 // if there is only 1 page then it will display only the number of records showing
 if ($total_pages > 1) {
 	if ($previous_page !== FALSE) {
-		echo HTML::anchor($page->url($previous_page), '<span class="cl4_icon cl4_left"></span>' . __('Previous') . '</span>', array('class' => 'previous'));
+		echo HTML::anchor($page->url($previous_page), HTML::icon('left') . __('Previous') . '</span>', array('class' => 'previous'));
 	} else {
-		echo '<span class="no_previous"><span class="cl4_icon cl4_no_left"></span>', __('Previous'), '</span>';
+		echo '<span class="no_previous">', HTML::icon('no_left'), __('Previous'), '</span>';
 	}
 	echo ' ';
 
@@ -142,13 +142,13 @@ if ($total_pages > 1) {
 	echo ' ';
 
 	if ($next_page !== FALSE) {
-		echo HTML::anchor($page->url($next_page), '' . __('Next') . '<span class="cl4_icon cl4_right"></span>', array('class' => 'next'));
+		echo HTML::anchor($page->url($next_page), '' . __('Next') . HTML::icon('right'), array('class' => 'next'));
 	} else {
-		echo '<span class="no_next">', __('Next'), '<span class="cl4_icon cl4_no_right"></span></span>';
+		echo '<span class="no_next">', __('Next'), HTML::icon('no_right'), '</span>';
 	}
 } // if
 
 ?>
 	</div>
-	<div class="cl4_nav_showing">Showing <?php echo intval($items_on_page); ?> of <?php echo intval($total_items); ?> items</div>
-</div><!-- .cl4_nav -->
+	<div class="xm_nav_showing">Showing <?php echo intval($items_on_page); ?> of <?php echo intval($total_items); ?> items</div>
+</div><!-- .xm_nav -->

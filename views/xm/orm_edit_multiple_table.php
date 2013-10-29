@@ -10,7 +10,7 @@ echo $form_field_table->get_html();
 
 if ($form_options['display_buttons']) {
 	// the buttons
-	echo '<div class="cl4_buttons">' . implode('', $form_buttons) . '</div>' . EOL;
+	echo '<div class="xm_buttons">' . implode('', $form_buttons) . '</div>' . EOL;
 }
 
 // the form close tag

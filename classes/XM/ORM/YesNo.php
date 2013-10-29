@@ -63,10 +63,10 @@ class XM_ORM_YesNo extends ORM_FieldType {
 			return ORM_YesNo::prepare_html($found_value, $options['nbsp']);
 		} else if ($value > 0) {
 			// the value is still > 0 but we don't know what the value is because it's not in the data
-			return __(Kohana::message('cl4', 'cl4_unknown_html'));
+			return __(Kohana::message('xm', 'xm_unknown_html'));
 		} else {
 			// the value is not set (0 or NULL likely)
-			return __(Kohana::message('cl4', 'cl4_not_set_html'));
+			return __(Kohana::message('xm', 'xm_not_set_html'));
 		}
 	} // function
 } // class

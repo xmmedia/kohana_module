@@ -9,13 +9,13 @@ echo implode(EOL, $form_fields_hidden) . EOL;
 if ($any_visible) {
 	if ($form_options['display_buttons'] && $form_options['display_buttons_at_top']) {
 		// the buttons
-		echo '<div class="cl4_buttons cl4_buttons_top">' . implode('', $form_buttons) . '</div>' . EOL;
+		echo '<div class="xm_buttons xm_buttons_top">' . implode('', $form_buttons) . '</div>' . EOL;
 	}
 
 	// generate the table
 	$table = new HTMLTable(array(
 		'table_attributes' => array(
-			'class' => 'cl4_form'
+			'class' => 'xm_form'
 		)
 	));
 
@@ -27,7 +27,7 @@ if ($any_visible) {
 
 	$table->add_row(array(
 		'<label for="send_email">Send Email to User</label>',
-		Form::checkbox('send_email', 1, (empty($model->id) ? TRUE : FALSE), array('id' => 'send_email')) . '<div class="cl4_field_help cl4_field_help_edit" data-cl4_field="c_record[user][0][send_email]">Checking this will send the user an email containing their login information after the user is saved.</div>',
+		Form::checkbox('send_email', 1, (empty($model->id) ? TRUE : FALSE), array('id' => 'send_email')) . '<div class="xm_field_help xm_field_help_edit" data-xm_field="c_record[user][0][send_email]">Checking this will send the user an email containing their login information after the user is saved.</div>',
 	));
 
 	// the table html
@@ -35,7 +35,7 @@ if ($any_visible) {
 
 	if ($form_options['display_buttons']) {
 		// the buttons
-		echo '<div class="cl4_buttons">' . implode('', $form_buttons) . '</div>' . EOL;
+		echo '<div class="xm_buttons">' . implode('', $form_buttons) . '</div>' . EOL;
 	}
 
 // If no fields are visible

@@ -4,7 +4,7 @@
 *
 * @author	 Claero Systems <craig.nakamoto@claero.com> / XM Media Inc <dhein@xmmedia.net>
 * @copyright  Claero Systems / XM Media Inc  2004-2009
-* @version	$Id: class-cl4_table.php 715 2010-01-15 17:19:50Z cnakamoto $
+* @version	$Id: class-xm_table.php 715 2010-01-15 17:19:50Z cnakamoto $
 */
 
 class XM_HTMLTable {
@@ -94,7 +94,7 @@ class XM_HTMLTable {
 		// set up default options (and clear any existing options)
 		$default_options = array(
 			'table_attributes' => array(
-				'id' => 'cl4-table-' . substr(md5(time()), 0, 8),
+				'id' => 'xm-table-' . substr(md5(time()), 0, 8),
 				// add any other attributes that are required as they will be passed to HTML::attributes()
 			),
 			'table_open' => TRUE,
@@ -588,7 +588,7 @@ class XM_HTMLTable {
 							$result_html .= $this->tab . $this->tab . '<th' . HTML::attributes($th_attributes) . '>';
 
 							if ($this->options['sort_column'] !== NULL && $col_num == $this->options['sort_column']) {
-								$sort_html = '<span class="cl4_icon cl4_open_' . (strtolower($this->options['sort_order']) == 'asc' ? 'up' : 'down') . ' sort_icon"></span>';
+								$sort_html = '<span class="xm_icon xm_open_' . (strtolower($this->options['sort_order']) == 'asc' ? 'up' : 'down') . ' sort_icon"></span>';
 							} else {
 								$sort_html = '';
 							}

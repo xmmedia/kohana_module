@@ -5,7 +5,7 @@
 <?php
 // display the search specfic stuff
 if ($mode == 'search') { ?>
-	<fieldset class="cl4_tools">
+	<fieldset class="xm_tools">
 		Search with: <?php echo $search_type_html; ?><br />
 		Search method: <?php echo $like_type_html; ?>
 	</fieldset>
@@ -14,11 +14,11 @@ if ($mode == 'search') { ?>
 if ($any_visible) {
 	if ($form_options['display_buttons'] && $form_options['display_buttons_at_top']) {
 		// the buttons
-		echo '<div class="cl4_buttons cl4_buttons_top">' . implode('', $form_buttons) . '</div>' . EOL;
+		echo '<div class="xm_buttons xm_buttons_top">' . implode('', $form_buttons) . '</div>' . EOL;
 	}
 	?>
 
-	<ul class="cl4_form">
+	<ul class="xm_form">
 <?php
 	foreach ($display_order as $column) {
 		if (isset($form_field_html[$column])) { ?>
@@ -36,7 +36,7 @@ if ($any_visible) {
 <?php
 	if ($form_options['display_buttons']) {
 		// the buttons
-		echo '<div class="cl4_buttons">' . implode('', $form_buttons) . '</div>' . EOL;
+		echo '<div class="xm_buttons">' . implode('', $form_buttons) . '</div>' . EOL;
 	}
 
 // If no fields are visible

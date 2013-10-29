@@ -58,7 +58,7 @@ class XM_ORM_DateDrop extends XM_ORM_Date {
 			'before' => 'is before',
 			'after' => 'is after',
 		), $value['date_operand'], array(
-			'class' => 'cl4_date_operand',
+			'class' => 'xm_date_operand',
 		));
 
 		return $date_option_html . Form::date_drop($html_name . '[date]', $value['date'], $attributes);

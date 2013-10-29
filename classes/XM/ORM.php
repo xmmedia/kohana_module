@@ -6,7 +6,7 @@
  * @author     Claero Systems <craig.nakamoto@claero.com> / XM Media Inc <dhein@xmmedia.net>
  * @copyright  Claero Systems / XM Media Inc  2004-2010
  *
- * todo: should we separate the cl4 form methods to another class to avoid loading all this code for every model?
+ * todo: should we separate the XM form methods to another class to avoid loading all this code for every model?
  */
 class XM_ORM extends Kohana_ORM {
 	/**
@@ -107,7 +107,7 @@ class XM_ORM extends Kohana_ORM {
 	* @var  array  Array of field help: array('column_name' => array('mode' => [text], ... 'all' => [text]))
 	* help (tips) to be displayed below each field
 	* use 'all' to display the same help for all the fields or customize it for each mode using the appropriate key
-	* see the view cl4/field_help for the layout of these
+	* see the view xm/field_help for the layout of these
 	* use JavaScript to move these into a tool tip or only show when that field is focused
 	*/
 	protected $_field_help = array();
@@ -204,7 +204,7 @@ class XM_ORM extends Kohana_ORM {
 
 	/**
 	 * Creates and returns a new model.
-	 * Adds the cl4 'options' parameter.
+	 * Adds the xm 'options' parameter.
 	 *
 	 * @chainable
 	 * @param   string  model name
@@ -222,7 +222,7 @@ class XM_ORM extends Kohana_ORM {
 	 * Allows serialization of only the object data and state, to prevent
 	 * "stale" objects being unserialized, which also requires less memory.
 	 * This is the same as Kohana_ORM::serialize(), but including _table_columns
-	 * _options are also stored, but only the ones that are not the default found in config/cl4orm.default_options
+	 * _options are also stored, but only the ones that are not the default found in config/xmorm.default_options
 	 *
 	 * @return  string
 	 */
@@ -233,7 +233,7 @@ class XM_ORM extends Kohana_ORM {
 		}
 
 		// only store the options that are not the default when serializing to keep the size down
-		$default_options = Kohana::$config->load('cl4orm.default_options');
+		$default_options = Kohana::$config->load('xmorm.default_options');
 		foreach ($this->_options as $key => $value) {
 			if ( ! array_key_exists($key, $default_options) || $this->_options[$key] !== $default_options[$key]) {
 				$data['_options'][$key] = $this->_options[$key];
@@ -245,7 +245,7 @@ class XM_ORM extends Kohana_ORM {
 
 	/**
 	 * Prepares the model database connection and loads the object.
-	 * Adds the cl4 $options parameter.
+	 * Adds the xm $options parameter.
 	 *
 	 * @param   mixed  $id       Parameter for find or object to load
 	 * @param   array  $options  Options to set in the Model
@@ -366,7 +366,7 @@ class XM_ORM extends Kohana_ORM {
 	*/
 	public function set_options(array $options = array()) {
 		// get the default options from the config file
-		$default_options = Kohana::$config->load('cl4orm.default_options');
+		$default_options = Kohana::$config->load('xmorm.default_options');
 
 		// merge the defaults with the passed options (add defaults where values are missing)
 		$this->_options = Arr::merge($default_options, $this->_options, $options);
@@ -417,8 +417,8 @@ class XM_ORM extends Kohana_ORM {
 	*/
 	public function set_column_defaults(array $options = array()) {
 		// get the default meta data from the config file
-		$default_meta_data = (array) Kohana::$config->load('cl4orm.default_meta_data');
-		$default_meta_data_field_type = (array) Kohana::$config->load('cl4orm.default_meta_data_field_type');
+		$default_meta_data = (array) Kohana::$config->load('xmorm.default_meta_data');
+		$default_meta_data_field_type = (array) Kohana::$config->load('xmorm.default_meta_data_field_type');
 
 		// if there is field type specific meta data for file, then get the XMFile options and merge them with the file field type ones
 		if ( ! empty($default_meta_data_field_type['File'])) {
@@ -490,7 +490,7 @@ class XM_ORM extends Kohana_ORM {
 	/**
 	* Sets the defaults for the relationships
 	* Only does _has_many
-	* Uses the defaults found in config/cl4orm.default_relation_options
+	* Uses the defaults found in config/xmorm.default_relation_options
 	*
 	* @param  array  $options  Options as passed into _construct()
 	*
@@ -499,7 +499,7 @@ class XM_ORM extends Kohana_ORM {
 	*/
 	public function set_relationship_defaults(array $options = array()) {
 		// get the config options
-		$default_relation_options = (array) Kohana::$config->load('cl4orm.default_relation_options');
+		$default_relation_options = (array) Kohana::$config->load('xmorm.default_relation_options');
 
 		// get the options for has_many from the passed in options
 		$has_many_options = Arr::get($options, 'has_many', array());
@@ -757,8 +757,8 @@ class XM_ORM extends Kohana_ORM {
 				$field_attributes = $column_info['field_attributes'];
 				$label_attributes = array();
 				if ($this->_mode == 'edit' && isset($rules[$column_name]['not_empty'])) {
-					$field_attributes = HTML::set_class_attribute($field_attributes, 'cl4_required');
-					$label_attributes['class'] = 'cl4_required';
+					$field_attributes = HTML::set_class_attribute($field_attributes, 'xm_required');
+					$label_attributes['class'] = 'xm_required';
 				}
 
 				// determine the field type class name
@@ -916,7 +916,7 @@ class XM_ORM extends Kohana_ORM {
 	} // function prepare_form
 
 	/**
-	* Returns the View (by default cl4/field_help) for the field help
+	* Returns the View (by default xm/field_help) for the field help
 	* If there is no help available for the field and the mode, it will return NULL
 	*
 	* @param  string  $column_name      The column to retrieve the help for
@@ -1110,7 +1110,7 @@ class XM_ORM extends Kohana_ORM {
 				if ( ! empty($this->_options['submit_button_options'])) {
 					$submit_button_options = HTML::merge_attributes($submit_button_options, $this->_options['submit_button_options']);
 				}
-				$this->_form_buttons[] = Form::submit('cl4_submit', ($this->_mode == 'search' ? __('Search') : __('Save')), $submit_button_options);
+				$this->_form_buttons[] = Form::submit('xm_submit', ($this->_mode == 'search' ? __('Search') : __('Save')), $submit_button_options);
 			}
 			if ($this->_options['display_reset']) {
 				if ($this->_mode == 'search') {
@@ -1125,7 +1125,7 @@ class XM_ORM extends Kohana_ORM {
 				if ( ! empty($this->_options['reset_button_attributes'])) {
 					$reset_button_options = HTML::merge_attributes($reset_button_options, $this->_options['reset_button_attributes']);
 				}
-				$this->_form_buttons[] = Form::input_button('cl4_reset', __('Reset'), $reset_button_options);
+				$this->_form_buttons[] = Form::input_button('xm_reset', __('Reset'), $reset_button_options);
 			}
 			if ($this->_options['display_cancel']) {
 				$cancel_button_options = array(
@@ -1135,7 +1135,7 @@ class XM_ORM extends Kohana_ORM {
 				if ( ! empty($this->_options['cancel_button_attributes'])) {
 					$cancel_button_options = HTML::merge_attributes($cancel_button_options, $this->_options['cancel_button_attributes']);
 				}
-				$this->_form_buttons[] = Form::input_button('cl4_cancel', __('Cancel'), $cancel_button_options);
+				$this->_form_buttons[] = Form::input_button('xm_cancel', __('Cancel'), $cancel_button_options);
 			}
 		} // if
 
@@ -3004,8 +3004,8 @@ class XM_ORM extends Kohana_ORM {
 		// add a class to the field and the label
 		if ($this->field_has_error($column_name)) {
 			$regenerate_field = TRUE;
-			$this->_table_columns[$column_name]['field_attributes'] = HTML::set_class_attribute($this->_table_columns[$column_name]['field_attributes'], 'cl4_field_error');
-			$label_class = ( ! empty($label_class) ? $label_class . ' cl4_field_error' : 'cl4_field_error');
+			$this->_table_columns[$column_name]['field_attributes'] = HTML::set_class_attribute($this->_table_columns[$column_name]['field_attributes'], 'xm_field_error');
+			$label_class = ( ! empty($label_class) ? $label_class . ' xm_field_error' : 'xm_field_error');
 		}
 
 		// prepare the field if it hasn't been prepared yet or if there has been a class added to the field because of an error
@@ -3021,7 +3021,7 @@ class XM_ORM extends Kohana_ORM {
 
 			$rules = $this->rules();
 			if ($this->_options['mode'] == 'edit' && isset($rules[$column_name]['not_empty'])) {
-				$label_attributes = HTML::set_class_attribute($label_attributes, 'cl4_required');
+				$label_attributes = HTML::set_class_attribute($label_attributes, 'xm_required');
 			}
 
 			$label_html = Form::label($this->get_field_id($column_name), $this->column_label($column_name), $label_attributes);
@@ -3085,7 +3085,7 @@ class XM_ORM extends Kohana_ORM {
 		// add a class to the field and the label
 		if ($this->field_has_error($column_name)) {
 			$regenerate_field = TRUE;
-			$label_class = ( ! empty($label_class) ? $label_class . ' cl4_field_error' : 'cl4_field_error');
+			$label_class = ( ! empty($label_class) ? $label_class . ' xm_field_error' : 'xm_field_error');
 		}
 
 		// prepare the field if it hasn't been prepared yet or if there has been a class added to the field because of an error
@@ -3101,7 +3101,7 @@ class XM_ORM extends Kohana_ORM {
 
 			$rules = $this->rules();
 			if ($this->_options['mode'] == 'edit' && isset($rules[$column_name]['not_empty'])) {
-				$label_attributes = HTML::set_class_attribute($label_attributes, 'cl4_required');
+				$label_attributes = HTML::set_class_attribute($label_attributes, 'xm_required');
 			}
 
 			$label_html = Form::label($this->get_field_id($column_name), $this->column_label($column_name), $label_attributes);

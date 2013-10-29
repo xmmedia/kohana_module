@@ -3,7 +3,7 @@
 /**
  * Creates the PHP file for the Model based on a table.
  *
- * @package    CL4
+ * @package    XM
  * @author     Dan Hulton & Darryl Hein
  * @copyright  (c) 2012 Claero Systems
  */
@@ -19,7 +19,7 @@ class XM_Model_Create {
 		$this->table_name = $table_name;
 
 		// set up the default options
-		$this->options = Arr::merge((array) Kohana::$config->load('cl4orm.default_options'), (array) Kohana::$config->load('model_create'));
+		$this->options = Arr::merge((array) Kohana::$config->load('xmorm.default_options'), (array) Kohana::$config->load('model_create'));
 
 		// figure out database configuration name to use
 		$this->db_name = isset($options['db_group']) ? $options['db_group'] : $this->options['db_group'];
@@ -195,7 +195,7 @@ class XM_Model_Create {
 		if ( ! isset($this->columns['name'])) {
 			$model_code .= TAB . '// protected $_primary_val = \'' . 'name' . '\'; // default: name (column used as primary value)' . EOL;
 		}
-		$model_code .= TAB . 'public $_table_name_display = \'' . XM::underscores_to_words($this->table_name) . '\'; // cl4 specific' . EOL;
+		$model_code .= TAB . 'public $_table_name_display = \'' . XM::underscores_to_words($this->table_name) . '\'; // xm specific' . EOL;
 
 		return $model_code;
 	}
@@ -221,10 +221,10 @@ class XM_Model_Create {
 	protected function build_meta_data($column_name, $column_data) {
 		// now that we know the field type, lets merge in some defaults
 		// global field type defaults
-		$cl4_default_meta_data = Kohana::$config->load('cl4orm.default_meta_data');
+		$xm_default_meta_data = Kohana::$config->load('xmorm.default_meta_data');
 
 		// merge the global model create and global defaults
-		$meta_data = Arr::merge($cl4_default_meta_data, $this->options['default_meta_data']);
+		$meta_data = Arr::merge($xm_default_meta_data, $this->options['default_meta_data']);
 
 		// try to detect the field type
 		$last_field_part = substr($column_name, strrpos($column_name, '_'));
@@ -311,10 +311,10 @@ class XM_Model_Create {
 
 		// now that we know the field type, lets merge in some defaults
 		// global field type defaults
-		$default_meta_data = Kohana::$config->load('cl4orm.default_meta_data');
+		$default_meta_data = Kohana::$config->load('xmorm.default_meta_data');
 
 		// get the defaults for the field type
-		$default_meta_data_field_type = (array) Kohana::$config->load('cl4orm.default_meta_data_field_type.' . $meta_data['field_type']);
+		$default_meta_data_field_type = (array) Kohana::$config->load('xmorm.default_meta_data_field_type.' . $meta_data['field_type']);
 
 		// merge everything together
 		$meta_data = Arr::merge($default_meta_data, $default_meta_data_field_type, $meta_data);
@@ -352,7 +352,7 @@ class XM_Model_Create {
 	}
 
 	protected function build_col_code($column_name, $meta_data, $default_meta_data, $loop_through_field_attributes) {
-		// add the cl4 meta data
+		// add the xm meta data
 		$model_code = TAB . TAB . '\'' . $column_name . '\' => array(' . EOL;
 		foreach ($meta_data as $key => $data) {
 			// only add the fields that don't exist in the default, are not the default, are field type or field attributes (and we have to loop through field attributes, probably for maxlength)

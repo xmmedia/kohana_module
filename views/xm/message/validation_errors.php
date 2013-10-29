@@ -1,5 +1,5 @@
 <?php if ( ! empty($messages)) { ?>
-<ul class="cl4_message_validation">
+<ul class="xm_message_validation">
 <?php
 	foreach ($messages as $message) {
 		echo '<li>' . $message . '</li>' . EOL;

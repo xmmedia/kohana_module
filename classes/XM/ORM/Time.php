@@ -64,7 +64,7 @@ class XM_ORM_Time extends ORM_FieldType {
 			'after' => 'is after',
 			'not_set' => 'is not set',
 		), $value['date_operand'], array(
-			'class' => 'cl4_date_operand',
+			'class' => 'xm_date_operand',
 		));
 
 		return $date_option_html . Form::time($html_name, $value['time'], $attributes);

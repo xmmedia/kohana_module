@@ -10,7 +10,7 @@ $logout_uri = Route::get(Route::name(Request::current()->route()))->uri(array('a
 	<?php echo Form::hidden('redirect', $redirect); ?>
 	<?php echo Form::hidden('timed_out', 1); ?>
 
-	<ul class="cl4_form">
+	<ul class="xm_form">
 		<li>
 			<ul>
 				<li class="field_label"><label>Username</label></li>

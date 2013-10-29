@@ -2,7 +2,7 @@
 	<?php echo $form_open_tag; ?>
 
 	<?php if ( ! empty($top_row_buttons)) { ?>
-	<div class="cl4_list_header">
+	<div class="xm_list_header">
 		<h2><?php echo HTML::chars($object_name_display); ?></h2>
 		<?php echo $top_row_buttons; ?>
 		<div class="clear"></div>
@@ -24,7 +24,7 @@
 		<?php echo $nav_html; ?>
 
 		<?php if ($options['display_no_rows'] && $items_on_page == 0) { // check to see if there are no rows ?>
-		<div class="cl4_no_rows">0 items found</div>
+		<div class="xm_no_rows">0 items found</div>
 		<?php } else { // if ?>
 		<div class="<?php echo HTML::chars($object_name); ?>_editable_list">
 		<?php echo $data_table; ?>

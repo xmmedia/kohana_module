@@ -100,7 +100,7 @@ class XM_Message {
 	/**
 	* Returns a HTML unordered list with the errors from the validation exception
 	* This can then be used with add() to add the messages to the session
-	* By default it uses views/cl4/cl4_message_validation to format the messages
+	* By default it uses views/xm/xm_message_validation to format the messages
 	* To add additional messages to the output (so they are included in this message), pass them in as an array in $additional_messages
 	*
 	* 	Message::add(__(Kohana::message('file', 'pre_message')) . Message::add_validation_errors($validation, 'file'), Message::$error);
@@ -133,7 +133,7 @@ class XM_Message {
 			}
 		} // if
 
-		return View::factory('cl4/message/validation_errors')
+		return View::factory('xm/message/validation_errors')
 			->set('messages', $messages);
 	} // function add_validation_errors
 
@@ -173,7 +173,7 @@ class XM_Message {
 	} // function
 
 	/**
-	* Returns the message view object: cl4/cl4_message
+	* Returns the message view object: xm/message
 	*
 	* 	echo Message::display();
 	*
@@ -182,7 +182,7 @@ class XM_Message {
 	public static function display() {
 		$messages = Message::get();
 
-		$message_view = View::factory('cl4/message/display')
+		$message_view = View::factory('xm/message/display')
 			->set('messages', $messages)
 			->set('level_to_class', Message::$level_to_class);
 

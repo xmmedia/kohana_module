@@ -24,4 +24,4 @@ $submit_button_options = array(
 	'data-xm_link' => URL::site(Route::get('user_admin')->uri(array('action' => 'groups'))),
 );
 
-echo '<div class="cl4_buttons">' . Form::submit(NULL, __('Return to List'), $submit_button_options) . '</div>';
+echo '<div class="xm_buttons">' . Form::submit(NULL, __('Return to List'), $submit_button_options) . '</div>';

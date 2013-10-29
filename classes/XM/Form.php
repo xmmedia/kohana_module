@@ -18,7 +18,7 @@ class XM_Form extends XM_Form {
 	 *
 	 * Type      | Option       | Description                                    | Default Value
 	 * ----------|--------------|------------------------------------------------|---------------
-	 * `string`  | view         | The view to use to generate the combination of fields for a date time. | `"cl4/form/datetime"`
+	 * `string`  | view         | The view to use to generate the combination of fields for a date time. | `"xm/form/datetime"`
 	 * `boolean` | show_seconds | Setting this FALSE will change the seconds field to a hidden field. | `TRUE`
 	 * `boolean` | 24_hour      | Setting this to TRUE will hide the modulation field. | `FALSE`
 	 * `boolean` | default_current_date | Setting this to TRUE will default to the current date when the field is empty. | `FALSE`
@@ -32,7 +32,7 @@ class XM_Form extends XM_Form {
 	 */
 	public static function datetime($name, $value = NULL, array $attributes = NULL, array $options = array()) {
 		$options += array(
-			'view' => 'cl4/form/datetime',
+			'view' => 'xm/form/datetime',
 			'show_seconds' => TRUE,
 			'24_hour' => FALSE,
 			'default_current_date' => FALSE,
@@ -71,8 +71,8 @@ class XM_Form extends XM_Form {
 		}
 
 		// add the date field
-		$_attributes = HTML::set_class_attribute($attributes, 'js_cl4_date_field-date');
-		$fields['date'] = Form::input_with_suffix_size($name, $date, $_attributes, 'cl4_date_field', 'date', 10, 10);
+		$_attributes = HTML::set_class_attribute($attributes, 'js_xm_date_field-date');
+		$fields['date'] = Form::input_with_suffix_size($name, $date, $_attributes, 'xm_date_field', 'date', 10, 10);
 
 		$time_fields = Form::time_fields($name, $hour, $min, $sec, $modulation, $attributes, $options);
 		$fields = array_merge($fields, $time_fields);
@@ -92,7 +92,7 @@ class XM_Form extends XM_Form {
 	 *
 	 * Type      | Option       | Description                                    | Default Value
 	 * ----------|--------------|------------------------------------------------|---------------
-	 * `string`  | view         | The view to use to generate the combination of fields for a date time. | `"cl4/form/datetime"`
+	 * `string`  | view         | The view to use to generate the combination of fields for a date time. | `"xm/form/datetime"`
 	 * `boolean` | show_seconds | Setting this FALSE will change the seconds field to a hidden field. | `TRUE`
 	 * `boolean` | 24_hour      | Setting this to TRUE will hide the modulation field. | `FALSE`
 	 *
@@ -105,7 +105,7 @@ class XM_Form extends XM_Form {
 	 */
 	public static function time($name, $value = NULL, array $attributes = NULL, array $options = array()) {
 		$options += array(
-			'view' => 'cl4/form/time',
+			'view' => 'xm/form/time',
 			'show_seconds' => TRUE,
 			'24_hour' => TRUE,
 		);
@@ -185,7 +185,7 @@ class XM_Form extends XM_Form {
 
 			switch ($field_name) {
 				case 'date' :
-					$_attributes = HTML::set_class_attribute($_attributes, 'js_cl4_date_field-date');
+					$_attributes = HTML::set_class_attribute($_attributes, 'js_xm_date_field-date');
 					break;
 				case 'hour' :
 					$value = $hour;
@@ -201,12 +201,12 @@ class XM_Form extends XM_Form {
 					break;
 			} // switch
 
-			$fields[$field_name] = Form::input_with_suffix_size($name, $value, $_attributes, 'cl4_date_field', $field_name, 2, 2, $field_type);
+			$fields[$field_name] = Form::input_with_suffix_size($name, $value, $_attributes, 'xm_date_field', $field_name, 2, 2, $field_type);
 		}
 
 		if ( ! $options['24_hour']) {
 			$attributes = Form::increment_tabindex($attributes);
-			$modulation_attributes = HTML::set_class_attribute($attributes, 'cl4_date_field-modulation');
+			$modulation_attributes = HTML::set_class_attribute($attributes, 'xm_date_field-modulation');
 			if ( ! empty($modulation_attributes['id'])) $modulation_attributes['id'] .= '-modulation';
 			$fields['am_pm'] = Form::radios($name . '[modulation]', array('am' => 'AM', 'pm' => 'PM'), strtolower($modulation), $modulation_attributes);
 		}
@@ -223,7 +223,7 @@ class XM_Form extends XM_Form {
 				throw $e;
 			}
 		} else if (is_string($source)) {
-			throw new Kohana_Exception('cl4_Form::radios_sql() received a string, but it\'s not a select: :source', array(':source' => $source));
+			throw new Kohana_Exception('XM_Form::radios_sql() received a string, but it\'s not a select: :source', array(':source' => $source));
 		}
 
 		return Form::radios($name, $source, $selected, $attributes, $options);
@@ -276,7 +276,7 @@ class XM_Form extends XM_Form {
 					$view_name = 'horizontal';
 					break;
 			} // switch
-			$options['view'] = 'cl4/form/radios_' . $view_name;
+			$options['view'] = 'xm/form/radios_' . $view_name;
 		} // if
 
 		if (empty($attributes['id'])) {
@@ -330,7 +330,7 @@ class XM_Form extends XM_Form {
 				throw $e;
 			}
 		} else if (is_string($source)) {
-			throw new Kohana_Exception('cl4_Form::checkboxes_sql() received a string, but it\'s not a select: :source', array(':source' => $source));
+			throw new Kohana_Exception('XM_Form::checkboxes_sql() received a string, but it\'s not a select: :source', array(':source' => $source));
 		}
 
 		return Form::checkboxes($name, $source, $checked, $attributes, $options);
@@ -553,7 +553,7 @@ class XM_Form extends XM_Form {
 			'maxlength' => 10,
 		);
 
-		$attributes = HTML::set_class_attribute($attributes, 'js_cl4_date_field-date');
+		$attributes = HTML::set_class_attribute($attributes, 'js_xm_date_field-date');
 
 		// check if the value of the date is actually empty
 		if (Form::check_date_empty_value($value)) {
@@ -623,7 +623,7 @@ class XM_Form extends XM_Form {
 
 			if ($options['field_type'] == 'Text') {
 				// make month text field
-				$html .= Form::input_with_suffix_size($name, $month, $month_attributes, 'cl4_date_field', 'month', 2, 2);
+				$html .= Form::input_with_suffix_size($name, $month, $month_attributes, 'xm_date_field', 'month', 2, 2);
 
 			} else {
 				// make month select
@@ -647,7 +647,7 @@ class XM_Form extends XM_Form {
 
 			if ($options['field_type'] == 'Text') {
 				// make day text field
-				$html .= Form::input_with_suffix_size($name, $day, $day_attributes, 'cl4_date_field', 'day', 2, 2);
+				$html .= Form::input_with_suffix_size($name, $day, $day_attributes, 'xm_date_field', 'day', 2, 2);
 
 			} else {
 				// make day select
@@ -665,7 +665,7 @@ class XM_Form extends XM_Form {
 
 			if ($options['field_type'] == 'Text') {
 				// make day text field
-				$html .= Form::input_with_suffix_size($name, $year, $year_attributes, 'cl4_date_field', 'year', 4, 4);
+				$html .= Form::input_with_suffix_size($name, $year, $year_attributes, 'xm_date_field', 'year', 4, 4);
 
 			} else {
 				// make year select
@@ -708,7 +708,7 @@ class XM_Form extends XM_Form {
 				throw $e;
 			}
 		} else if (is_string($source)) {
-			throw new Kohana_Exception('cl4_Form::select() received a string, but it\'s not a SQL SELECT: :source', array(':source' => $source));
+			throw new Kohana_Exception('XM_Form::select() received a string, but it\'s not a SQL SELECT: :source', array(':source' => $source));
 		}
 
 		return Form::select($name, $source, $selected, $attributes, $options);
@@ -1003,9 +1003,9 @@ class XM_Form extends XM_Form {
 			if ($set_title_attribute) {
 				$_attributes['title'] = 'Country Code';
 			}
-			$html = '+ ' . Form::input_with_suffix_size($name, $default_data['country_code'], $_attributes, 'cl4_phone_field', 'country_code', $options['country_code_size'], $options['country_code_max_length']);
+			$html = '+ ' . Form::input_with_suffix_size($name, $default_data['country_code'], $_attributes, 'xm_phone_field', 'country_code', $options['country_code_size'], $options['country_code_max_length']);
 		} else {
-			$_attributes = HTML::set_class_attribute($_attributes, 'cl4_phone_field-country_code');
+			$_attributes = HTML::set_class_attribute($_attributes, 'xm_phone_field-country_code');
 			if ( ! empty($_attributes['id'])) $_attributes['id'] .= '-country_code';
 			$html = Form::hidden($name . '[country_code]', $default_data['country_code'], $_attributes);
 		}
@@ -1016,7 +1016,7 @@ class XM_Form extends XM_Form {
 		if ($set_title_attribute) {
 			$_attributes['title'] = 'Area Code';
 		}
-		$html .= ' (' . Form::input_with_suffix_size($name, $default_data['area_code'], $_attributes, 'cl4_phone_field', 'area_code', $options['area_code_size'], $options['area_code_max_length']) . ')';
+		$html .= ' (' . Form::input_with_suffix_size($name, $default_data['area_code'], $_attributes, 'xm_phone_field', 'area_code', $options['area_code_size'], $options['area_code_max_length']) . ')';
 
 		// add the exchange field
 		$attributes = Form::increment_tabindex($attributes);
@@ -1024,7 +1024,7 @@ class XM_Form extends XM_Form {
 		if ($set_title_attribute) {
 			$_attributes['title'] = 'Phone Number Part 1 (Exchange)';
 		}
-		$html .= ' ' . Form::input_with_suffix_size($name, $default_data['exchange'], $_attributes, 'cl4_phone_field', 'exchange', $options['exchange_size'], $options['exchange_max_length']);
+		$html .= ' ' . Form::input_with_suffix_size($name, $default_data['exchange'], $_attributes, 'xm_phone_field', 'exchange', $options['exchange_size'], $options['exchange_max_length']);
 
 		// add the line field
 		$attributes = Form::increment_tabindex($attributes);
@@ -1032,7 +1032,7 @@ class XM_Form extends XM_Form {
 		if ($set_title_attribute) {
 			$_attributes['title'] = 'Phone Number Part 2 (Line)';
 		}
-		$html .= '-' . Form::input_with_suffix_size($name, $default_data['line'], $_attributes, 'cl4_phone_field', 'line', $options['line_size'], $options['line_max_length']);
+		$html .= '-' . Form::input_with_suffix_size($name, $default_data['line'], $_attributes, 'xm_phone_field', 'line', $options['line_size'], $options['line_max_length']);
 
 		if ($options['show_extension']) {
 			// add the extension field
@@ -1041,9 +1041,9 @@ class XM_Form extends XM_Form {
 			if ($set_title_attribute) {
 				$_attributes['title'] = 'Extension';
 			}
-			$html .= ' ' . __('<span title="Extension">ext.</span>') . ' ' . Form::input_with_suffix_size($name, $default_data['extension'], $_attributes, 'cl4_phone_field', 'extension', $options['extension_size'], $options['extension_max_length']);
+			$html .= ' ' . __('<span title="Extension">ext.</span>') . ' ' . Form::input_with_suffix_size($name, $default_data['extension'], $_attributes, 'xm_phone_field', 'extension', $options['extension_size'], $options['extension_max_length']);
 		} else {
-			$_attributes = HTML::set_class_attribute($_attributes, 'cl4_phone_field-extension');
+			$_attributes = HTML::set_class_attribute($_attributes, 'xm_phone_field-extension');
 			if ( ! empty($_attributes['id'])) $_attributes['id'] .= '-extension';
 			$html .= Form::hidden($name . '[extension]', $default_data['extension'], $_attributes);
 		}

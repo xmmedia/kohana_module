@@ -6,7 +6,7 @@
 	<?php echo Form::open(Route::get('login')->uri()); ?>
 	<?php echo Form::hidden('redirect', $redirect); ?>
 
-	<ul class="cl4_form">
+	<ul class="xm_form">
 		<li>
 			<ul>
 				<li class="field_label" style=""><label for="username">Email Address / Username</label></li>

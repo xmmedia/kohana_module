@@ -119,7 +119,7 @@ class XM_MultiORM {
 
 	/**
 	 * Prepares the model database connection and loads the object.
-	 * Adds the cl4 $options parameter.
+	 * Adds the xm $options parameter.
 	 *
 	 * @param   mixed  parameter for find or object to load
 	 * @return  void
@@ -145,7 +145,7 @@ class XM_MultiORM {
 	*/
 	public function set_options(array $options = array()) {
 		// get the default options from the config file
-		$default_options = Kohana::$config->load('cl4orm.default_options');
+		$default_options = Kohana::$config->load('xmorm.default_options');
 
 		// merge the defaults with the passed options (add defaults where values are missing)
 		$this->_options = Arr::merge($default_options, $options);
@@ -220,7 +220,7 @@ class XM_MultiORM {
 		$display_order = $this->_model->display_order();
 
 		// Find out how many words we limit textareas to
-		$textarea_word_limit = Kohana::$config->load('cl4orm.default_options.editable_list_options.textarea_word_limit');
+		$textarea_word_limit = Kohana::$config->load('xmorm.default_options.editable_list_options.textarea_word_limit');
 
 		$this->_table_columns[$this->_object_name] = $this->_model->table_columns();
 
@@ -281,16 +281,16 @@ class XM_MultiORM {
 		$items_on_page = $pagination->get_items_on_page();
 
 		// set up the open form tag
-		$this->_options['form_attributes'] = HTML::set_class_attribute($this->_options['form_attributes'], 'js_cl4_multiple_edit_form');
+		$this->_options['form_attributes'] = HTML::set_class_attribute($this->_options['form_attributes'], 'js_xm_multiple_edit_form');
 		$form_action = ($this->_options['form_action'] === NULL ? Request::current() : $this->_options['form_action']);
 		$form_open_tag = Form::open($form_action, $this->_options['form_attributes']);
 
 		// set up first column
 		if ($list_options['per_row_links']['checkbox']) {
-			$table_options['heading'][] = Form::checkbox('cl4_check_all', NULL, false,
+			$table_options['heading'][] = Form::checkbox('xm_check_all', NULL, false,
 				array(
-					'class' => 'js_cl4_check_all_checkbox',
-					'data-cl4_check_all_checkbox_class' => 'js_cl4_multiple_edit_form_checkbox',
+					'class' => 'js_xm_check_all_checkbox',
+					'data-xm_check_all_checkbox_class' => 'js_xm_multiple_edit_form_checkbox',
 					'title' => "Check All / Toggle"
 				)
 			);
@@ -380,14 +380,14 @@ class XM_MultiORM {
 			// set up SEARCH button
 			if ($list_options['top_bar_buttons']['search']) {
 				$top_row_buttons .= Form::submit(NULL, __('Search'), array(
-					'data-cl4_form_action' => '/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'search')),
+					'data-xm_form_action' => '/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'search')),
 					'class' => 'js_xm_button_link_form ' . $button_class,
 				));
 
 				// set up CLEAR SEARCH button
 				if ($this->_options['in_search']) {
 					$top_row_buttons .= Form::submit(NULL, __('Clear Search/Sort'), array(
-						'data-cl4_form_action' => '/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'cancel_search')),
+						'data-xm_form_action' => '/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'cancel_search')),
 						'class' => 'js_xm_button_link_form ' . $button_class,
 					));
 				} // if
@@ -396,7 +396,7 @@ class XM_MultiORM {
 			// set up ADD button
 			if ($list_options['top_bar_buttons']['add']) {
 				$top_row_buttons .= Form::submit(NULL, __('Add New'), array(
-					'data-cl4_form_action' => '/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'add')),
+					'data-xm_form_action' => '/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'add')),
 					'class' => 'js_xm_button_link_form ' . $button_class,
 				));
 			} // if
@@ -404,16 +404,16 @@ class XM_MultiORM {
 			// set up MULTIPLE EDIT button
 			if ($list_options['top_bar_buttons']['edit']) {
 				$top_row_buttons .= Form::submit(NULL, __('Edit Selected'), array(
-					'data-cl4_form_action' => '/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'edit_multiple')),
+					'data-xm_form_action' => '/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'edit_multiple')),
 					'disabled' => 'disabled',
-					'class' => 'js_xm_button_link_form js_cl4_multiple_edit' . $button_class,
+					'class' => 'js_xm_button_link_form js_xm_multiple_edit' . $button_class,
 				));
 			} // if
 
 			if ($list_options['top_bar_buttons']['export_all']) {
 				$top_row_buttons .= Form::submit(NULL, __('Export All'), array(
-					'data-cl4_form_action' => '/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'export')) . '?export_all=1',
-					'data-cl4_form_target' => '_blank',
+					'data-xm_form_action' => '/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'export')) . '?export_all=1',
+					'data-xm_form_target' => '_blank',
 					'class' => 'js_xm_button_link_form ' . $button_class,
 				));
 			} // if
@@ -421,20 +421,20 @@ class XM_MultiORM {
 			// set up export selected button
 			if ($list_options['top_bar_buttons']['export_selected']) {
 				$top_row_buttons .= Form::submit(NULL, __('Export Selected'), array(
-					'data-cl4_form_action' => '/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'export')),
-					'data-cl4_form_target' => '_blank',
+					'data-xm_form_action' => '/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'export')),
+					'data-xm_form_target' => '_blank',
 					'disabled' => 'disabled',
-					'class' => 'js_xm_button_link_form js_cl4_export_selected ' . $button_class,
+					'class' => 'js_xm_button_link_form js_xm_export_selected ' . $button_class,
 				));
 			} // if
 
 			// set up ADD multiple button and count select
 			if ($list_options['top_bar_buttons']['add_multiple']) {
-				$add_multiple_uniqid = uniqid('cl4_add_multiple_button_');
+				$add_multiple_uniqid = uniqid('xm_add_multiple_button_');
 
 				$top_row_buttons .= Form::submit(NULL, __('Add:'), array(
-					'data-cl4_form_action' => '/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'add_multiple', 'id' => 1)),
-					'data-cl4_add_multiple_form_action_prefix' => '/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'add_multiple')), // used to determine data-cl4_form_action when the selection is changed
+					'data-xm_form_action' => '/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'add_multiple', 'id' => 1)),
+					'data-xm_add_multiple_form_action_prefix' => '/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'add_multiple')), // used to determine data-xm_form_action when the selection is changed
 					'class' => 'js_xm_button_link_form' . $button_class,
 					'id' => $add_multiple_uniqid,
 				));
@@ -442,8 +442,8 @@ class XM_MultiORM {
 				// Set up multiple add dropdown
 				$add_count_array = array_combine(range(1, 10), range(1, 10));
 				$top_row_buttons .= Form::select(NULL, $add_count_array, 1, array(
-					'class' => 'cl4_add_multiple_count',
-					'data-cl4_add_multiple_related_button' => $add_multiple_uniqid,
+					'class' => 'xm_add_multiple_count',
+					'data-xm_add_multiple_related_button' => $add_multiple_uniqid,
 				));
 			} // if
 
@@ -510,25 +510,25 @@ class XM_MultiORM {
 
 			// add 'start of row' buttons as dictated by $list_options['per_row_links'] array:
 			if ($list_options['per_row_links']['view']) {
-				$first_col .= HTML::anchor('/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'view', 'id' => $id)), '<span class="cl4_icon cl4_view">&nbsp;</span>', array(
+				$first_col .= HTML::anchor('/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'view', 'id' => $id)), HTML::icon('view'), array(
 					'title' => __('View this record'),
 				));
 			} // if
 
 			if ($list_options['per_row_links']['edit']) {
-				$first_col .= HTML::anchor('/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'edit', 'id' => $id)), '<span class="cl4_icon cl4_edit">&nbsp;</span>', array(
+				$first_col .= HTML::anchor('/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'edit', 'id' => $id)), HTML::icon('edit'), array(
 					'title' => __('Edit this record'),
 				));
 			}
 
 			if ($list_options['per_row_links']['delete']) {
-				$first_col .= HTML::anchor('/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'delete', 'id' => $id)), '<span class="cl4_icon cl4_delete">&nbsp;</span>', array(
+				$first_col .= HTML::anchor('/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'delete', 'id' => $id)), HTML::icon('delete'), array(
 					'title' => __('Delete this record'),
 				));
 			}
 
 			if ($list_options['per_row_links']['add']) {
-				$first_col .= HTML::anchor($target_route->uri(array('model' => $this->_url_model_name, 'action' => 'add', 'id' => $id)), '<span class="cl4_icon cl4_add">&nbsp;</span>', array(
+				$first_col .= HTML::anchor($target_route->uri(array('model' => $this->_url_model_name, 'action' => 'add', 'id' => $id)), HTML::icon('add'), array(
 					'title' => __('Duplicate this record'),
 				));
 			}
@@ -537,7 +537,7 @@ class XM_MultiORM {
 			if ($list_options['per_row_links']['checkbox']) {
 				$first_col .= Form::checkbox('ids[]', $id, FALSE, array(
 					'id' => NULL,
-					'class' => 'js_cl4_multiple_edit_form_checkbox js_cl4_row_checkbox',
+					'class' => 'js_xm_multiple_edit_form_checkbox js_xm_row_checkbox',
 				));
 			} // if
 
@@ -581,7 +581,7 @@ class XM_MultiORM {
 		} // foreach
 
 		// create the pagination HTML
-		// default view is 'views/pagination/cl4_basic' which is defined in 'config/pagination.php'
+		// default view is 'views/pagination/xm_basic' which is defined in 'config/pagination.php'
 		$nav_html = $pagination->render();
 
 		return View::factory($list_options['view'], array(
@@ -718,10 +718,10 @@ class XM_MultiORM {
 			// set up the buttons
 			// todo: add ability to override button attributes properly through options
 			if ($this->_options['display_submit']) {
-				$form_buttons[] = Form::submit('cl4_submit', ($this->_mode == 'search' ? __('Search') : __('Save')));
+				$form_buttons[] = Form::submit('xm_submit', ($this->_mode == 'search' ? __('Search') : __('Save')));
 			}
 			if ($this->_options['display_cancel']) {
-				$form_buttons[] = Form::input('cl4_cancel', __('Cancel'), array(
+				$form_buttons[] = Form::input('xm_cancel', __('Cancel'), array(
 					'type' => 'button',
 					'class' => 'js_xm_button_link',
 					'data-xm_link' => '/' . Route::get($target_route)->uri(array('model' => $this->_model_name, 'action' => 'cancel')),

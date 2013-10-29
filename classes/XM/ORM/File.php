@@ -4,7 +4,7 @@ class XM_ORM_File extends ORM_FieldType {
 	public static function edit($column_name, $html_name, $value, array $attributes = NULL, array $options = array(), ORM $orm_model = NULL) {
 		$options += array(
 			'file_options' => array(
-				'edit_view' => 'cl4/orm_file',
+				'edit_view' => 'xm/orm_file',
 			),
 		);
 

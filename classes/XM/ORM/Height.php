@@ -49,7 +49,7 @@ class XM_ORM_Height extends ORM_Select {
 			'taller' => 'is taller than',
 			'shorter' => 'is shorter than',
 		), $value['height_operand'], array(
-			'class' => 'cl4_height_operand',
+			'class' => 'xm_height_operand',
 		));
 
 		return $height_option_html . Form::height($html_name . '[height]', $value['height'], $attributes);

@@ -2,4 +2,4 @@
 /**
  * Default permission
  */
-class Model_Permission extends Model_CL4_Permission {}
+class Model_Permission extends Model_XM_Permission {}

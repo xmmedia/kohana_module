@@ -25,6 +25,6 @@
     - [Create Lists](examples/tables)
     - [Create Editable Lists](examples/tables)
 - [Related Modules](related)
-    - [cl4admin]
+    - [xmadmin]
     - [cl4auth]
     - [cl4base]

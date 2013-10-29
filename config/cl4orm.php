@@ -113,7 +113,7 @@ return array(
 			),
 			'field_options' => array(
 				'file_options' => array(
-					// see config/cl4file.php for a full list of options
+					// see config/XMFile.php for a full list of options
 				),
 			),
 		),
@@ -254,7 +254,7 @@ return array(
 			// table options that will be passed to HTMLTable in MULTIORM ONLY
 			'table_options_multiorm' => array(
 				'table_attributes' => array(
-					'class' => 'cl4_content',
+					'class' => 'xm_content',
 				),
 			),
 			// todo: implement this for ORM as per above
@@ -369,7 +369,7 @@ return array(
 		'display_nav_options' => array(),
 		'action_buttons' => array(), // defaults are set in get_editable_list()
 		'action_buttons_custom' => array(),
-		'button_class' => 'cl4_list_button', // a class to assign to all buttons generated in get_editable_list()
+		'button_class' => 'xm_list_button', // a class to assign to all buttons generated in get_editable_list()
 		'hide_top_row_buttons' => FALSE,
 		'nav_right' => FALSE,
 		'display_no_rows' => TRUE, // if set to TRUE, then a message will be displayed when retrieving and editable list that doesn't have any rows

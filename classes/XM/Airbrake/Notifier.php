@@ -2,7 +2,7 @@
 
 /**
  * Airbrake notifier class.
- * Used within CL4_Exception to notify Airbrake of an error.
+ * Used within XM_Exception to notify Airbrake of an error.
  * This is very similar to Andrew Hutchings notifier: https://github.com/ahutchings/kohana-hoptoad
  *
  * @package    XM

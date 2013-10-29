@@ -18,8 +18,8 @@
 			<?php echo $content_item->get_field('content'); ?>
 			<p><?php echo $content_history->get_field_layout('comments', 'block'); ?></p>
 			<div class="cl4_buttons"><?php echo Form::submit(NULL, 'Save'),
-				Form::input_button(NULL, 'Reset', array('class' => 'js_cl4_button_link', 'data-cl4_link' => URL::site(Route::get('content_admin')->uri(array('action' => 'edit', 'id' => $content_item->id)) . ($popup ? '?popup=1' : '')))),
-				Form::input_button(NULL, 'Cancel', array('class' => 'js_cl4_button_link content_admin_cancel', 'data-cl4_link' => URL::site(Route::get('content_admin')->uri(array('action' => 'cancel'))))); ?></div>
+				Form::input_button(NULL, 'Reset', array('class' => 'js_xm_button_link', 'data-xm_link' => URL::site(Route::get('content_admin')->uri(array('action' => 'edit', 'id' => $content_item->id)) . ($popup ? '?popup=1' : '')))),
+				Form::input_button(NULL, 'Cancel', array('class' => 'js_xm_button_link content_admin_cancel', 'data-xm_link' => URL::site(Route::get('content_admin')->uri(array('action' => 'cancel'))))); ?></div>
 			<?php echo Form::close(); ?>
 		</div>
 	</div>

@@ -39,8 +39,8 @@ echo $table->get_html();
 echo Form::submit('cl4_submit', 'Save');
 echo Form::input('cl4_cancel', __('Cancel'), array(
 	'type' => 'button',
-	'class' => 'js_cl4_button_link',
-	'data-cl4_link' => URL::site(Route::get(Route::name(Request::current()->route()))->uri(array('action' => 'cancel'))),
+	'class' => 'js_xm_button_link',
+	'data-xm_link' => URL::site(Route::get(Route::name(Request::current()->route()))->uri(array('action' => 'cancel'))),
 ));
 ?>
 </div>

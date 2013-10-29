@@ -17,7 +17,7 @@ Here is a quick summary of how you might want to use cl4:
   * writing and reading XML files
   * emailing
   * and more
-* include the cl4auth, cl4admin, and cl4base modules to accelerate the development of a custom web application with built-in content-management and authentication
+* include the cl4auth, xmadmin, and cl4base modules to accelerate the development of a custom web application with built-in content-management and authentication
 
 ORM is included with the Kohana 3.x install but needs to be enabled before you can use it. In your `application/bootstrap.php` file modify the call to Kohana::modules and include the ORM modules.
 
@@ -34,7 +34,7 @@ The latest module code can be obtained from repository on github:
 The optional modules can also be found on github:
 
 * [http://github.com/claerosystems/cl4auth](http://github.com/claerosystems/cl4auth) provides an authentication module based on cl4
-* [http://github.com/claerosystems/cl4admin](http://github.com/claerosystems/cl4admin) provides an admin database content admin interface
+* [http://github.com/claerosystems/xmadmin](http://github.com/claerosystems/xmadmin) provides an admin database content admin interface
 * [http://github.com/claerosystems/cl4base](http://github.com/claerosystems/cl4base) provides a base web site including auth and admin
 
 If you are using git for your project you can also add these modules as submodules within your project to facilitate upgrades:
@@ -43,11 +43,11 @@ If you are using git for your project you can also add these modules as submodul
 	git submodule add git@github.com:claerosystems/cl4.git modules/cl4
 	git submodule add git@github.com:claerosystems/cl4auth.git modules/cl4auth
 	git submodule add git@github.com:claerosystems/cl4base.git modules/cl4base
-	git submodule add git@github.com:claerosystems/cl4admin.git modules/cl4admin
+	git submodule add git@github.com:claerosystems/xmadmin.git modules/xmadmin
 	git submodule init
 
 	#checkout the latest cl4
-	echo "-- module > cl4" && cd ../cl4 && git checkout master && git pull && git checkout master && echo "-- module > cl4admin" && cd ../cl4admin && git checkout master && git pull && git checkout master && echo "-- module > cl4base" && cd ../cl4base && git checkout master && git pull && git checkout master && echo "-- module > cl4auth" && cd ../cl4auth && git checkout master && git pull && git checkout master
+	echo "-- module > cl4" && cd ../cl4 && git checkout master && git pull && git checkout master && echo "-- module > xmadmin" && cd ../xmadmin && git checkout master && git pull && git checkout master && echo "-- module > cl4base" && cd ../cl4base && git checkout master && git pull && git checkout master && echo "-- module > cl4auth" && cd ../cl4auth && git checkout master && git pull && git checkout master
 
 ### Enable the module(s)
 
@@ -55,7 +55,7 @@ If you are using git for your project you can also add these modules as submodul
 		...
 		'cl4' => MODPATH.'cl4',
 		'cl4auth' => MODPATH.'cl4auth', // optional
-		'cl4admin' => MODPATH.'cl4admin', // optional
+		'xmadmin' => MODPATH.'xmadmin', // optional
 		'cl4basae' => MODPATH.'cl4base', // optional
 		'database' => MODPATH.'database', // required
 		'orm' => MODPATH.'orm', // required

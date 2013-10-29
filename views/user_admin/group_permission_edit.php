@@ -57,12 +57,12 @@
 <div class="cl4_buttons">
 	<?php echo Form::submit(NULL, 'Save', array('class' => 'permission_form_save')); ?>
 	<?php echo Form::input_button(NULL, 'Reset', array(
-		'class' => 'js_cl4_button_link',
-		'data-cl4_link' => URL::site(Request::current()->uri()),
+		'class' => 'js_xm_button_link',
+		'data-xm_link' => URL::site(Request::current()->uri()),
 	)); ?>
 	<?php echo Form::input_button(NULL, 'Cancel', array(
-		'class' => 'js_cl4_button_link',
-		'data-cl4_link' => URL::site(Route::get('user_admin')->uri(array('action' => 'cancel_group'))),
+		'class' => 'js_xm_button_link',
+		'data-xm_link' => URL::site(Route::get('user_admin')->uri(array('action' => 'cancel_group'))),
 	)); ?>
 </div>
 

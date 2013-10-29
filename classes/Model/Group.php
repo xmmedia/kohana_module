@@ -2,4 +2,4 @@
 /**
  * Default permission
  */
-class Model_Group extends Model_CL4_Group {}
+class Model_Group extends Model_XM_Group {}

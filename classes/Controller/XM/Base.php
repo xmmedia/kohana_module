@@ -2,9 +2,9 @@
 
 /**
  * A default base Controller class.
- * Some of the functionality is required by CL4 and other modules.
+ * Some of the functionality is required by XM and other modules.
  */
-class Controller_XM_Base extends Controller_CL4_Base {
+class Controller_XM_Base extends Controller_XM_Base {
 	/**
 	 * Automatically executed before the controller action. Can be used to set
 	 * class properties, do authorization checks, and execute other custom code.
@@ -41,7 +41,7 @@ class Controller_XM_Base extends Controller_CL4_Base {
 		if (DEBUG_FLAG) {
 			$this->add_script('xm_debug', 'xm/js/debug.js');
 		}
-		if (CL4::is_dev()) {
+		if (XM::is_dev()) {
 			$this->add_script('base', 'js/base.js');
 		} else {
 			$this->add_script('base', 'js/base.min.js');

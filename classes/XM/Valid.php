@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die ('No direct script access.');
 
-class XM_Valid extends XM_Valid {
+class XM_Valid extends Kohana_Valid {
 	/**
 	 * Checks if the value of a field is a valid date. The date must be in the format of "YYYY-MM-DD".
 	 *

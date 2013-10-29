@@ -5,7 +5,7 @@
  *
  * Displays a date composed of selects.
  */
-class XM_ORM_DateDrop extends XM_ORM_Date {
+class XM_ORM_DateDrop extends ORM_Date {
 	/**
 	 * Displays this column in an edit context.
 	 *

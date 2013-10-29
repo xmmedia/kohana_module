@@ -407,7 +407,7 @@ class XM_ORM extends Kohana_ORM {
 	*   model
 	*   defaults for field type
 	*   defaults for all field types
-	* For file, the options found in config/XMFile.options will also be merged in
+	* For file, the options found in config/xmfile.options will also be merged in
 	* Also ensures all the columns are in the display order array
 	*
 	* @param  array  $options
@@ -420,9 +420,9 @@ class XM_ORM extends Kohana_ORM {
 		$default_meta_data = (array) Kohana::$config->load('xmorm.default_meta_data');
 		$default_meta_data_field_type = (array) Kohana::$config->load('xmorm.default_meta_data_field_type');
 
-		// if there is field type specific meta data for file, then get the XMFile options and merge them with the file field type ones
+		// if there is field type specific meta data for file, then get the xmfile options and merge them with the file field type ones
 		if ( ! empty($default_meta_data_field_type['File'])) {
-			$file_options = Kohana::$config->load('XMFile.options');
+			$file_options = Kohana::$config->load('xmfile.options');
 			foreach ($file_options as $key => $value) {
 				// only merge the ones that aren't set so we don't merge things like allowed types and allowed extensions
 				if ( ! array_key_exists($key, $default_meta_data_field_type['File']['field_options']['file_options'])) {
@@ -2689,18 +2689,6 @@ class XM_ORM extends Kohana_ORM {
 
 		return $this;
 	} // function set_search
-
-	/**
-	* Gets the label for a column if it exists, otherwise it will just be the column name
-	*
-	* @param  string  $column_name
-	* @return  string
-	*/
-	public function column_label($column_name) {
-		$labels = $this->labels();
-
-		return (array_key_exists($column_name, $labels) ? $labels[$column_name] : $column_name);
-	}
 
 	/**
 	* Returns the value of the field ready for HTML display (uses ORM_FieldType::view_html())

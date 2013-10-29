@@ -4,7 +4,7 @@
  * A default base Controller class.
  * Some of the functionality is required by XM and other modules.
  */
-class Controller_XM_Base extends Controller_XM_Base {
+class Controller_XM_Base extends Controller_Template {
 		/**
 	 * The template to use. The string is replaced with the View in before().
 	 * @var  View

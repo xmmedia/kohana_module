@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die ('No direct script access.');
 
-class Model_XM_User extends Model_XM_User {
+class Model_XM_User extends Model_Auth_User {
 		protected $_table_names_plural = FALSE;
 	protected $_table_name = 'user';
 	public $_table_name_display = 'User';

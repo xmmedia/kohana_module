@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die ('No direct script access.');
 
-class XM_Form extends XM_Form {
+class XM_Form extends Kohana_Form {
 	const DATE_FORMAT = 'Y-m-d';
 	const DATE_TIME_FORMAT = 'Y-m-d H:i:s';
 

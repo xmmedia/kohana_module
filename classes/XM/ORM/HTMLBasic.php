@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die ('No direct script access.');
 
-class XM_ORM_HTMLBasic extends XM_ORM_HTML {
+class XM_ORM_HTMLBasic extends ORM_HTML {
 	/**
 	* Does the same thing as XM_ORM_HTML::edit() but adds the class textarea_html to every input
 	*/

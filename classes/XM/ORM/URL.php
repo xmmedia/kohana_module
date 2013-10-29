@@ -3,7 +3,7 @@
 /**
  * Effectively a text input with the type = "url"
  */
-class XM_ORM_URL extends XM_ORM_Text {
+class XM_ORM_URL extends ORM_Text {
 	public static function edit($column_name, $html_name, $value, array $attributes = NULL, array $options = array(), ORM $orm_model = NULL) {
         return Form::url($html_name, $value, $attributes);
 	}

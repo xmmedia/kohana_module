@@ -37,11 +37,11 @@ class XM_File {
 	/**
 	* reset the options for the object with the passed $options array and fill in missing values from defaults in config/XMFile.options
 	*
-	* @param mixed $options (see config/XMFile.options array for values)
+	* @param mixed $options (see config/xmfile.options array for values)
 	*/
 	public function set_options($options) {
 		// get the default options from the config file
-		$default_options = Kohana::$config->load('XMFile.options');
+		$default_options = Kohana::$config->load('xmfile.options');
 
 		// merge the defaults with the passed options (add defaults where values are missing)
 		$this->options = $options;
@@ -283,7 +283,7 @@ class XM_File {
 	/**
 	* If $html is TRUE, this returns an HTML formatted string prefixed with with a message regarding allowed file types based on config/mime_description
 	* If $html is FALSE, this returns an array of file type names based on config/mime_description
-	* This can be run from the object or statically which will then merge the default options in config/XMFile.options with the passed options
+	* This can be run from the object or statically which will then merge the default options in config/xmfile.options with the passed options
 	*
 	* @return  string  HTML string for output
 	*/
@@ -291,7 +291,7 @@ class XM_File {
 		if (isset($this) && $options === NULL) {
 			$options = $this->options;
 		} else {
-			$options += Kohana::$config->load('XMFile.options');
+			$options += Kohana::$config->load('xmfile.options');
 		}
 
 		if ($html) {

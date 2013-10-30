@@ -11,7 +11,7 @@
 class Model_XM_State extends ORM {
 	protected $_table_names_plural = FALSE;
 	protected $_table_name = 'state';
-	public $_table_name_display = 'State'; // cl4 specific
+	public $_table_name_display = 'State'; // xm specific
 
 	// default sorting
 	protected $_sorting = array(

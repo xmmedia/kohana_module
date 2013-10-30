@@ -181,7 +181,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 
 		$table_options = array(
 			'table_attributes' => array(
-				'class' => 'cl4_content user_admin_list',
+				'class' => 'xm_content user_admin_list',
 			),
 			'heading' => array(),
 		);
@@ -318,30 +318,30 @@ class Controller_XM_User_Admin extends Controller_Private {
 	protected function get_list_row_links($user) {
 		$id = $user->id;
 
-		$first_col = HTML::anchor($this->request->route()->uri(array('action' => 'view', 'id' => $id)), '<span class="cl4_icon cl4_view"></span>', array(
+		$first_col = HTML::anchor($this->request->route()->uri(array('action' => 'view', 'id' => $id)), HTML::icon('view'), array(
 			'title' => __('View this user'),
 		));
 
 		if (Auth::instance()->allowed('user_admin/edit')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'edit', 'id' => $id)), '<span class="cl4_icon cl4_edit"></span>', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'edit', 'id' => $id)), HTML::icon('edit'), array(
 				'title' => __('Edit this user'),
 			));
 		}
 
 		if (Auth::instance()->allowed('user_admin/delete')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'delete', 'id' => $id)), '<span class="cl4_icon cl4_delete"></span>', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'delete', 'id' => $id)), HTML::icon('delete'), array(
 				'title' => __('Delete this user'),
 			));
 		}
 
 		if (Auth::instance()->allowed('user_admin/add')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'add', 'id' => $id)), '<span class="cl4_icon cl4_add"></span>', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'add', 'id' => $id)), HTML::icon('add'), array(
 				'title' => __('Copy this user'),
 			));
 		}
 
 		if (Auth::instance()->allowed('user_admin/email_password')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'email_password', 'id' => $id)), '<span class="cl4_icon cl4_mail"></span>', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'email_password', 'id' => $id)), HTML::icon('mail'), array(
 				'title' => __('Email a new random password to this user'),
 			));
 		}
@@ -357,10 +357,10 @@ class Controller_XM_User_Admin extends Controller_Private {
 	 */
 	protected function get_user_list_buttons() {
 		$list_buttons = array(
-			Form::submit(NULL, 'Add New User', array('class' => 'js_cl4_button_link cl4_list_button', 'data-cl4_link' => URL::site($this->request->route()->uri(array('action' => 'add'))))),
+			Form::submit(NULL, 'Add New User', array('class' => 'js_xm_button_link xm_list_button', 'data-xm_link' => URL::site($this->request->route()->uri(array('action' => 'add'))))),
 		);
 		if ( ! empty($this->sort_column) || $this->search_applied) {
-			$list_buttons[] = Form::input_button(NULL, 'Clear Search/Sort', array('class' => 'js_cl4_button_link cl4_list_button', 'data-cl4_link' => URL::site($this->request->route()->uri() . '?sort_column=&sort_direction=&search%5Btext%5D=&search%5Bgroup_id%5D&search%5Bonly_active%5D=1')));
+			$list_buttons[] = Form::input_button(NULL, 'Clear Search/Sort', array('class' => 'js_xm_button_link xm_list_button', 'data-xm_link' => URL::site($this->request->route()->uri() . '?sort_column=&sort_direction=&search%5Btext%5D=&search%5Bgroup_id%5D&search%5Bonly_active%5D=1')));
 		}
 
 		$list_buttons[] = Form::open(NULL, array('method' => 'GET'))
@@ -550,10 +550,10 @@ class Controller_XM_User_Admin extends Controller_Private {
 
 			$this->user_additional_save($user);
 
-			$send_email = cl4::get_param('send_email', FALSE);
+			$send_email = XM::get_param('send_email', FALSE);
 			if ($send_email) {
 				if ( ! isset($new_password)) {
-					$new_password = cl4::get_param_array(array('c_record', 'user', 0, 'password'), FALSE);
+					$new_password = XM::get_param_array(array('c_record', 'user', 0, 'password'), FALSE);
 					$new_password = (empty($new_password) ? FALSE : $new_password);
 				}
 
@@ -585,7 +585,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 			$this->redirect_to_index();
 
 		} catch (ORM_Validation_Exception $e) {
-			Message::message('cl4admin', 'values_not_valid', array(
+			Message::message('xm_db_admin', 'values_not_valid', array(
 				':validation_errors' => Message::add_validation_errors($e, '')
 			), Message::$error);
 		} // try
@@ -604,22 +604,22 @@ class Controller_XM_User_Admin extends Controller_Private {
 	*/
 	public function action_delete() {
 		if ( ! ($this->id > 0)) {
-			Message::message('cl4admin', 'no_id', NULL, Message::$error);
+			Message::message('xm_db_admin', 'no_id', NULL, Message::$error);
 			$this->redirect_to_index();
 		} // if
 
 		if ( ! empty($_POST)) {
 			// see if they want to delete the item
-			if (strtolower($_POST['cl4_delete_confirm']) == 'yes') {
+			if (strtolower($_POST['xm_delete_confirm']) == 'yes') {
 				$user = ORM::factory('User_Admin', $this->id);
 				if ($user->delete() == 0) {
-					Message::message('cl4admin', 'no_item_deleted', NULL, Message::$error);
+					Message::message('xm_db_admin', 'no_item_deleted', NULL, Message::$error);
 				} else {
 					Message::message('user_admin', 'user_deleted', array(), Message::$notice);
-					Message::message('cl4admin', 'record_id_deleted', array(':id' => $this->id), Message::$debug);
+					Message::message('xm_db_admin', 'record_id_deleted', array(':id' => $this->id), Message::$debug);
 				} // if
 			} else {
-				Message::message('cl4admin', 'item_not_deleted', NULL, Message::$notice);
+				Message::message('xm_db_admin', 'item_not_deleted', NULL, Message::$notice);
 			}
 
 			$this->redirect_to_index();
@@ -634,11 +634,11 @@ class Controller_XM_User_Admin extends Controller_Private {
 
 	public function action_email_password() {
 		if ( ! ($this->id > 0)) {
-			Message::message('cl4admin', 'no_id', NULL, Message::$error);
+			Message::message('xm_db_admin', 'no_id', NULL, Message::$error);
 			$this->redirect_to_index();
 		} // if
 
-		$new_password = CL4_Auth::generate_password();
+		$new_password = XM_Auth::generate_password();
 
 		$user = ORM::factory('User', $this->id)
 			->values(array(
@@ -680,7 +680,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 	*/
 	public function action_cancel() {
 		// add a notice to be displayed
-		Message::message('cl4admin', 'action_cancelled', NULL, Message::$notice);
+		Message::message('xm_db_admin', 'action_cancelled', NULL, Message::$notice);
 		// redirect to the index
 		$this->redirect_to_index();
 	}
@@ -698,7 +698,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 
 		$table_options = array(
 			'table_attributes' => array(
-				'class' => 'cl4_content user_admin_group_list',
+				'class' => 'xm_content user_admin_group_list',
 			),
 			'heading' => $this->group_list_headings,
 		);
@@ -727,36 +727,36 @@ class Controller_XM_User_Admin extends Controller_Private {
 	protected function get_group_list_row_links($group) {
 		$id = $group->id;
 
-		$first_col = HTML::anchor($this->request->route()->uri(array('action' => 'view_group', 'id' => $id)), '<span class="cl4_icon cl4_view"></span>', array(
+		$first_col = HTML::anchor($this->request->route()->uri(array('action' => 'view_group', 'id' => $id)), HTML::icon('view'), array(
 			'title' => __('View this user'),
 		));
 
 		if (Auth::instance()->allowed('user_admin/group/edit')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'edit_group', 'id' => $id)), '<span class="cl4_icon cl4_edit"></span>', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'edit_group', 'id' => $id)), HTML::icon('edit'), array(
 				'title' => __('Edit this group'),
 			));
 		}
 
 		if (Auth::instance()->allowed('user_admin/group/delete')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'delete_group', 'id' => $id)), '<span class="cl4_icon cl4_delete"></span>', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'delete_group', 'id' => $id)), HTML::icon('delete'), array(
 				'title' => __('Delete this group'),
 			));
 		}
 
 		if (Auth::instance()->allowed('user_admin/group/add')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'add_group', 'id' => $id)), '<span class="cl4_icon cl4_add"></span>', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'add_group', 'id' => $id)), HTML::icon('add'), array(
 				'title' => __('Copy this group'),
 			));
 		}
 
 		if (Auth::instance()->allowed('user_admin/group/permissions')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'group_permissions', 'id' => $id)), '<span class="cl4_icon cl4_lock"></span>', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'group_permissions', 'id' => $id)), HTML::icon('lock'), array(
 				'title' => __('Edit the permissions for this group'),
 			));
 		}
 
 		if (Auth::instance()->allowed('user_admin/group/users')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'group_users', 'id' => $id)), '<span class="cl4_icon cl4_contact2"></span>', array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'group_users', 'id' => $id)), HTML::icon('contact2'), array(
 				'title' => __('Edit the users that have this permission group'),
 			));
 		}
@@ -786,7 +786,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 		$group = ORM::factory('Group', $this->id)
 			->set_mode('add')
 			->set_option('cancel_button_attributes', array(
-				'data-cl4_link' => URL::site(Route::get('user_admin')->uri(array('action' => 'cancel_group'))),
+				'data-xm_link' => URL::site(Route::get('user_admin')->uri(array('action' => 'cancel_group'))),
 			));
 
 		if ( ! empty($_POST)) {
@@ -809,7 +809,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 		$group = ORM::factory('Group', $this->id)
 			->set_mode('edit')
 			->set_option('cancel_button_attributes', array(
-				'data-cl4_link' => URL::site(Route::get('user_admin')->uri(array('action' => 'cancel_group'))),
+				'data-xm_link' => URL::site(Route::get('user_admin')->uri(array('action' => 'cancel_group'))),
 			));
 
 		if ( ! empty($_POST)) {
@@ -831,11 +831,11 @@ class Controller_XM_User_Admin extends Controller_Private {
 			// save the post data
 			$validation = $group->save_values()->save();
 
-			Message::message('cl4admin', 'item_saved', NULL, Message::$notice);
+			Message::message('xm_db_admin', 'item_saved', NULL, Message::$notice);
 			$this->redirect_to_group_list();
 
 		} catch (ORM_Validation_Exception $e) {
-			Message::message('cl4admin', 'values_not_valid', array(
+			Message::message('xm_db_admin', 'values_not_valid', array(
 				':validation_errors' => Message::add_validation_errors($e, '')
 			), Message::$error);
 		}
@@ -846,22 +846,22 @@ class Controller_XM_User_Admin extends Controller_Private {
 	*/
 	public function action_delete_group() {
 		if ( ! ($this->id > 0)) {
-			Message::message('cl4admin', 'no_id', NULL, Message::$error);
+			Message::message('xm_db_admin', 'no_id', NULL, Message::$error);
 			$this->redirect_to_group_list();
 		} // if
 
 		if ( ! empty($_POST)) {
 			// see if they want to delete the item
-			if (strtolower($_POST['cl4_delete_confirm']) == 'yes') {
+			if (strtolower($_POST['xm_delete_confirm']) == 'yes') {
 				$group = ORM::factory('Group', $this->id);
 				if ($group->delete() == 0) {
-					Message::message('cl4admin', 'no_item_deleted', NULL, Message::$error);
+					Message::message('xm_db_admin', 'no_item_deleted', NULL, Message::$error);
 				} else {
 					Message::message('user_admin', 'user_deleted', array(), Message::$notice);
-					Message::message('cl4admin', 'record_id_deleted', array(':id' => $this->id), Message::$debug);
+					Message::message('xm_db_admin', 'record_id_deleted', array(':id' => $this->id), Message::$debug);
 				} // if
 			} else {
-				Message::message('cl4admin', 'item_not_deleted', NULL, Message::$notice);
+				Message::message('xm_db_admin', 'item_not_deleted', NULL, Message::$notice);
 			}
 
 			$this->redirect_to_group_list();
@@ -879,7 +879,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 	*/
 	public function action_cancel_group() {
 		// add a notice to be displayed
-		Message::message('cl4admin', 'action_cancelled', NULL, Message::$notice);
+		Message::message('xm_db_admin', 'action_cancelled', NULL, Message::$notice);
 		// redirect to the index
 		$this->redirect_to_group_list();
 	} // function

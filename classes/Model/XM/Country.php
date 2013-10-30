@@ -11,7 +11,7 @@
 class Model_XM_Country extends ORM {
 	protected $_table_names_plural = FALSE;
 	protected $_table_name = 'country';
-	public $_table_name_display = 'Country'; // cl4 specific
+	public $_table_name_display = 'Country'; // xm specific
 
 	// default sorting
 	protected $_sorting = array(

@@ -2,12 +2,32 @@
 
 /**
  * A default private Controller class.
- * Some of the functionality is required by CL4 and other modules.
+ * Some of the functionality is required by XM and other modules.
  */
-class Controller_XM_Private extends Controller_CL4_Private {
+class Controller_XM_Private extends Controller_Base {
 	/**
-	 * Sets up the template script var, add's jquery, jquery ui, jquery outside, cl4.js, ajax.js, and base.js.
-	 * If not in dev, private.min.js will be added instead of jquery outside, cl4, ajax and base.
+	 * Controls access for the whole controller.
+	 * If the entire controller REQUIRES that the user be logged in, set this to TRUE.
+	 * If some or all of the controller DOES NOT need to be logged in, set to this FALSE; to control which actions require authentication or a specific permission, us the $secure_actions array.
+	 * By default, all Private Controllers are auth required.
+	 */
+	public $auth_required = TRUE;
+
+	/**
+	 * Called before the action.
+	 * Does everything else in the parent before()'s and also adds the admin CSS.
+	 */
+	public function before() {
+		parent::before();
+
+		if ($this->auto_render) {
+			$this->add_style('private', 'css/private.css');
+		}
+	} // function before
+
+	/**
+	 * Sets up the template script var, add's jquery, jquery ui, jquery outside, xm.js, ajax.js, and base.js.
+	 * If not in dev, private.min.js will be added instead of jquery outside, xm, ajax and base.
 	 *
 	 * @return  Controller_Base
 	 */
@@ -17,10 +37,10 @@ class Controller_XM_Private extends Controller_CL4_Private {
 		if (DEBUG_FLAG) {
 			$this->add_script('xm_debug', 'xm/js/debug.js');
 		}
-		if (CL4::is_dev()) {
+		if (XM::is_dev()) {
 			$this->add_script('jquery_outside', 'js/jquery.outside.min.js')
-				->add_script('cl4', 'cl4/js/cl4.js')
-				->add_script('cl4_ajax', 'cl4/js/ajax.js')
+				->add_script('xm', 'xm/js/xm.js')
+				->add_script('xm_ajax', 'xm/js/ajax.js')
 				->add_script('base', 'js/base.js')
 				->add_script('private', 'js/private.js');
 		} else {

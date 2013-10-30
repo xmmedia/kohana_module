@@ -1,0 +1,17 @@
+<?php
+
+// the form open tag
+echo $form_open_tag . EOL;
+// the hidden fields
+echo implode(EOL, $form_fields_hidden) . EOL;
+
+// the table html
+echo $form_field_table->get_html();
+
+if ($form_options['display_buttons']) {
+	// the buttons
+	echo '<div class="xm_buttons">' . implode('', $form_buttons) . '</div>' . EOL;
+}
+
+// the form close tag
+echo $form_close_tag;

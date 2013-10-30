@@ -1,4 +1,4 @@
-<div class="cl4_list_header">
+<div class="xm_list_header">
 	<?php echo implode('', $list_buttons); ?>
 	<div class="clear"></div>
 </div>

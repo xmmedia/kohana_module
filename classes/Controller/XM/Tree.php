@@ -101,9 +101,9 @@ class Controller_XM_Tree extends Controller_Private {
 			}
 			$tree_html .= '</a><div class="name">' . HTML::chars($node['name']) . '</div>'
 				. '<div class="links">'
-					. HTML::anchor($route->uri(array('action' => 'edit', 'id' => $node['id'])) . '?c_ajax=1', '<span class="cl4_icon cl4_edit"></span>', array('class' => 'edit_item js_edit_item', 'title' => 'Edit Item'))
-					. HTML::anchor($route->uri(array('action' => 'add', 'id' => $node['id'])) . '?c_ajax=1', '<span class="cl4_icon cl4_add"></span>', array('class' => 'add_sub_item js_add_sub_item', 'title' => 'Add Sub Item'))
-					. HTML::anchor($route->uri(array('action' => 'delete', 'id' => $node['id'])) . '?c_ajax=1', '<span class="cl4_icon cl4_delete"></span>', array('class' => 'delete_item js_delete_item', 'title' => 'Delete Item'))
+					. HTML::anchor($route->uri(array('action' => 'edit', 'id' => $node['id'])) . '?c_ajax=1', HTML::icon('edit'), array('class' => 'edit_item js_edit_item', 'title' => 'Edit Item'))
+					. HTML::anchor($route->uri(array('action' => 'add', 'id' => $node['id'])) . '?c_ajax=1', HTML::icon('add'), array('class' => 'add_sub_item js_add_sub_item', 'title' => 'Add Sub Item'))
+					. HTML::anchor($route->uri(array('action' => 'delete', 'id' => $node['id'])) . '?c_ajax=1', HTML::icon('delete'), array('class' => 'delete_item js_delete_item', 'title' => 'Delete Item'))
 				. '</div>'
 			. '</div>';
 

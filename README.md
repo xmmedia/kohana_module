@@ -1,6 +1,6 @@
 XM Media Kohana Module
 
-This is meant to be used with cl4 and extends a lot of it's functionality. Parts may also be eventually combined with cl4.
+This is meant to be used with Kohana and extends a lot of it's functionality.
 
 The following can be used in git to get this module into your project. Add this to .gitmodules:
 

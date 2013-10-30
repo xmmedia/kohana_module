@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die ('No direct script access.');
 
-class XM_Valid extends CL4_Valid {
+class XM_Valid extends Kohana_Valid {
 	/**
 	 * Checks if the value of a field is a valid date. The date must be in the format of "YYYY-MM-DD".
 	 *
@@ -37,5 +37,15 @@ class XM_Valid extends CL4_Valid {
 	 */
 	public static function not_in_array($value, $array) {
 		return ! in_array($value, (array) $array);
+	}
+
+	/**
+	 * Checks if a value been selected for a field, such as radios or a checkbox.
+	 *
+	 * @return  boolean
+	 */
+	public static function selected($value) {
+		// Value must be > 0
+		return $value > 0;
 	}
 }

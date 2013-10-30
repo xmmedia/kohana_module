@@ -290,7 +290,7 @@ class Controller_XM_XMAdmin extends Controller_Private {
 	* @param  string  $content  The content to put in the content container in the view
 	*/
 	protected function add_admin_view($title, $content) {
-		$this->template->body_html .= View::factory('xm/xmadmin/admin')
+		$this->template->body_html .= View::factory('xm/db_admin/admin')
 			->bind('title', $title)
 			->bind('content', $content);
 	} // function add_admin_view
@@ -503,7 +503,7 @@ class Controller_XM_XMAdmin extends Controller_Private {
 
 		} else {
 			// the confirmation form goes in the messages
-			Message::add(View::factory('xm/xmadmin/confirm_delete', array(
+			Message::add(View::factory('xm/db_admin/confirm_delete', array(
 				'object_name' => $this->model_display_name,
 			)));
 
@@ -652,7 +652,7 @@ class Controller_XM_XMAdmin extends Controller_Private {
 
 	/**
 	* Creates a drop down of all model the available models as returned by get_model_list()
-	* Returns the view xm/xmadmin/header
+	* Returns the view xm/db_admin/header
 	*
 	* @return  string
 	*/
@@ -661,7 +661,7 @@ class Controller_XM_XMAdmin extends Controller_Private {
 		asort($model_list);
 		$model_select = Form::select('model', $model_list, $this->model_name, array('id' => 'xm_model_select'));
 
-		return View::factory('xm/xmadmin/header', array(
+		return View::factory('xm/db_admin/header', array(
 			'model_select' => $model_select,
 			'form_action' => URL::site($this->request->uri()) . URL::query(),
 		));

@@ -75,7 +75,7 @@ class Controller_XM_Account extends Controller_Private {
 		));
 
 		// prepare the view & form
-		$this->template->body_html = View::factory('xm/xmaccount/profile')
+		$this->template->body_html = View::factory('xm/account/profile')
 			->set('edit_fields', $model->get_form(array(
 				'form_action' => URL::site(Route::get(Route::name($this->request->route()))->uri(array('action' => 'profile'))),
 				'form_id' => 'editprofile',

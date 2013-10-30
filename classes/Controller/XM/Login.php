@@ -149,7 +149,7 @@ class Controller_XM_Login extends Controller_Private {
 			$this->redirect(Route::get(Route::name($this->request->route()))->uri(array('action' => 'timedout')) . $this->get_redirect_query());
 		}
 
-		$this->template->body_html = View::factory('xm/xmlogin/login')
+		$this->template->body_html = View::factory('xm/login/login')
 			->set('redirect', $redirect)
 			->set('username', $username)
 			->set('password', $password)
@@ -217,7 +217,7 @@ class Controller_XM_Login extends Controller_Private {
 		}
 
 		$this->template->page_title = 'Timed Out - ' . $this->page_title_append;
-		$this->template->body_html = View::factory('xm/xmlogin/timed_out')
+		$this->template->body_html = View::factory('xm/login/timed_out')
 			->set('redirect', $redirect)
 			->set('username', $user->username);
 
@@ -267,7 +267,7 @@ class Controller_XM_Login extends Controller_Private {
 	public function action_noaccess() {
 		// set the template title (see Controller_App for implementation)
 		$this->template->page_title = 'Access Not Allowed - ' . $this->page_title_append;
-		$view = $this->template->body_html = View::factory('xm/xmlogin/no_access')
+		$view = $this->template->body_html = View::factory('xm/login/no_access')
 			->set('referrer', XM::get_param('referrer'));
 	} // function action_noaccess
 
@@ -334,7 +334,7 @@ class Controller_XM_Login extends Controller_Private {
 					'reset_token' => $user->reset_token,
 				)), FALSE);
 
-				$mail->Body = View::factory('xm/xmlogin/forgot_link')
+				$mail->Body = View::factory('xm/login/forgot_link')
 					->set('app_name', LONG_NAME)
 					->set('url', $url)
 					->set('admin_email', ADMIN_EMAIL);
@@ -354,7 +354,7 @@ class Controller_XM_Login extends Controller_Private {
 			}
 		} // if post
 
-		$this->template->body_html = View::factory('xm/xmlogin/forgot');
+		$this->template->body_html = View::factory('xm/login/forgot');
 	} // function action_forgot
 
 	/**
@@ -407,7 +407,7 @@ class Controller_XM_Login extends Controller_Private {
 				// provide a link to the user including their username
 				$url = URL::site(Route::get(Route::name($this->request->route()))->uri() . '?' . http_build_query(array('username' => $user->username)), FALSE);
 
-				$mail->Body = View::factory('xm/xmlogin/forgot_reset')
+				$mail->Body = View::factory('xm/login/forgot_reset')
 					->set('app_name', LONG_NAME)
 					->set('username', $user->username)
 					->set('password', $password)

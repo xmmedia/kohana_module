@@ -63,7 +63,7 @@ class Controller_XM_Template_Admin extends Controller_Private {
 
 	protected $route = 'model_route';
 
-	protected $default_view = 'xm/xmadmin/admin';
+	protected $default_view = 'xm/db_admin/admin';
 
 	/**
 	* Runs before the action.
@@ -394,7 +394,7 @@ class Controller_XM_Template_Admin extends Controller_Private {
 
 		} else {
 			// the confirmation form goes in the messages
-			Message::add(View::factory('xm/xmadmin/confirm_delete', array(
+			Message::add(View::factory('xm/db_admin/confirm_delete', array(
 				'object_name' => $this->model_display_name,
 			)));
 

@@ -8,7 +8,7 @@ class XM_File {
 	* Options for use within the object
 	* @var array
 	*/
-	private $options = array(); // defaults in config/XMFile.options
+	private $options = array(); // defaults in config/xm_file.options
 
 	/**
 	* File data (src, dest, size, mime type)
@@ -28,20 +28,20 @@ class XM_File {
 	/**
 	* Prepares the object (sets options)
 	*
-	* @param  array   $options	array of options to change the defaults in config/XMFile.options
+	* @param  array   $options	array of options to change the defaults in config/xm_file.options
 	*/
 	public function __construct(array $options = array()) {
 		$this->set_options($options);
 	} // function __construct
 
 	/**
-	* reset the options for the object with the passed $options array and fill in missing values from defaults in config/XMFile.options
+	* reset the options for the object with the passed $options array and fill in missing values from defaults in config/xm_file.options
 	*
-	* @param mixed $options (see config/xmfile.options array for values)
+	* @param mixed $options (see config/xm_file.options array for values)
 	*/
 	public function set_options($options) {
 		// get the default options from the config file
-		$default_options = Kohana::$config->load('xmfile.options');
+		$default_options = Kohana::$config->load('xm_file.options');
 
 		// merge the defaults with the passed options (add defaults where values are missing)
 		$this->options = $options;
@@ -76,7 +76,7 @@ class XM_File {
 	*                                        So $_FILES[c_record][name][table_name][0][column_name] would be array('c_record', 'table_name', 0, 'column_name')
 	*                                        When using an array, the keys can't have periods because it uses Arr::path() to find the value
 	* @param   string  $destination_folder   The destination folder
-	* @param   array   $options              (optional) Options as found in config/XMFile
+	* @param   array   $options              (optional) Options as found in config/xm_file
 	*
 	* @return  array
 	*/
@@ -109,7 +109,7 @@ class XM_File {
 			// we are dealing with an array post so the FILES array will also be in an array (with a very poor layout)
 
 			// first see if the field is in the $_FILES by checking if the name has a value
-			$name = XMFile::get_files_array_value($files_array_loc, 'name');
+			$name = xm_file::get_files_array_value($files_array_loc, 'name');
 
 			// the above will return NULL if nothing is set, so check for empty
 			if ( ! empty($name)){
@@ -117,10 +117,10 @@ class XM_File {
 				// now we need to get the pieces of information
 				$file_data = array(
 					'name' => $name,
-					'type' => XMFile::get_files_array_value($files_array_loc, 'type'),
-					'tmp_name' => XMFile::get_files_array_value($files_array_loc, 'tmp_name'),
-					'error' => XMFile::get_files_array_value($files_array_loc, 'error'),
-					'size' => XMFile::get_files_array_value($files_array_loc, 'size'),
+					'type' => xm_file::get_files_array_value($files_array_loc, 'type'),
+					'tmp_name' => xm_file::get_files_array_value($files_array_loc, 'tmp_name'),
+					'error' => xm_file::get_files_array_value($files_array_loc, 'error'),
+					'size' => xm_file::get_files_array_value($files_array_loc, 'size'),
 				);
 			} else {
 				throw new XM_Exception_File('The field :name: in the $_FILES array was not set, so no file was processed', array(':name:' => implode('.', $files_array_loc)), XM_Exception_File::FILE_NOT_SET);
@@ -234,12 +234,12 @@ class XM_File {
 		} // if
 
 		// generate the new file name and extension
-		$file_info['dest_file'] = XMFile::get_destination_filename($file_info, $this->options['name_change_method'], $this->options);
+		$file_info['dest_file'] = xm_file::get_destination_filename($file_info, $this->options['name_change_method'], $this->options);
 
 		// add the file path to the destination file
 		$file_info['dest_file_path'] = $destination_folder . '/' . $file_info['dest_file'];
 
-		// the destination folder may have changed within XMFile::get_destination_filename() so determine if we need to make the directory
+		// the destination folder may have changed within xm_file::get_destination_filename() so determine if we need to make the directory
 		if ($this->options['make_dir']) {
 			$new_destination_folder = pathinfo($file_info['dest_file_path'], PATHINFO_DIRNAME);
 			if ($new_destination_folder != $destination_folder && ! file_exists($new_destination_folder)) {
@@ -283,7 +283,7 @@ class XM_File {
 	/**
 	* If $html is TRUE, this returns an HTML formatted string prefixed with with a message regarding allowed file types based on config/mime_description
 	* If $html is FALSE, this returns an array of file type names based on config/mime_description
-	* This can be run from the object or statically which will then merge the default options in config/xmfile.options with the passed options
+	* This can be run from the object or statically which will then merge the default options in config/xm_file.options with the passed options
 	*
 	* @return  string  HTML string for output
 	*/
@@ -291,7 +291,7 @@ class XM_File {
 		if (isset($this) && $options === NULL) {
 			$options = $this->options;
 		} else {
-			$options += Kohana::$config->load('xmfile.options');
+			$options += Kohana::$config->load('xm_file.options');
 		}
 
 		if ($html) {
@@ -417,7 +417,7 @@ class XM_File {
 
 			case 'random' :
 				// generate a random filename that starts with the current timestamp (to avoid 2 people ending up with the same filename)
-				$dest_file = time() . '_' . XMFile::clean_filename(uniqid()) . '.' . $file_info['ext'];
+				$dest_file = time() . '_' . xm_file::clean_filename(uniqid()) . '.' . $file_info['ext'];
 				break;
 
 			case 'prepend' :
@@ -458,7 +458,7 @@ class XM_File {
 		} // switch
 
 		if ($options['clean_filename']) {
-			$dest_file = XMFile::clean_filename($dest_file);
+			$dest_file = xm_file::clean_filename($dest_file);
 		}
 		if ($options['lowercase_filename']) {
 			$dest_file = strtolower($dest_file);
@@ -475,19 +475,19 @@ class XM_File {
 	* @param   string   $original_file       The original file including path
 	* @param   integer  $record_pk           The record primary key
 	* @param   string   $destination_folder  The destination folder
-	* @param   array    $options             The file options, passed directly to XMFile::get_destination_filename()
+	* @param   array    $options             The file options, passed directly to xm_file::get_destination_filename()
 	*
 	* @return  array    Array with 2 keys: dest_file and dest_file_path
 	*/
 	public static function move_to_id_path($original_file_path, $record_pk, $destination_folder, $options) {
 		$ext = pathinfo($original_file_path, PATHINFO_EXTENSION);
 
-		$destination_file = XMFile::get_destination_filename(array(
+		$destination_file = xm_file::get_destination_filename(array(
 			'record_pk' => $record_pk,
 			'ext' => $ext
 		), 'id', $options);
 
-		XMFile::move($original_file_path, $destination_folder . '/' . $destination_file);
+		xm_file::move($original_file_path, $destination_folder . '/' . $destination_file);
 
 		return array(
 			'dest_file' => $destination_file,

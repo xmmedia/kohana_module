@@ -161,7 +161,7 @@ class XM_Auth extends Kohana_Auth_ORM {
 	*     auth_required = FALSE (everything else ignored)
 	*  - logged in: user must be logged in, although no other permissions required (something like the account controller)
 	*     auth_required = TRUE && secure_actions = FALSE
-	*  - logged in + own checking: the same as above, but you are doing your own checking within the controller (like xmadmin)
+	*  - logged in + own checking: the same as above, but you are doing your own checking within the controller (like xm_db_admin)
 	*     auth_required = TRUE && secure_actions = FALSE
 	*  - logged in + specific permission(s): a specific permission is required to access the action; with multiple permissions all of them are required
 	*     auth_required = TRUE && (secure_action['action'] = 'perm' || secure_action['action'] = array('perm1', 'perm2'))
@@ -305,7 +305,7 @@ class XM_Auth extends Kohana_Auth_ORM {
 	*/
 	protected function _login($user, $password, $remember, $verified_human = FALSE) {
 		$messages = array();
-		$login_config = Kohana::$config->load('xmlogin');
+		$login_config = Kohana::$config->load('xm_login');
 
 		// user is not an object, so it must be the username
 		if ( ! is_object($user)) {
@@ -395,7 +395,7 @@ class XM_Auth extends Kohana_Auth_ORM {
 	* @return  boolean
 	*/
 	public function too_many_login_attempts($failed_login_count) {
-		$login_config = Kohana::$config->load('xmlogin');
+		$login_config = Kohana::$config->load('xm_login');
 		return ($failed_login_count !== NULL && $failed_login_count > $login_config['max_failed_login_count']);
 	}
 
@@ -425,7 +425,7 @@ class XM_Auth extends Kohana_Auth_ORM {
 		$this->update_timestamp();
 
 		// delete the session key that contains # of attempts and forced captcha flag
-		Session::instance()->delete(Kohana::$config->load('xmlogin.session_key'));
+		Session::instance()->delete(Kohana::$config->load('xm_login.session_key'));
 
 		return parent::complete_login($user);
 	} // function complete_login

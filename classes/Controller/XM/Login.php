@@ -28,7 +28,7 @@ class Controller_XM_Login extends Controller_Private {
 			$this->login_success_redirect($redirect);
 		}
 
-		$login_config = Kohana::$config->load('xmlogin');
+		$login_config = Kohana::$config->load('xm_login');
 
 		// Get number of login attempts this session
 		$attempts = Session::instance()->path($login_config['session_key'] . '.attempts', 0);
@@ -208,8 +208,8 @@ class Controller_XM_Login extends Controller_Private {
 			$this->redirect(Route::get(Route::name($this->request->route()))->uri(array('action' => 'logout')) . $this->get_redirect_query());
 		}
 
-		$timeout_post = Session::instance()->get(Kohana::$config->load('xmlogin.timeout_post_session_key'));
-		if (Kohana::$config->load('xmlogin.enable_timeout_post') && ! empty($timeout_post)) {
+		$timeout_post = Session::instance()->get(Kohana::$config->load('xm_login.timeout_post_session_key'));
+		if (Kohana::$config->load('xm_login.enable_timeout_post') && ! empty($timeout_post)) {
 			$redirect = Route::get('login')->uri(array('action' => 'timeoutpost'));
 		} else {
 			// need to decode the redirect as it will be encoded in the URL
@@ -234,10 +234,10 @@ class Controller_XM_Login extends Controller_Private {
 	*/
 	public function action_timeoutpost() {
 		// we want to redirect the user to the previous form, first creating the form and then submitting it with JS
-		$session_key = Kohana::$config->load('xmlogin.timeout_post_session_key');
+		$session_key = Kohana::$config->load('xm_login.timeout_post_session_key');
 
-		$timeout_post = Session::instance()->get(Kohana::$config->load('xmlogin.timeout_post_session_key'));
-		if ( ! Kohana::$config->load('xmlogin.enable_timeout_post') || empty($timeout_post)) {
+		$timeout_post = Session::instance()->get(Kohana::$config->load('xm_login.timeout_post_session_key'));
+		if ( ! Kohana::$config->load('xm_login.enable_timeout_post') || empty($timeout_post)) {
 			$this->login_success_redirect();
 		}
 
@@ -254,7 +254,7 @@ class Controller_XM_Login extends Controller_Private {
 			$this->template->body_html = $form_html;
 			$this->add_on_load_js('$(\'#timeout_post\').submit();');
 
-			Session::instance()->delete(Kohana::$config->load('xmlogin.timeout_post_session_key'));
+			Session::instance()->delete(Kohana::$config->load('xm_login.timeout_post_session_key'));
 		} catch (Exception $e) {
 			Kohana_Exception::handler_continue($e);
 			$this->login_success_redirect();
@@ -299,7 +299,7 @@ class Controller_XM_Login extends Controller_Private {
 
 		Kohana::load(Kohana::find_file('vendor/recaptcha', 'recaptchalib'));
 
-		$default_options = Kohana::$config->load('xmlogin');
+		$default_options = Kohana::$config->load('xm_login');
 
 		// set the template page_title (see Controller_Base for implementation)
 		$this->template->page_title = 'Forgot Password - ' . $this->page_title_append;
@@ -368,7 +368,7 @@ class Controller_XM_Login extends Controller_Private {
 			$this->login_success_redirect();
 		}
 
-		$default_options = Kohana::$config->load('xmlogin');
+		$default_options = Kohana::$config->load('xm_login');
 
 		// set the template title (see Controller_Base for implementation)
 		$this->template->page_title = 'Password Reset - ' . $this->page_title_append;

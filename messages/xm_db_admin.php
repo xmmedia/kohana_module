@@ -4,7 +4,7 @@ return array(
 	'no_model'                  => 'There is no model to redirect to.',
 	'no_permission_action'      => 'You don\'t have the correct permissions to access this action.',
 	'no_permission_item'        => 'You don\'t have the correct permissions to manage that item.',
-	'model_not_defined'         => 'The model you attempted to access (:model_name) doesn\'t exist in the model list defined in the xmadmin config file.',
+	'model_not_defined'         => 'The model you attempted to access (:model_name) doesn\'t exist in the model list defined in the xm_db_admin config file.',
 	'using_model'               => 'We are using model \':model_name\' with mode \':mode\' and id \':id\'',
 	'model_loaded'              => 'The model \':model_name\' was loaded.',
 	'problem_loading_data'      => 'There was a problem loading the data.',

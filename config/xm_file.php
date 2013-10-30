@@ -3,7 +3,7 @@
 return array(
 	'options' => array(
 		/**
-		* Note that not all these options are used within XMFile, but some are also used in ORM_File or even both
+		* Note that not all these options are used within xm_file, but some are also used in ORM_File or even both
 		*
 		* For public files (inside doc root), the following options must be set:
 		*   - file_download_url
@@ -59,7 +59,7 @@ return array(
 		* used within ORM_File
 		* the parameters set in the route will be model, column_name, id; all other parameters will be left as their defaults
 		*/
-		'target_route' => 'xmadmin',
+		'target_route' => 'xm_db_admin',
 		/**
 		* the name of the model to use when downloading (streaming/reading) a file through PHP
 		* required for streaming the file when using target_route (not file_download_url)

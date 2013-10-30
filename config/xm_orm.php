@@ -113,7 +113,7 @@ return array(
 			),
 			'field_options' => array(
 				'file_options' => array(
-					// see config/XMFile.php for a full list of options
+					// see config/xm_file.php for a full list of options
 				),
 			),
 		),
@@ -144,7 +144,7 @@ return array(
 		'field_label' => NULL, // the label to display beside the field values
 		'through_model' => NULL, // the model for the through/pivot table, used to add() or delete()
 		/* commented out so that it will use the model instead of using this source data
-		 * see the source array comments under config/xmorm/default_meta_data_field_type.select.field_options for details on how to use this array
+		 * see the source array comments under config/xm_orm/default_meta_data_field_type.select.field_options for details on how to use this array
 		'source' => array(
 			'source' => 'model',
 			'data' => NULL,
@@ -168,7 +168,7 @@ return array(
 
 		// used to generate all links, should have model, action, id parameters
 		// defaults to the current route
-		// the default is set in xmorm::set_target_route() of this is NULL
+		// the default is set in xm_orm::set_target_route() of this is NULL
 		// don't use Route::instance() to set it within the config because you can't use ORM before doing the main request
 		'target_route' => NULL,
 

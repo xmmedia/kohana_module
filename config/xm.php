@@ -4,7 +4,7 @@ return array(
 	'routes' => array(
 		'login' => TRUE,
 		'account' => TRUE,
-		'xmadmin' => TRUE,
+		'xm_db_admin' => TRUE,
 		'model_create' => TRUE,
 		'content_admin' => FALSE,
 		'db_change' => TRUE,

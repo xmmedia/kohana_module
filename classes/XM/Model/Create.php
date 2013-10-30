@@ -19,7 +19,7 @@ class XM_Model_Create {
 		$this->table_name = $table_name;
 
 		// set up the default options
-		$this->options = Arr::merge((array) Kohana::$config->load('xmorm.default_options'), (array) Kohana::$config->load('model_create'));
+		$this->options = Arr::merge((array) Kohana::$config->load('xm_orm.default_options'), (array) Kohana::$config->load('model_create'));
 
 		// figure out database configuration name to use
 		$this->db_name = isset($options['db_group']) ? $options['db_group'] : $this->options['db_group'];
@@ -221,7 +221,7 @@ class XM_Model_Create {
 	protected function build_meta_data($column_name, $column_data) {
 		// now that we know the field type, lets merge in some defaults
 		// global field type defaults
-		$xm_default_meta_data = Kohana::$config->load('xmorm.default_meta_data');
+		$xm_default_meta_data = Kohana::$config->load('xm_orm.default_meta_data');
 
 		// merge the global model create and global defaults
 		$meta_data = Arr::merge($xm_default_meta_data, $this->options['default_meta_data']);
@@ -311,10 +311,10 @@ class XM_Model_Create {
 
 		// now that we know the field type, lets merge in some defaults
 		// global field type defaults
-		$default_meta_data = Kohana::$config->load('xmorm.default_meta_data');
+		$default_meta_data = Kohana::$config->load('xm_orm.default_meta_data');
 
 		// get the defaults for the field type
-		$default_meta_data_field_type = (array) Kohana::$config->load('xmorm.default_meta_data_field_type.' . $meta_data['field_type']);
+		$default_meta_data_field_type = (array) Kohana::$config->load('xm_orm.default_meta_data_field_type.' . $meta_data['field_type']);
 
 		// merge everything together
 		$meta_data = Arr::merge($default_meta_data, $default_meta_data_field_type, $meta_data);

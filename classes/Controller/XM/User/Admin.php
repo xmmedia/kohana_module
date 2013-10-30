@@ -585,7 +585,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 			$this->redirect_to_index();
 
 		} catch (ORM_Validation_Exception $e) {
-			Message::message('xmadmin', 'values_not_valid', array(
+			Message::message('xm_db_admin', 'values_not_valid', array(
 				':validation_errors' => Message::add_validation_errors($e, '')
 			), Message::$error);
 		} // try
@@ -604,7 +604,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 	*/
 	public function action_delete() {
 		if ( ! ($this->id > 0)) {
-			Message::message('xmadmin', 'no_id', NULL, Message::$error);
+			Message::message('xm_db_admin', 'no_id', NULL, Message::$error);
 			$this->redirect_to_index();
 		} // if
 
@@ -613,13 +613,13 @@ class Controller_XM_User_Admin extends Controller_Private {
 			if (strtolower($_POST['xm_delete_confirm']) == 'yes') {
 				$user = ORM::factory('User_Admin', $this->id);
 				if ($user->delete() == 0) {
-					Message::message('xmadmin', 'no_item_deleted', NULL, Message::$error);
+					Message::message('xm_db_admin', 'no_item_deleted', NULL, Message::$error);
 				} else {
 					Message::message('user_admin', 'user_deleted', array(), Message::$notice);
-					Message::message('xmadmin', 'record_id_deleted', array(':id' => $this->id), Message::$debug);
+					Message::message('xm_db_admin', 'record_id_deleted', array(':id' => $this->id), Message::$debug);
 				} // if
 			} else {
-				Message::message('xmadmin', 'item_not_deleted', NULL, Message::$notice);
+				Message::message('xm_db_admin', 'item_not_deleted', NULL, Message::$notice);
 			}
 
 			$this->redirect_to_index();
@@ -634,7 +634,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 
 	public function action_email_password() {
 		if ( ! ($this->id > 0)) {
-			Message::message('xmadmin', 'no_id', NULL, Message::$error);
+			Message::message('xm_db_admin', 'no_id', NULL, Message::$error);
 			$this->redirect_to_index();
 		} // if
 
@@ -680,7 +680,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 	*/
 	public function action_cancel() {
 		// add a notice to be displayed
-		Message::message('xmadmin', 'action_cancelled', NULL, Message::$notice);
+		Message::message('xm_db_admin', 'action_cancelled', NULL, Message::$notice);
 		// redirect to the index
 		$this->redirect_to_index();
 	}
@@ -831,11 +831,11 @@ class Controller_XM_User_Admin extends Controller_Private {
 			// save the post data
 			$validation = $group->save_values()->save();
 
-			Message::message('xmadmin', 'item_saved', NULL, Message::$notice);
+			Message::message('xm_db_admin', 'item_saved', NULL, Message::$notice);
 			$this->redirect_to_group_list();
 
 		} catch (ORM_Validation_Exception $e) {
-			Message::message('xmadmin', 'values_not_valid', array(
+			Message::message('xm_db_admin', 'values_not_valid', array(
 				':validation_errors' => Message::add_validation_errors($e, '')
 			), Message::$error);
 		}
@@ -846,7 +846,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 	*/
 	public function action_delete_group() {
 		if ( ! ($this->id > 0)) {
-			Message::message('xmadmin', 'no_id', NULL, Message::$error);
+			Message::message('xm_db_admin', 'no_id', NULL, Message::$error);
 			$this->redirect_to_group_list();
 		} // if
 
@@ -855,13 +855,13 @@ class Controller_XM_User_Admin extends Controller_Private {
 			if (strtolower($_POST['xm_delete_confirm']) == 'yes') {
 				$group = ORM::factory('Group', $this->id);
 				if ($group->delete() == 0) {
-					Message::message('xmadmin', 'no_item_deleted', NULL, Message::$error);
+					Message::message('xm_db_admin', 'no_item_deleted', NULL, Message::$error);
 				} else {
 					Message::message('user_admin', 'user_deleted', array(), Message::$notice);
-					Message::message('xmadmin', 'record_id_deleted', array(':id' => $this->id), Message::$debug);
+					Message::message('xm_db_admin', 'record_id_deleted', array(':id' => $this->id), Message::$debug);
 				} // if
 			} else {
-				Message::message('xmadmin', 'item_not_deleted', NULL, Message::$notice);
+				Message::message('xm_db_admin', 'item_not_deleted', NULL, Message::$notice);
 			}
 
 			$this->redirect_to_group_list();
@@ -879,7 +879,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 	*/
 	public function action_cancel_group() {
 		// add a notice to be displayed
-		Message::message('xmadmin', 'action_cancelled', NULL, Message::$notice);
+		Message::message('xm_db_admin', 'action_cancelled', NULL, Message::$notice);
 		// redirect to the index
 		$this->redirect_to_group_list();
 	} // function

@@ -4,8 +4,8 @@
 			<ul class="left">
 				<li class="home"><?php echo HTML::anchor('', __('Home')); ?></li>
 				<?php if ($logged_in) { ?>
-				<?php if (Auth::instance()->allowed('content_admin') || Auth::instance()->allowed('user_admin/index') || Auth::instance()->allowed('xmadmin') || (XM::is_dev() && Auth::instance()->allowed('userguide')) || (XM::is_dev() && Auth::instance()->allowed('xmadmin/model_create')) || Auth::instance()->allowed('db_change/index')) { ?>
-				<li class="dbadmin has_subnav"><?php echo HTML::anchor(Route::get('xmadmin')->uri(), __('Admin') . '<span class="more"></span>'); ?>
+				<?php if (Auth::instance()->allowed('content_admin') || Auth::instance()->allowed('user_admin/index') || Auth::instance()->allowed('xm_db_admin') || (XM::is_dev() && Auth::instance()->allowed('userguide')) || (XM::is_dev() && Auth::instance()->allowed('xm_db_admin/model_create')) || Auth::instance()->allowed('db_change/index')) { ?>
+				<li class="admin has_subnav"><?php echo HTML::anchor(Route::get('xm_db_admin')->uri(), __('Admin') . '<span class="more"></span>'); ?>
 					<ul class="sub_nav">
 						<?php if (Auth::instance()->allowed('user_admin/index')) { ?>
 						<li class="user_admin"><?php echo HTML::anchor(Route::get('user_admin')->uri(), __('User Admin')); ?></li>
@@ -16,14 +16,14 @@
 						<?php if (Auth::instance()->allowed('content_admin')) { ?>
 						<li class="content_admin"><?php echo HTML::anchor(Route::get('content_admin')->uri(), __('Content Admin')); ?></li>
 						<?php } ?>
-						<?php if (Auth::instance()->allowed('xmadmin')) { ?>
-						<li class="xmadmin"><?php echo HTML::anchor(Route::get('xmadmin')->uri(), __('DB Admin')); ?></li>
+						<?php if (Auth::instance()->allowed('xm_db_admin')) { ?>
+						<li class="xm_db_admin"><?php echo HTML::anchor(Route::get('xm_db_admin')->uri(), __('DB Admin')); ?></li>
 						<?php } ?>
 						<?php if (XM::is_dev() && Auth::instance()->allowed('userguide')) { ?>
 						<li class="user_guide"><?php echo HTML::anchor(Route::get('docs/guide')->uri(), __('Kohana User Guide')); ?></li>
 						<li class="user_guide_api"><?php echo HTML::anchor(Route::get('docs/api')->uri(), __('Kohana API Browser')); ?></li>
 						<?php } ?>
-						<?php if (XM::is_dev() && Auth::instance()->allowed('xmadmin/model_create')) { ?>
+						<?php if (XM::is_dev() && Auth::instance()->allowed('xm_db_admin/model_create')) { ?>
 						<li class="model_create"><?php echo HTML::anchor(Route::get('model_create')->uri(), __('Model Create')); ?></li>
 						<?php } ?>
 						<?php if (Auth::instance()->allowed('db_change/index')) { ?>

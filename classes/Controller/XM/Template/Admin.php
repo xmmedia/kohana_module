@@ -6,7 +6,7 @@
  * This shouldn't be used directly; it will likely break and be a security hole.
  */
 class Controller_XM_Template_Admin extends Controller_Private {
-	public $page = 'xmadmin';
+	public $page = 'xm_db_admin';
 
 	// true means users must be logged in to access this controller
 	public $auth_required = TRUE;
@@ -206,7 +206,7 @@ class Controller_XM_Template_Admin extends Controller_Private {
 			$display_name = $this->model_display_name;
 		}
 
-		return __(Kohana::message('xmadmin', $message_path), array(':display_name' => HTML::chars($display_name)));
+		return __(Kohana::message('xm_db_admin', $message_path), array(':display_name' => HTML::chars($display_name)));
 	} // function get_page_title_message
 
 	/**
@@ -214,7 +214,7 @@ class Controller_XM_Template_Admin extends Controller_Private {
 	*/
 	public function action_cancel() {
 		// add a notice to be displayed
-		Message::message('xmadmin', 'action_cancelled', NULL, Message::$notice);
+		Message::message('xm_db_admin', 'action_cancelled', NULL, Message::$notice);
 		// redirect to the index
 		$this->redirect_to_index();
 	} // function
@@ -274,10 +274,10 @@ class Controller_XM_Template_Admin extends Controller_Private {
 		try {
 			// save the record
 			$this->model->save_values()->save();
-			Message::message('xmadmin', 'item_saved', NULL, Message::$notice);
+			Message::message('xm_db_admin', 'item_saved', NULL, Message::$notice);
 			$this->redirect_to_index();
 		} catch (ORM_Validation_Exception $e) {
-			Message::message('xmadmin', 'values_not_valid', array(
+			Message::message('xm_db_admin', 'values_not_valid', array(
 				':validation_errors' => Message::add_validation_errors($e, $this->model_name)
 			), Message::$error);
 		}
@@ -308,12 +308,12 @@ class Controller_XM_Template_Admin extends Controller_Private {
 		if ( ! empty($_POST)) {
 			try {
 				$orm_multiple->save_values()->save();
-				Message::message('xmadmin', 'multiple_saved', array(':records_saved' => $orm_multiple->records_saved()), Message::$notice);
+				Message::message('xm_db_admin', 'multiple_saved', array(':records_saved' => $orm_multiple->records_saved()), Message::$notice);
 				$this->redirect_to_index();
 			} catch (ORM_Validation_Exception $e) {
 				$validation_exceptions = $orm_multiple->validation_exceptions();
 				foreach ($validation_exceptions as $num => $exception) {
-					Message::message('xmadmin', 'values_not_valid_multiple', array(
+					Message::message('xm_db_admin', 'values_not_valid_multiple', array(
 						':record_number' => ($num + 1),
 						':validation_errors' => Message::add_validation_errors($exception)
 					), Message::$error);
@@ -345,12 +345,12 @@ class Controller_XM_Template_Admin extends Controller_Private {
 
 			try {
 				$orm_multiple->save_values()->save();
-				Message::message('xmadmin', 'multiple_saved', array(':records_saved' => $orm_multiple->records_saved()), Message::$notice);
+				Message::message('xm_db_admin', 'multiple_saved', array(':records_saved' => $orm_multiple->records_saved()), Message::$notice);
 				$this->redirect_to_index();
 			} catch (ORM_Validation_Exception $e) {
 				$validation_exceptions = $orm_multiple->validation_exceptions();
 				foreach ($validation_exceptions as $num => $exception) {
-					Message::message('xmadmin', 'values_not_valid_multiple', array(
+					Message::message('xm_db_admin', 'values_not_valid_multiple', array(
 						':record_number' => ($num + 1),
 						':validation_errors' => Message::add_validation_errors($exception)
 					), Message::$error);
@@ -371,7 +371,7 @@ class Controller_XM_Template_Admin extends Controller_Private {
 	*/
 	public function action_delete() {
 		if ( ! ($this->id > 0)) {
-			Message::message('xmadmin', 'no_id', NULL, Message::$error);
+			Message::message('xm_db_admin', 'no_id', NULL, Message::$error);
 			$this->redirect_to_index();
 		} // if
 
@@ -381,13 +381,13 @@ class Controller_XM_Template_Admin extends Controller_Private {
 			// see if they want to delete the item
 			if (strtolower($_POST['xm_delete_confirm']) == 'yes') {
 				if ($this->model->delete() == 0) {
-					Message::message('xmadmin', 'no_item_deleted', NULL, Message::$error);
+					Message::message('xm_db_admin', 'no_item_deleted', NULL, Message::$error);
 				} else {
-					Message::message('xmadmin', 'item_deleted', array(':display_name' => HTML::chars($this->model_display_name)), Message::$notice);
-					Message::message('xmadmin', 'record_id_deleted', array(':id' => $this->id), Message::$debug);
+					Message::message('xm_db_admin', 'item_deleted', array(':display_name' => HTML::chars($this->model_display_name)), Message::$notice);
+					Message::message('xm_db_admin', 'record_id_deleted', array(':id' => $this->id), Message::$debug);
 				} // if
 			} else {
-				Message::message('xmadmin', 'item_not_deleted', NULL, Message::$notice);
+				Message::message('xm_db_admin', 'item_not_deleted', NULL, Message::$notice);
 			}
 
 			$this->redirect_to_index();
@@ -430,7 +430,7 @@ class Controller_XM_Template_Admin extends Controller_Private {
 			$this->model->send_file($this->response, $column_name);
 
 		} else if (empty($filename)) {
-			echo Kohana::message('xmadmin', 'no_file');
+			echo Kohana::message('xm_db_admin', 'no_file');
 			throw new Kohana_Exception('There is no file associated with the record');
 		} // if
 	} // function download
@@ -509,7 +509,7 @@ class Controller_XM_Template_Admin extends Controller_Private {
 
 		// is an XLSX file generated by PHPExcel
 		if (get_class($export_result) == 'PHPExcel') {
-			$temp_xls_file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'xmadmin_export-' . Auth::instance()->get_user()->id . '-' . date('YmdHis') . '.xlsx';
+			$temp_xls_file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'xm_db_admin_export-' . Auth::instance()->get_user()->id . '-' . date('YmdHis') . '.xlsx';
 			$output = PHPExcel_IOFactory::createWriter($export_result, 'Excel2007');
 			$output->save($temp_xls_file);
 

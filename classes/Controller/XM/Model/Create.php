@@ -5,11 +5,11 @@
  * This controller handles the creation of models.
  */
 class Controller_XM_Model_Create extends Controller_Private {
-	public $page = 'xmadmin';
+	public $page = 'xm_db_admin';
 
 	public $secure_actions = array(
-		'index' => 'xmadmin/model_create',
-		'create' => 'xmadmin/model_create',
+		'index' => 'xm_db_admin/model_create',
+		'create' => 'xm_db_admin/model_create',
 	);
 
 	protected $no_auto_render_actions = array('create');
@@ -25,7 +25,7 @@ class Controller_XM_Model_Create extends Controller_Private {
 	} // function before
 
 	/**
-	* Adds the CSS for xmadmin
+	* Adds the CSS for xm_db_admin
 	*/
 	protected function add_css() {
 		if ($this->auto_render) {

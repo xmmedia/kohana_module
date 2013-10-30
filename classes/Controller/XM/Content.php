@@ -495,7 +495,7 @@ setTimeout("window.close();", 2000);
 	 */
 	public function action_cancel() {
 		// add a notice to be displayed
-		Message::message('xmadmin', 'action_cancelled', NULL, Message::$notice);
+		Message::message('xm_db_admin', 'action_cancelled', NULL, Message::$notice);
 		// redirect to the index
 		$this->redirect_to_index();
 	}

@@ -261,9 +261,9 @@ class Controller_XM_Base extends Controller_Template {
 	 * @return  void
 	 */
 	protected function process_timeout() {
-		if (Kohana::$config->load('xmlogin.enable_timeout_post')) {
+		if (Kohana::$config->load('xm_login.enable_timeout_post')) {
 			// store the post so we can post it again after the user enters their password
-			$timeout_post_session_key = Kohana::$config->load('xmlogin.timeout_post_session_key');
+			$timeout_post_session_key = Kohana::$config->load('xm_login.timeout_post_session_key');
 			$query = $this->request->query();
 			$post = $this->request->post();
 			if ( ! empty($query) || ! empty($post)) {

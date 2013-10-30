@@ -40,7 +40,7 @@ class Model_XM_Content extends ORM {
 	protected $_table_columns = array(
 		/**
 		* see http://v3.kohanaphp.com/guide/api/Database_MySQL#list_columns for all possible column attributes
-		* see the modules/xm/config/xmorm.php for a full list of xm-specific options and documentation on what the options do
+		* see the modules/xm/config/xm_orm.php for a full list of xm-specific options and documentation on what the options do
 		*/
 		'id' => array(
 			'field_type' => 'Hidden',

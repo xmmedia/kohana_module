@@ -222,7 +222,7 @@ class XM_ORM extends Kohana_ORM {
 	 * Allows serialization of only the object data and state, to prevent
 	 * "stale" objects being unserialized, which also requires less memory.
 	 * This is the same as Kohana_ORM::serialize(), but including _table_columns
-	 * _options are also stored, but only the ones that are not the default found in config/xmorm.default_options
+	 * _options are also stored, but only the ones that are not the default found in config/xm_orm.default_options
 	 *
 	 * @return  string
 	 */
@@ -233,7 +233,7 @@ class XM_ORM extends Kohana_ORM {
 		}
 
 		// only store the options that are not the default when serializing to keep the size down
-		$default_options = Kohana::$config->load('xmorm.default_options');
+		$default_options = Kohana::$config->load('xm_orm.default_options');
 		foreach ($this->_options as $key => $value) {
 			if ( ! array_key_exists($key, $default_options) || $this->_options[$key] !== $default_options[$key]) {
 				$data['_options'][$key] = $this->_options[$key];
@@ -366,7 +366,7 @@ class XM_ORM extends Kohana_ORM {
 	*/
 	public function set_options(array $options = array()) {
 		// get the default options from the config file
-		$default_options = Kohana::$config->load('xmorm.default_options');
+		$default_options = Kohana::$config->load('xm_orm.default_options');
 
 		// merge the defaults with the passed options (add defaults where values are missing)
 		$this->_options = Arr::merge($default_options, $this->_options, $options);
@@ -407,7 +407,7 @@ class XM_ORM extends Kohana_ORM {
 	*   model
 	*   defaults for field type
 	*   defaults for all field types
-	* For file, the options found in config/xmfile.options will also be merged in
+	* For file, the options found in config/xm_file.options will also be merged in
 	* Also ensures all the columns are in the display order array
 	*
 	* @param  array  $options
@@ -417,12 +417,12 @@ class XM_ORM extends Kohana_ORM {
 	*/
 	public function set_column_defaults(array $options = array()) {
 		// get the default meta data from the config file
-		$default_meta_data = (array) Kohana::$config->load('xmorm.default_meta_data');
-		$default_meta_data_field_type = (array) Kohana::$config->load('xmorm.default_meta_data_field_type');
+		$default_meta_data = (array) Kohana::$config->load('xm_orm.default_meta_data');
+		$default_meta_data_field_type = (array) Kohana::$config->load('xm_orm.default_meta_data_field_type');
 
-		// if there is field type specific meta data for file, then get the xmfile options and merge them with the file field type ones
+		// if there is field type specific meta data for file, then get the xm_file options and merge them with the file field type ones
 		if ( ! empty($default_meta_data_field_type['File'])) {
-			$file_options = Kohana::$config->load('xmfile.options');
+			$file_options = Kohana::$config->load('xm_file.options');
 			foreach ($file_options as $key => $value) {
 				// only merge the ones that aren't set so we don't merge things like allowed types and allowed extensions
 				if ( ! array_key_exists($key, $default_meta_data_field_type['File']['field_options']['file_options'])) {
@@ -490,7 +490,7 @@ class XM_ORM extends Kohana_ORM {
 	/**
 	* Sets the defaults for the relationships
 	* Only does _has_many
-	* Uses the defaults found in config/xmorm.default_relation_options
+	* Uses the defaults found in config/xm_orm.default_relation_options
 	*
 	* @param  array  $options  Options as passed into _construct()
 	*
@@ -499,7 +499,7 @@ class XM_ORM extends Kohana_ORM {
 	*/
 	public function set_relationship_defaults(array $options = array()) {
 		// get the config options
-		$default_relation_options = (array) Kohana::$config->load('xmorm.default_relation_options');
+		$default_relation_options = (array) Kohana::$config->load('xm_orm.default_relation_options');
 
 		// get the options for has_many from the passed in options
 		$has_many_options = Arr::get($options, 'has_many', array());
@@ -2099,7 +2099,7 @@ class XM_ORM extends Kohana_ORM {
 						($file_options['name_change_method'] == 'id' || $file_options['name_change_method'] == 'pk')) {
 					// move the file to it's id based filename and set the value in the model
 					$file_options['orm_model'] = $this;
-					$dest_file_data = XMFile::move_to_id_path($this->get_filename_with_path($column_name), $this->pk(), $file_options['destination_folder'], $file_options);
+					$dest_file_data = xm_file::move_to_id_path($this->get_filename_with_path($column_name), $this->pk(), $file_options['destination_folder'], $file_options);
 					$this->$column_name = $dest_file_data['dest_file'];
 					$files_moved[$column_name] = $this->$column_name;
 				}
@@ -2415,8 +2415,8 @@ class XM_ORM extends Kohana_ORM {
 		if ($this->table_column_exists($column_name)) {
 			$file_options = $this->_table_columns[$column_name]['field_options']['file_options'];
 
-			// use the function inside XMFile to get the path to the file (possibly based on table and column name depending on the options)
-			return XMFile::get_file_path($file_options['destination_folder'], $this->_table_name, $column_name, $file_options);
+			// use the function inside xm_file to get the path to the file (possibly based on table and column name depending on the options)
+			return xm_file::get_file_path($file_options['destination_folder'], $this->_table_name, $column_name, $file_options);
 
 		} else {
 			throw new Kohana_Exception('The column name :column: does not exist in _table_columns', array(':column:' => $column_name));
@@ -2582,13 +2582,13 @@ class XM_ORM extends Kohana_ORM {
 		if ($this->table_column_exists($column_name) && $this->_table_columns[$column_name]['field_type'] == 'file') {
 			$file_options = $this->_table_columns[$column_name]['field_options']['file_options'];
 
-			$destination_folder = XMFile::get_file_path($file_options['destination_folder'], $this->table_name(), $column_name, $file_options);
+			$destination_folder = xm_file::get_file_path($file_options['destination_folder'], $this->table_name(), $column_name, $file_options);
 
 			if ($file_options['delete_files']) {
 				// try to delete the existing file
 				$file_to_delete = $destination_folder . '/' . $this->$column_name;
 
-				if (file_exists($file_to_delete) && ! is_dir($file_to_delete) && ! XMFile::delete($file_to_delete)) {
+				if (file_exists($file_to_delete) && ! is_dir($file_to_delete) && ! xm_file::delete($file_to_delete)) {
 					throw new Kohana_Exception('The old file could not be removed: :filename:', array(':filename:' => $file_to_delete), 10001);
 				}
 			} // if

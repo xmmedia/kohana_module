@@ -21,11 +21,11 @@ class Controller_XM_XMAdmin extends Controller_Private {
 	protected $sort_order;
 	protected $session_key;
 
-	public $page = 'xmadmin';
+	public $page = 'xm_db_admin';
 
 	// true means users must be logged in to access this controller
 	public $auth_required = TRUE;
-	// secure actions is false because there is special functionality for xmadmin (see check_perm())
+	// secure actions is false because there is special functionality for xm_db_admin (see check_perm())
 	//public $secure_actions = FALSE; leaving value as default
 
 	protected $no_auto_render_actions = array('download', 'export');
@@ -40,10 +40,10 @@ class Controller_XM_XMAdmin extends Controller_Private {
 		parent::before();
 
 		// set up the default database group
-		$this->db_group = Kohana::$config->load('xmadmin.db_group');
+		$this->db_group = Kohana::$config->load('xm_db_admin.db_group');
 
 		// assign the name of the default session array
-		$this->session_key = Kohana::$config->load('xmadmin.session_key');
+		$this->session_key = Kohana::$config->load('xm_db_admin.session_key');
 
 		// set the information from the route/get/post parameters
 		$this->model_name = $this->request->param('model');
@@ -85,15 +85,15 @@ class Controller_XM_XMAdmin extends Controller_Private {
 		// check to see the user has permission to access this action
 		// determine what action we should use to determine if they have permission
 		// get config and then check to see if the current action is defined in the array, otherwise use the action
-		$action_to_perm = Kohana::$config->load('xmadmin.action_to_permission');
+		$action_to_perm = Kohana::$config->load('xm_db_admin.action_to_permission');
 		$perm_action = Arr::get($action_to_perm, $action, $action);
 		if ( ! $this->check_perm($perm_action)) {
 			// we can't use the default functionality of secure_actions because we have 2 possible permissions per action: global and per model
 			if ($action != 'index') {
-				Message::message('xmadmin', 'no_permission_action', NULL, Message::$error);
+				Message::message('xm_db_admin', 'no_permission_action', NULL, Message::$error);
 				$this->redirect_to_index();
 			} else if ($this->model_name != $default_model && ! empty($default_model)) {
-				Message::message('xmadmin', 'no_permission_item', NULL, Message::$error);
+				Message::message('xm_db_admin', 'no_permission_item', NULL, Message::$error);
 				$this->set_session();
 				$this->redirect('dbadmin/' . $default_model . '/index');
 			} else {
@@ -104,7 +104,7 @@ class Controller_XM_XMAdmin extends Controller_Private {
 
 		// redirect the user to a different model as they one they selected isn't valid (not in array of models)
 		if ( ! isset($model_list[$this->model_name]) && ! XM::is_dev()) {
-			Message::message('xmadmin', 'model_not_defined', array(':model_name' => $this->model_name), Message::$debug);
+			Message::message('xm_db_admin', 'model_not_defined', array(':model_name' => $this->model_name), Message::$debug);
 			$this->set_session();
 			$this->redirect('dbadmin/' . $default_model . '/index');
 		}
@@ -116,7 +116,7 @@ class Controller_XM_XMAdmin extends Controller_Private {
 		// or we are looking at a new model
 		if ($this->model_session === NULL) {
 			// set all the defaults for this model/object
-			Session::instance()->set_path($this->session_key . '.' . $this->model_name, Kohana::$config->load('xmadmin.default_list_options'));
+			Session::instance()->set_path($this->session_key . '.' . $this->model_name, Kohana::$config->load('xm_db_admin.default_list_options'));
 		}
 
 		// check to see if anything came in from the page parameters
@@ -134,7 +134,7 @@ class Controller_XM_XMAdmin extends Controller_Private {
 	} // function before
 
 	/**
-	* Adds the CSS for xmadmin
+	* Adds the CSS for xm_db_admin
 	*/
 	protected function add_css() {
 		if ($this->auto_render) {
@@ -191,7 +191,7 @@ class Controller_XM_XMAdmin extends Controller_Private {
 				'db_group' => $this->db_group,
 			);
 
-			Message::message('xmadmin', 'using_model', array(':model_name' => $this->model_name, ':mode' => $mode, ':id' => $this->id), Message::$debug);
+			Message::message('xm_db_admin', 'using_model', array(':model_name' => $this->model_name, ':mode' => $mode, ':id' => $this->id), Message::$debug);
 
 			$this->target_object = ORM::factory($this->model_name, $this->id, $orm_options);
 			if ($this->auto_render) $this->template->page_title = $this->target_object->_table_name_display . ' Administration' . $this->template->page_title;
@@ -199,22 +199,22 @@ class Controller_XM_XMAdmin extends Controller_Private {
 			// generate the friendly model name used to display to the user
 			$this->model_display_name = $this->get_model_display_name($this->target_object);
 
-			Message::message('xmadmin', 'model_loaded', array(':model_name' => $this->model_name), Message::$debug);
+			Message::message('xm_db_admin', 'model_loaded', array(':model_name' => $this->model_name), Message::$debug);
 
 		} catch (Exception $e) {
 			// display the error message
 			Kohana_Exception::handler_continue($e);
-			Message::message('xmadmin', 'problem_loading_data', NULL, Message::$error);
-			Message::message('xmadmin', 'problem_loading_model', array(':model_name' => $this->model_name), Message::$debug);
+			Message::message('xm_db_admin', 'problem_loading_data', NULL, Message::$error);
+			Message::message('xm_db_admin', 'problem_loading_model', array(':model_name' => $this->model_name), Message::$debug);
 
 			// display the help view
 			if (XM::is_dev() && $e->getCode() == 3001) {
-				Message::message('xmadmin', 'model_dne', array(':model_name' => $this->model_name), Message::$debug);
+				Message::message('xm_db_admin', 'model_dne', array(':model_name' => $this->model_name), Message::$debug);
 			}
 
 			// redirect back to the page and display the error
 			$this->set_session();
-			$this->redirect(Route::get('xmadmin')->uri(array('model' => key($model_list))));
+			$this->redirect(Route::get('xm_db_admin')->uri(array('model' => key($model_list))));
 
 		} // try
 	} // function load_model
@@ -277,7 +277,7 @@ class Controller_XM_XMAdmin extends Controller_Private {
 			$view_content .= $orm_multiple->get_editable_list($options);
 		} catch (Exception $e) {
 			Kohana_Exception::handler_continue($e);
-			$view_content .= Kohana::message('xmadmin', 'problem_preparing');
+			$view_content .= Kohana::message('xm_db_admin', 'problem_preparing');
 		}
 
 		$this->add_admin_view('', $view_content);
@@ -308,7 +308,7 @@ class Controller_XM_XMAdmin extends Controller_Private {
 			$display_name = $this->model_display_name;
 		}
 
-		return __(Kohana::message('xmadmin', $message_path), array(':display_name' => HTML::chars($display_name)));
+		return __(Kohana::message('xm_db_admin', $message_path), array(':display_name' => HTML::chars($display_name)));
 	} // function get_page_title_message
 
 	/**
@@ -316,7 +316,7 @@ class Controller_XM_XMAdmin extends Controller_Private {
 	*/
 	public function action_cancel() {
 		// add a notice to be displayed
-		Message::message('xmadmin', 'action_cancelled', NULL, Message::$notice);
+		Message::message('xm_db_admin', 'action_cancelled', NULL, Message::$notice);
 		// redirect to the index
 		$this->redirect_to_index();
 	} // function
@@ -378,10 +378,10 @@ class Controller_XM_XMAdmin extends Controller_Private {
 			} else {
 				$this->target_object->save_values()->save();
 			}
-			Message::message('xmadmin', 'item_saved', NULL, Message::$notice);
+			Message::message('xm_db_admin', 'item_saved', NULL, Message::$notice);
 			$this->redirect_to_index();
 		} catch (ORM_Validation_Exception $e) {
-			Message::message('xmadmin', 'values_not_valid', array(
+			Message::message('xm_db_admin', 'values_not_valid', array(
 				':validation_errors' => Message::add_validation_errors($e, $this->model_name)
 			), Message::$error);
 		}
@@ -417,12 +417,12 @@ class Controller_XM_XMAdmin extends Controller_Private {
 		if ($received_post) {
 			try {
 				$orm_multiple->save_values()->save();
-				Message::message('xmadmin', 'multiple_saved', array(':records_saved' => $orm_multiple->records_saved()), Message::$notice);
+				Message::message('xm_db_admin', 'multiple_saved', array(':records_saved' => $orm_multiple->records_saved()), Message::$notice);
 				$this->redirect_to_index();
 			} catch (ORM_Validation_Exception $e) {
 				$validation_exceptions = $orm_multiple->validation_exceptions();
 				foreach ($validation_exceptions as $num => $exception) {
-					Message::message('xmadmin', 'values_not_valid_multiple', array(
+					Message::message('xm_db_admin', 'values_not_valid_multiple', array(
 						':record_number' => ($num + 1),
 						':validation_errors' => Message::add_validation_errors($exception)
 					), Message::$error);
@@ -454,12 +454,12 @@ class Controller_XM_XMAdmin extends Controller_Private {
 
 			try {
 				$orm_multiple->save_values()->save();
-				Message::message('xmadmin', 'multiple_saved', array(':records_saved' => $orm_multiple->records_saved()), Message::$notice);
+				Message::message('xm_db_admin', 'multiple_saved', array(':records_saved' => $orm_multiple->records_saved()), Message::$notice);
 				$this->redirect_to_index();
 			} catch (ORM_Validation_Exception $e) {
 				$validation_exceptions = $orm_multiple->validation_exceptions();
 				foreach ($validation_exceptions as $num => $exception) {
-					Message::message('xmadmin', 'values_not_valid_multiple', array(
+					Message::message('xm_db_admin', 'values_not_valid_multiple', array(
 						':record_number' => ($num + 1),
 						':validation_errors' => Message::add_validation_errors($exception)
 					), Message::$error);
@@ -480,7 +480,7 @@ class Controller_XM_XMAdmin extends Controller_Private {
 	*/
 	public function action_delete() {
 		if ( ! ($this->id > 0)) {
-			Message::message('xmadmin', 'no_id', NULL, Message::$error);
+			Message::message('xm_db_admin', 'no_id', NULL, Message::$error);
 			$this->redirect_to_index();
 		} // if
 
@@ -490,13 +490,13 @@ class Controller_XM_XMAdmin extends Controller_Private {
 			// see if they want to delete the item
 			if (strtolower($_POST['xm_delete_confirm']) == 'yes') {
 				if ($this->target_object->delete() == 0) {
-					Message::message('xmadmin', 'no_item_deleted', NULL, Message::$error);
+					Message::message('xm_db_admin', 'no_item_deleted', NULL, Message::$error);
 				} else {
-					Message::message('xmadmin', 'item_deleted', array(':display_name' => HTML::chars($this->model_display_name)), Message::$notice);
-					Message::message('xmadmin', 'record_id_deleted', array(':id' => $this->id), Message::$debug);
+					Message::message('xm_db_admin', 'item_deleted', array(':display_name' => HTML::chars($this->model_display_name)), Message::$notice);
+					Message::message('xm_db_admin', 'record_id_deleted', array(':id' => $this->id), Message::$debug);
 				} // if
 			} else {
-				Message::message('xmadmin', 'item_not_deleted', NULL, Message::$notice);
+				Message::message('xm_db_admin', 'item_not_deleted', NULL, Message::$notice);
 			}
 
 			$this->redirect_to_index();
@@ -539,7 +539,7 @@ class Controller_XM_XMAdmin extends Controller_Private {
 			$this->target_object->send_file($this->response, $column_name);
 
 		} else if (empty($filename)) {
-			echo Kohana::message('xmadmin', 'no_file');
+			echo Kohana::message('xm_db_admin', 'no_file');
 			throw new Kohana_Exception('There is no file associated with the record');
 		} // if
 	} // function download
@@ -579,7 +579,7 @@ class Controller_XM_XMAdmin extends Controller_Private {
 
 		// is an XLSX file generated by PHPExcel
 		if (get_class($export_result) == 'PHPExcel') {
-			$temp_xls_file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'xmadmin_export-' . Auth::instance()->get_user()->id . '-' . date('YmdHis') . '.xlsx';
+			$temp_xls_file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'xm_db_admin_export-' . Auth::instance()->get_user()->id . '-' . date('YmdHis') . '.xlsx';
 			$output = PHPExcel_IOFactory::createWriter($export_result, 'Excel2007');
 			$output->save($temp_xls_file);
 
@@ -622,15 +622,15 @@ class Controller_XM_XMAdmin extends Controller_Private {
 	*/
 	public function action_cancel_search() {
 		// reset the search and search in the session
-		$this->model_session = Kohana::$config->load('xmadmin.default_list_options');
+		$this->model_session = Kohana::$config->load('xm_db_admin.default_list_options');
 		$this->set_controller_properties();
 
 		$this->redirect_to_index();
 	} // function action_cancel_search
 
 	/**
-	* Checks the permission based on action and the xmadmin controller
-	* The 3 possible permissions are xmadmin/ * /[action] (no spaces around *) or xmadmin/[model name]/[action] or xmadmin/[model name]/ * (no spaces around *)
+	* Checks the permission based on action and the xm_db_admin controller
+	* The 3 possible permissions are xm_db_admin/ * /[action] (no spaces around *) or xm_db_admin/[model name]/[action] or xm_db_admin/[model name]/ * (no spaces around *)
 	*
 	* @param 	string		$action		The action (permission) to check for; if left as NULL, the current action will be used
 	* @param	string		$model_name	The model name to use in the check; if left as NULL, the current model will be used
@@ -647,7 +647,7 @@ class Controller_XM_XMAdmin extends Controller_Private {
 		$auth = Auth::instance();
 
 		// check if the user has access to all the models or access to this specific model
-		return ($auth->logged_in('xmadmin/*/' . $action) || $auth->logged_in('xmadmin/' . $model_name . '/' . $action) || $auth->logged_in('xmadmin/' . $model_name . '/*'));
+		return ($auth->logged_in('xm_db_admin/*/' . $action) || $auth->logged_in('xm_db_admin/' . $model_name . '/' . $action) || $auth->logged_in('xm_db_admin/' . $model_name . '/*'));
 	} // function
 
 	/**
@@ -668,11 +668,11 @@ class Controller_XM_XMAdmin extends Controller_Private {
 	} // function
 
 	/**
-	* grab the model list from the xmadmin config file
+	* grab the model list from the xm_db_admin config file
 	*
 	*/
 	public function get_model_list() {
-		$model_list = Kohana::$config->load('xmadmin.model_list');
+		$model_list = Kohana::$config->load('xm_db_admin.model_list');
 		if ($model_list === NULL) $model_list = array();
 
 		// remove any models that have name that are empty (NULL, FALSE, etc)
@@ -691,7 +691,7 @@ class Controller_XM_XMAdmin extends Controller_Private {
 	* @return string
 	*/
 	public function get_default_model() {
-		return Kohana::$config->load('xmadmin.default_model');
+		return Kohana::$config->load('xm_db_admin.default_model');
 	}
 
 	/**

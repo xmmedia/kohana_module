@@ -37,7 +37,7 @@ class XM_Mail extends PHPMailer {
 	/**
 	* Constructor, sets up smtp using config
 	*
-	* @param string $config The config in config/xmorm to use (defaults to Mail::$default)
+	* @param string $config The config in config/xm_orm to use (defaults to Mail::$default)
 	* @param      array       $options    Options for the object
 	*           ['from'] => the email from which all emails will come from, if not sent then will use SITE::$emailFrom if it's set
 	*           ['from_name'] => the name from which the email will come from (attached to the email address), if not sent then will use SITE::$emailFromName if it's set
@@ -54,8 +54,8 @@ class XM_Mail extends PHPMailer {
 		}
 
 		// Set default options
-		$config_options = Kohana::$config->load('xmmail.' . $config);
-		$default_options = Kohana::$config->load('xmmail.default');
+		$config_options = Kohana::$config->load('xm_mail.' . $config);
+		$default_options = Kohana::$config->load('xm_mail.default');
 		$config_options += $default_options;
 		$options += $config_options;
 

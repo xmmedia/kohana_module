@@ -140,6 +140,19 @@ class Model_XM_Contact extends ORM {
 		);
 	}
 
+	/**
+	 * Checks for either a valid email address or phone number.
+	 * Add to the rules as:
+	 *
+	 *       'email' => array(
+	 *               array(array($this, 'check_for_email_or_phone'), array(':validation', ':field')),
+	 *       ),
+	 *
+	 * @param   Validation  $validate  The validation object.
+	 * @param   string      $field     The field name. Not used within the method.
+	 *
+	 * @return  void
+	 */
 	public function check_for_email_or_phone(Validation $validate, $field) {
 		$valid_email = Valid::email($this->email);
 		$valid_phone = Valid::phone($this->phone);

@@ -10,10 +10,6 @@ class Model_XM_User extends Model_Auth_User {
 	protected $_reload_on_wakeup = FALSE;
 
 	protected $_table_columns = array(
-		/**
-		* see http://v3.kohanaphp.com/guide/api/Database_MySQL#list_columns for all possible column attributes
-		* see the modules/xm/config/xm_orm.php for a full list of xm-specific options and documentation on what the options do
-		*/
 		'id' => array(
 			'field_type'     => 'Hidden',
 			'list_flag'      => FALSE,

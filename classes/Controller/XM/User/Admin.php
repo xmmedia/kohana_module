@@ -116,6 +116,10 @@ class Controller_XM_User_Admin extends Controller_Private {
 			$page_title = NULL;
 		}
 
+		if (Auth::instance()->allowed('user_admin/group/privileged')) {
+			$this->group_list_headings[] = 'Privileged';
+		}
+
 		if ( ! empty($page_title)) {
 			$this->template->pre_message = View::factory('user_admin/page_title')
 				->set('page_title', $page_title);
@@ -423,19 +427,17 @@ class Controller_XM_User_Admin extends Controller_Private {
 
 		// if the user can edit permissions groups, but doesn't have access to all groups
 		// look for groups that they don't have access to but are on this user and add a message
-		if ($this->set_user_permission_edit($user) && ! Auth::instance()->allowed('user_admin/user/group/*')) {
-			$user_groups = $user->group->find_all()->as_array('id', 'name');
-			$other_groups = '';
-			$other_count = 0;
-			foreach ($user_groups as $group_id => $group_name) {
-				if ( ! Auth::instance()->allowed('user_admin/user/group/' . $group_id)) {
-					if ($other_count > 0) $other_groups .= ', ';
-					$other_groups .= $group_name;
-					++$other_count;
+		if ($this->set_user_permission_edit($user) && ( ! Auth::instance()->allowed('user_admin/user/group/*') || ! Auth::instance()->allowed('user_admin/group/privileged'))) {
+			$uneditable_groups = array();
+			foreach ($user->group->find_all() as $group) {
+				if ( ! Auth::instance()->allowed('user_admin/user/group/*') && ! Auth::instance()->allowed('user_admin/user/group/' . $group->pk())) {
+					$uneditable_groups[] = $group->name;
+				} else if ($group->privileged && ! Auth::instance()->allowed('user_admin/group/privileged')) {
+					$uneditable_groups[] = $group->name;
 				}
 			}
-			if ($other_count > 0) {
-				Message::message('user_admin', 'other_groups', array(':other_groups' => HTML::chars($other_groups)), Message::$notice);
+			if ( ! empty($uneditable_groups)) {
+				Message::message('user_admin', 'other_groups', array(':other_groups' => HTML::chars(implode(', ', $uneditable_groups))), Message::$notice);
 			}
 		} // if
 
@@ -463,7 +465,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 			return FALSE;
 
 		// if they don't have permission to add all groups, then check for the groups they do have permissions to
-		} else if ( ! Auth::instance()->allowed('user_admin/user/group/*')) {
+		} else if ( ! Auth::instance()->allowed('user_admin/user/group/*') || ! Auth::instance()->allowed('user_admin/group/privileged')) {
 			$allowed_groups = $this->allowed_groups();
 			if ( ! empty($allowed_groups)) {
 				$user->set_has_many('group', 'source.source', 'array')
@@ -488,7 +490,12 @@ class Controller_XM_User_Admin extends Controller_Private {
 		if ($this->allowed_groups === NULL) {
 			$allowed_all_groups = Auth::instance()->allowed('user_admin/user/group/*');
 			$this->allowed_groups = array();
-			foreach (ORM::factory('Group')->find_all() as $group) {
+
+			$group_query = ORM::factory('Group');
+			if ( ! Auth::instance()->allowed('user_admin/group/privileged')) {
+				$group_query->where('group.privileged', '=', 0);
+			}
+			foreach ($group_query->find_all() as $group) {
 				if ($allowed_all_groups || Auth::instance()->allowed('user_admin/user/group/' . $group->pk())) {
 					$this->allowed_groups[$group->pk()] = $group->name;
 				}
@@ -508,7 +515,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 			$post = $_POST;
 
 			// the user is allowed to change the groups on a user, but does not have access to all groups
-			if ($this->set_user_permission_edit($user) && ! Auth::instance()->allowed('user_admin/user/group/*')) {
+			if ($this->set_user_permission_edit($user) && ( ! Auth::instance()->allowed('user_admin/user/group/*') || ! Auth::instance()->allowed('user_admin/group/privileged'))) {
 				// look in the post for any of the groups that the user is not allowed to add users to (security check)
 				$allowed_groups = $this->allowed_groups();
 				$selected_groups = Arr::path($post, 'c_record.group', array());
@@ -692,7 +699,10 @@ class Controller_XM_User_Admin extends Controller_Private {
 
 	public function action_groups() {
 		$group = ORM::factory('Group')
-			->set_options(array('mode' => 'view'));
+			/*->set_options(array('mode' => 'view'))*/;
+		if ( ! Auth::instance()->allowed('user_admin/group/privileged')) {
+			$group->where('group.privileged', '=', 0);
+		}
 		$groups = $group->find_all();
 		$group_count = $group->count_all();
 
@@ -717,11 +727,17 @@ class Controller_XM_User_Admin extends Controller_Private {
 	} // function action_groups
 
 	protected function get_group_list_row($group) {
-		return array(
+		$return = array(
 			$this->get_group_list_row_links($group),
 			$group->get_field('name'),
 			$group->get_field('description'),
 		);
+
+		if (Auth::instance()->allowed('user_admin/group/privileged')) {
+			$return[] = $group->get_field('privileged');
+		}
+
+		return $return;
 	}
 
 	protected function get_group_list_row_links($group) {
@@ -789,6 +805,10 @@ class Controller_XM_User_Admin extends Controller_Private {
 				'data-xm_link' => URL::site(Route::get('user_admin')->uri(array('action' => 'cancel_group'))),
 			));
 
+		if ( ! Auth::instance()->allowed('user_admin/group/privileged')) {
+			$group->set_table_columns('privileged', 'edit_flag', FALSE);
+		}
+
 		if ( ! empty($_POST)) {
 			$this->save_group($group);
 		}
@@ -811,6 +831,10 @@ class Controller_XM_User_Admin extends Controller_Private {
 			->set_option('cancel_button_attributes', array(
 				'data-xm_link' => URL::site(Route::get('user_admin')->uri(array('action' => 'cancel_group'))),
 			));
+
+		if ( ! Auth::instance()->allowed('user_admin/group/privileged')) {
+			$group->set_table_columns('privileged', 'edit_flag', FALSE);
+		}
 
 		if ( ! empty($_POST)) {
 			$this->save_group($group);

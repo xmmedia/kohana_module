@@ -8,7 +8,7 @@ return array(
 		'copyright' => '(c) ' . date('Y') . ' XM Media Inc.',
 	),
 
-	// by default, model create will use the values in the cl4orm config (key: default_meta_data)
+	// by default, model create will use the values in the xmorm config (key: default_meta_data)
 	// this will override those values
 	'default_meta_data' => array(
 		'list_flag' => TRUE,      // displays the data for this column in get_list() and get_editable_list()
@@ -21,7 +21,7 @@ return array(
 	'relationship_field_types' => array('Select', 'Radios'),
 
 	// add any fields that you want customize the default meta data for
-	// setup the same way as the same key in the cl4orm config
+	// setup the same way as the same key in the xmorm config
 	'default_meta_data_field_type' => array(),
 
 	// labels for columns where the labels can't easily be generated with ucwords()

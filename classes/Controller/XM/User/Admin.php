@@ -319,7 +319,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 	 * @return  string
 	 */
 	protected function get_list_row_links($user) {
-		$id = $user->id;
+		$id = $user->pk();
 
 		$first_col = HTML::anchor($this->request->route()->uri(array('action' => 'view', 'id' => $id)), HTML::icon('view'), array(
 			'title' => __('View this user'),
@@ -527,7 +527,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 				// re-add any groups that the user doesn't have permissions to
 				$other_groups = ORM::factory('User_Group')
 					->where('user_group.group_id', 'NOT IN', array_keys($allowed_groups))
-					->where('user_group.user_id', '=', $user->id)
+					->where('user_group.user_id', '=', $user->pk())
 					->find_all();
 				if (count($other_groups) > 0) {
 					foreach ($other_groups as $user_group) {
@@ -725,7 +725,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 	}
 
 	protected function get_group_list_row_links($group) {
-		$id = $group->id;
+		$id = $group->pk();
 
 		$first_col = HTML::anchor($this->request->route()->uri(array('action' => 'view_group', 'id' => $id)), HTML::icon('view'), array(
 			'title' => __('View this user'),
@@ -1059,7 +1059,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 	protected function new_login_info_email($to_user) {
 		$mail = new Mail();
 		$mail->IsHTML();
-		$mail->AddUser($to_user->id);
+		$mail->AddUser($to_user->pk());
 		$mail->Subject = SHORT_NAME . ' Login Information';
 
 		$editing_user = Auth::instance()->get_user();

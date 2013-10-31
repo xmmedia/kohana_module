@@ -59,14 +59,4 @@ class XM_Minion_Exception extends Kohana_Minion_Exception {
 			exit(1);
 		}
 	}
-
-	/**
-	 * This is the same as Kohana_Minion_Exception but we used $this instead of $e.
-	 * Kohana_Minion_Exception::format_for_cli() is broken.
-	 *
-	 * @return void
-	 */
-	public function format_for_cli() {
-		return Kohana_Exception::text($this);
-	}
 }

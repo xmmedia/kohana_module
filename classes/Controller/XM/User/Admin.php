@@ -241,7 +241,6 @@ class Controller_XM_User_Admin extends Controller_Private {
 	*/
 	protected function get_user_orm_list($page_max_rows, $offset) {
 		$users = ORM::factory('User_Admin')
-			->set_options(array('mode' => 'view'))
 			->limit($page_max_rows)
 			->offset($offset * $page_max_rows);
 
@@ -698,8 +697,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 	}
 
 	public function action_groups() {
-		$group = ORM::factory('Group')
-			/*->set_options(array('mode' => 'view'))*/;
+		$group = ORM::factory('Group');
 		if ( ! Auth::instance()->allowed('user_admin/group/privileged')) {
 			$group->where('group.privileged', '=', 0);
 		}

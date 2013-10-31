@@ -27,7 +27,7 @@ if ($any_visible) {
 
 	$table->add_row(array(
 		'<label for="send_email">Send Email to User</label>',
-		Form::checkbox('send_email', 1, (empty($model->id) ? TRUE : FALSE), array('id' => 'send_email')) . '<div class="xm_field_help xm_field_help_edit" data-xm_field="c_record[user][0][send_email]">Checking this will send the user an email containing their login information after the user is saved.</div>',
+		Form::checkbox('send_email', 1, (empty($model->id) ? TRUE : FALSE), array('id' => 'send_email')) . '<div class="xm_field_help xm_field_help_edit" data-xm_field="c_record[user][0][send_email]">' . HTML::icon('help') . 'Checking this will send the user an email containing their login information after the user is saved.</div>',
 	));
 
 	// the table html

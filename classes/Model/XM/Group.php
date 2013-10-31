@@ -72,6 +72,14 @@ class Model_XM_Group extends ORM {
 			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
 		),
+		'privileged' => array(
+			'field_type' => 'Checkbox',
+			'list_flag' => TRUE,
+			'edit_flag' => TRUE,
+			'search_flag' => TRUE,
+			'view_flag' => TRUE,
+			'is_nullable' => FALSE,
+		),
 	);
 
 	/**
@@ -82,6 +90,18 @@ class Model_XM_Group extends ORM {
 		10 => 'id',
 		20 => 'name',
 		30 => 'description',
+		40 => 'privileged',
+	);
+
+	protected $_options = array(
+		'add_field_help' => TRUE,
+	);
+
+	protected $_field_help = array(
+		'privileged' => array(
+			'add' => 'Checking privileged will only allow this group to be access by users with the privileged group permission.',
+			'edit' => 'Checking privileged will only allow this group to be access by users with the privileged group permission.',
+		),
 	);
 
 	/**
@@ -94,6 +114,7 @@ class Model_XM_Group extends ORM {
 			'id' => 'ID',
 			'name' => 'Name',
 			'description' => 'Description',
+			'privileged' => 'Privileged',
 		);
 	}
 

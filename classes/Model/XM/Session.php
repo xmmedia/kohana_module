@@ -13,10 +13,6 @@ class Model_XM_Session extends ORM {
 
 	// column definitions
 	protected $_table_columns = array(
-		/**
-		* see http://v3.kohanaphp.com/guide/api/Database_MySQL#list_columns for all possible column attributes
-		* see the modules/xm/config/xm_orm.php for a full list of xm-specific options and documentation on what the options do
-		*/
 		'session_id' => array(
 			'field_type' => 'Select',
 			'is_nullable' => FALSE,

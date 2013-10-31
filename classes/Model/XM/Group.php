@@ -1,36 +1,49 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
+
 /**
- * Default permission
+ * Model for `group`.
+ *
+ * @package    XM
+ * @category   Models
+ * @author     XM Media Inc.
+ * @copyright  (c) 2013 XM Media Inc.
  */
 class Model_XM_Group extends ORM {
 	protected $_table_names_plural = FALSE;
 	protected $_table_name = 'group';
 	public $_table_name_display = 'Group';
 
-	// Relationships
-	protected $_has_many = array(
-		'user' => array(
-			'through' => 'user_group',
-			'far_key' => 'user_id',
-			'foreign_key' => 'group_id',
-		),
-		'permission' => array(
-			'through' => 'group_permission',
-			'far_key' => 'permission_id',
-			'foreign_key' => 'group_id',
-		),
-	);
-
+	// default sorting
 	protected $_sorting = array(
 		'name' => 'ASC',
 	);
 
+	// Relationships
+	protected $_has_many = array(
+		'group_permission' => array(
+			'model' => 'Group_Permission',
+			'foreign_key' => 'group_id',
+		),
+		'user_group' => array(
+			'model' => 'User_Group',
+			'foreign_key' => 'group_id',
+		),
+		'permission' => array(
+			'model' => 'Permission',
+			'through' => 'group_permission',
+			'foreign_key' => 'group_id',
+			'far_key' => 'permission_id',
+		),
+		'user' => array(
+			'model' => 'User',
+			'through' => 'user_group',
+			'foreign_key' => 'group_id',
+			'far_key' => 'user_id',
+		),
+	);
+
 	// column definitions
 	protected $_table_columns = array(
-		/**
-		* see http://v3.kohanaphp.com/guide/api/Database_MySQL#list_columns for all possible column attributes
-		* see the modules/xm/config/xm_orm.php for a full list of xm-specific options and documentation on what the options do
-		*/
 		'id' => array(
 			'field_type' => 'Hidden',
 			'list_flag' => FALSE,
@@ -72,9 +85,22 @@ class Model_XM_Group extends ORM {
 	);
 
 	/**
-	 * Rule definitions for validation
+	 * Labels for columns.
 	 *
-	 * @return array
+	 * @return  array
+	 */
+	public function labels() {
+		return array(
+			'id' => 'ID',
+			'name' => 'Name',
+			'description' => 'Description',
+		);
+	}
+
+	/**
+	 * Rule definitions for validation.
+	 *
+	 * @return  array
 	 */
 	public function rules() {
 		return array(
@@ -86,27 +112,18 @@ class Model_XM_Group extends ORM {
 	}
 
 	/**
-	 * Labels for columns
+	 * Filter definitions, run everytime a field is set.
 	 *
-	 * @return array
-	 */
-	public function labels() {
-		return array(
-			'id' => 'ID',
-			'name' => 'Name',
-			'description' => 'Description',
-		);
-	}
-
-	/**
-	 * Filter definitions, run everytime a field is set
-	 *
-	 * @return array
+	 * @return  array
 	 */
 	public function filters() {
 		return array(
-			'name' => array(array('trim')),
-			'description' => array(array('trim')),
+			'name' => array(
+				array('trim'),
+			),
+			'description' => array(
+				array('trim'),
+			),
 		);
 	}
 } // class

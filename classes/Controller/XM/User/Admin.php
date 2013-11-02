@@ -495,7 +495,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 				$group_query->where('group.privileged', '=', 0);
 			}
 			foreach ($group_query->find_all() as $group) {
-				if ($allowed_all_groups || Auth::instance()->allowed('user_admin/user/group/' . $group->pk())) {
+				if ($allowed_all_groups || Auth::instance()->allowed('useradmin/user/group/' . $group->pk()) || Auth::instance()->allowed('useradmin/group/privileged') || ! $group->privileged) {
 					$this->allowed_groups[$group->pk()] = $group->name;
 				}
 			}

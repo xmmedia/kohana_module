@@ -2099,7 +2099,7 @@ class XM_ORM extends Kohana_ORM {
 						($file_options['name_change_method'] == 'id' || $file_options['name_change_method'] == 'pk')) {
 					// move the file to it's id based filename and set the value in the model
 					$file_options['orm_model'] = $this;
-					$dest_file_data = xm_file::move_to_id_path($this->get_filename_with_path($column_name), $this->pk(), $file_options['destination_folder'], $file_options);
+					$dest_file_data = XMFile::move_to_id_path($this->get_filename_with_path($column_name), $this->pk(), $file_options['destination_folder'], $file_options);
 					$this->$column_name = $dest_file_data['dest_file'];
 					$files_moved[$column_name] = $this->$column_name;
 				}
@@ -2416,7 +2416,7 @@ class XM_ORM extends Kohana_ORM {
 			$file_options = $this->_table_columns[$column_name]['field_options']['file_options'];
 
 			// use the function inside xm_file to get the path to the file (possibly based on table and column name depending on the options)
-			return xm_file::get_file_path($file_options['destination_folder'], $this->_table_name, $column_name, $file_options);
+			return XMFile::get_file_path($file_options['destination_folder'], $this->_table_name, $column_name, $file_options);
 
 		} else {
 			throw new Kohana_Exception('The column name :column: does not exist in _table_columns', array(':column:' => $column_name));
@@ -2582,13 +2582,13 @@ class XM_ORM extends Kohana_ORM {
 		if ($this->table_column_exists($column_name) && $this->_table_columns[$column_name]['field_type'] == 'file') {
 			$file_options = $this->_table_columns[$column_name]['field_options']['file_options'];
 
-			$destination_folder = xm_file::get_file_path($file_options['destination_folder'], $this->table_name(), $column_name, $file_options);
+			$destination_folder = XMFile::get_file_path($file_options['destination_folder'], $this->table_name(), $column_name, $file_options);
 
 			if ($file_options['delete_files']) {
 				// try to delete the existing file
 				$file_to_delete = $destination_folder . '/' . $this->$column_name;
 
-				if (file_exists($file_to_delete) && ! is_dir($file_to_delete) && ! xm_file::delete($file_to_delete)) {
+				if (file_exists($file_to_delete) && ! is_dir($file_to_delete) && ! XMFile::delete($file_to_delete)) {
 					throw new Kohana_Exception('The old file could not be removed: :filename:', array(':filename:' => $file_to_delete), 10001);
 				}
 			} // if

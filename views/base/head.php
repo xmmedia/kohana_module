@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<title><?php
 if (DEVELOPMENT_FLAG) {
-	echo '*** ' . HTML::chars(SHORT_NAME . ' v' . APP_VERSION) . ' Development Site *** ';
+	echo '*** Dev *** ';
 }
 echo HTML::chars($page_title);
 ?></title>

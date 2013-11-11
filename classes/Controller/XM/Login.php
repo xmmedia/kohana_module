@@ -6,6 +6,25 @@ class Controller_XM_Login extends Controller_Private {
 	public $auth_required = FALSE;
 
 	/**
+	 * Stores the xm login config.
+	 * Set in before().
+	 *
+	 * @var  array
+	 */
+	protected $login_config;
+
+	/**
+	 * Returns parent before and sets the login config property.
+	 *
+	 * @return  void
+	 */
+	public function before() {
+		parent::before();
+
+		$this->login_config = (array) Kohana::$config->load('xm_login');
+	}
+
+	/**
 	* Displays the login form and logs the user in or detects and invalid login (through Auth and Model_User)
 	*
 	* View: Login form.
@@ -28,17 +47,15 @@ class Controller_XM_Login extends Controller_Private {
 			$this->login_success_redirect($redirect);
 		}
 
-		$login_config = Kohana::$config->load('xm_login');
-
 		// Get number of login attempts this session
-		$attempts = Session::instance()->path($login_config['session_key'] . '.attempts', 0);
-		$force_captcha = Session::instance()->path($login_config['session_key'] . '.force_captcha', FALSE);
+		$attempts = Session::instance()->path($this->login_config['session_key'] . '.attempts', 0);
+		$force_captcha = Session::instance()->path($this->login_config['session_key'] . '.force_captcha', FALSE);
 
 		// If more than three login attempts, add a captcha to form
-		$captcha_required = ($force_captcha || $attempts > $login_config['failed_login_captcha_display']);
+		$captcha_required = ($force_captcha || $attempts > $this->login_config['failed_login_captcha_display']);
 		// Update number of login attempts
 		++$attempts;
-		Session::instance()->set_path($login_config['session_key'] . '.attempts', $attempts);
+		Session::instance()->set_path($this->login_config['session_key'] . '.attempts', $attempts);
 
 		// load recaptcha
 		// do this here because there are likely to be a lot of accesses to this action that will never make it to here
@@ -120,7 +137,7 @@ class Controller_XM_Login extends Controller_Private {
 				// If login failed (captcha and/or wrong credentials)
 				} else {
 					// force captcha may have changed within Auth::login()
-					$force_captcha = Session::instance()->path($login_config['session_key'] . '.force_captcha', FALSE);
+					$force_captcha = Session::instance()->path($this->login_config['session_key'] . '.force_captcha', FALSE);
 					if ( ! $captcha_required && $force_captcha) {
 						$captcha_required = TRUE;
 					}
@@ -146,7 +163,7 @@ class Controller_XM_Login extends Controller_Private {
 
 		if ( ! empty($timed_out)) {
 			// they have come from the timeout page, so send them back there
-			$this->redirect(Route::get(Route::name($this->request->route()))->uri(array('action' => 'timedout')) . $this->get_redirect_query());
+			$this->redirect($this->current_route()->uri(array('action' => 'timedout')) . $this->get_redirect_query());
 		}
 
 		$this->template->body_html = View::factory('xm/login/login')
@@ -171,7 +188,7 @@ class Controller_XM_Login extends Controller_Private {
 			$auth_config = Kohana::$config->load('auth');
 			$this->redirect(URL::site(Route::get($auth_config['default_login_redirect'])->uri($auth_config['default_login_redirect_params'])));
 		}
-	} // function login_success_redirect
+	}
 
 	/**
 	* Log the user out and redirect to the login page.
@@ -190,8 +207,8 @@ class Controller_XM_Login extends Controller_Private {
 		} // try
 
 		// redirect to the user account and then the signin page if logout worked as expected
-		$this->redirect(Route::get(Route::name($this->request->route()))->uri() . $this->get_redirect_query());
-	} // function action_logout
+		$this->redirect($this->current_route()->uri() . $this->get_redirect_query());
+	}
 
 	/**
 	* Display a page that displays the username and asks the user to enter the password
@@ -205,7 +222,7 @@ class Controller_XM_Login extends Controller_Private {
 
 		if ( ! $user || ($max_lifetime > 0 && Auth::instance()->timed_out($max_lifetime))) {
 			// user is not logged in at all or they have reached the maximum amount of time we allow sometime to stay logged in, so redirect them to the login page
-			$this->redirect(Route::get(Route::name($this->request->route()))->uri(array('action' => 'logout')) . $this->get_redirect_query());
+			$this->redirect($this->current_route()->uri(array('action' => 'logout')) . $this->get_redirect_query());
 		}
 
 		$timeout_post = Session::instance()->get(Kohana::$config->load('xm_login.timeout_post_session_key'));
@@ -269,7 +286,166 @@ class Controller_XM_Login extends Controller_Private {
 		$this->template->page_title = 'Access Not Allowed - ' . $this->page_title_append;
 		$view = $this->template->body_html = View::factory('xm/login/no_access')
 			->set('referrer', XM::get_param('referrer'));
-	} // function action_noaccess
+	}
+
+	/**
+	* A basic implementation of the "Forgot password" functionality
+	*/
+	public function action_forgot() {
+		// If user already signed-in to redirect them to the default page
+		if (Auth::instance()->logged_in()) {
+			$this->login_success_redirect();
+		}
+
+		$reset_username = UTF8::trim($this->request->post('reset_username'));
+		$forgot_submitted = (bool) $this->request->post('forgot_submitted');
+
+		if ( ! empty($reset_username)) {
+			$user = ORM::factory('User')
+				->where('username', 'LIKE', $reset_username)
+				->where_active('user')
+				->find();
+
+			// Admin passwords cannot be reset by email
+			if ($user->loaded() && ! in_array($user->username, $this->login_config['admin_accounts'])) {
+				$reset = ORM::factory('User_Reset')
+					->values(array(
+						'user_id' => $user->pk(),
+						'token' => Text::random('alnum', 32),
+					))
+					->save();
+
+				$mail = new Mail();
+				$mail->IsHTML();
+				$mail->AddUser($user->pk());
+				$mail->Subject = LONG_NAME . ' Password Reset';
+
+				// build a link with action reset including their username and the reset token
+				$url = URL::site($this->current_route()->uri(array('action' => 'reset')) . '?' . http_build_query(array(
+					'token' => $reset->token,
+				)), FALSE);
+
+				$mail->Body = View::factory('xm/login/forgot_link_email')
+					->set('app_name', LONG_NAME)
+					->set('url', $url)
+					->set('admin_email', ADMIN_EMAIL);
+
+				$mail->Send();
+
+				Message::add(__(Kohana::message('login', 'reset_link_sent')), Message::$notice);
+				$this->redirect($this->current_route()->uri());
+
+			} else if (in_array($user->username, $this->login_config['admin_accounts'])) {
+				Message::add(__(Kohana::message('login', 'reset_admin_account')), Message::$warning);
+
+			} else {
+				Message::add(__(Kohana::message('login', 'reset_not_found')), Message::$warning);
+			}
+		} else if ($forgot_submitted) {
+			Message::add(__(Kohana::message('login', 'reset_email_empty')), Message::$error);
+		} // if post
+
+		$this->template->page_title = 'Reset Your Password - ' . $this->page_title_append;
+		$this->template->body_html = View::factory('xm/login/forgot');
+	} // function action_forgot
+
+	/**
+	* A basic version of "reset password" functionality.
+	*
+	* @todo consider changing this to not send the password, but instead allow them enter a new password right there; this might be more secure, but since we've sent them a link anyway, it's probably too late for security; the only thing is email is insecure (not HTTPS)
+	*/
+	public function action_reset() {
+		// If user already signed-in to redirect them to the default page
+		if (Auth::instance()->logged_in()) {
+			$this->login_success_redirect();
+		}
+
+		$token = UTF8::trim($this->request->query('token'));
+		if (empty($token)) {
+			$token = UTF8::trim($this->request->post('token'));
+		}
+
+		// make sure that the token has exactly 32 characters
+		if ( ! empty($token) && UTF8::strlen($token) == 32) {
+			$reset = ORM::factory('User_Reset')
+				->where('token', '=', $token)
+				->where('datetime', '>=', Date::formatted_time('-' . $this->login_config['reset_valid_time']))
+				->find();
+
+			if ($reset->loaded()) {
+				$user = $reset->user;
+
+				// make sure we found the user & their account is active
+				// admin passwords cannot be reset by email
+				if ($user->loaded() && $user->active_flag && ! in_array($user->username, $this->login_config['admin_accounts'])) {
+					$new_password_submitted = (bool) $this->request->post('new_password_submitted');
+
+					if ($new_password_submitted) {
+						$password = $this->request->post('password');
+						$password_confirm = $this->request->post('password_confirm');
+						$password_min_length = (int) Kohana::$config->load('auth.password_min_length');
+
+						if (empty($password) || UTF8::strlen($password) < $password_min_length) {
+							Message::add(__(Kohana::message('login', 'password_min_length')), Message::$error);
+						} else if ($password != $password_confirm) {
+							Message::add(__(Kohana::message('login', 'passwords_different')), Message::$error);
+						} else {
+							$user->values(array(
+									'password' => $password,
+									// reset the failed login count
+									'failed_login_count' => 0,
+									// don't force the user to update their password on login since they've just updated their password
+									'force_update_password_flag' => 0,
+								))
+								->is_valid()
+								->save();
+
+							foreach($user->user_reset->find_all() as $_reset) {
+								$_reset->delete();
+							}
+
+							$mail = new Mail();
+							$mail->IsHTML();
+							$mail->AddUser($user->pk());
+							$mail->Subject = LONG_NAME . ' New Password Confirmation';
+
+							// provide a link to the user including their username
+							$url = URL::site($this->current_route()->uri() . '?' . http_build_query(array('username' => $user->username)), FALSE);
+
+							$mail->Body = View::factory('xm/login/forgot_confirm_email')
+								->set('app_name', LONG_NAME)
+								->set('username', $user->username)
+								->set('url', $url)
+								->set('admin_email', ADMIN_EMAIL);
+
+							$mail->Send();
+
+							Session::instance()->set_path($this->login_config['session_key'] . '.force_captcha', FALSE);
+							Session::instance()->set_path($this->login_config['session_key'] . '.attempts', 0);
+
+							Message::add(__(Kohana::message('login', 'password_saved')), Message::$notice);
+							$this->redirect($this->current_route()->uri());
+						}
+					}
+
+					$this->template->page_title = 'Enter a New Password - ' . $this->page_title_append;
+					$this->template->body_html = View::factory('xm/login/forgot_reset')
+						->set('token', $token);
+
+				} else {
+					Message::add(__(Kohana::message('login', 'token_not_found')), Message::$error);
+					$this->redirect($this->current_route()->uri(array('action' => 'forgot')));
+				}
+			} else {
+				Message::add(__(Kohana::message('login', 'token_not_found')), Message::$error);
+				$this->redirect($this->current_route()->uri(array('action' => 'forgot')));
+			}
+
+		} else {
+			Message::add(__(Kohana::message('login', 'password_email_partial')), Message::$error);
+			$this->redirect($this->current_route()->uri(array('action' => 'forgot')));
+		}
+	} // function action_reset
 
 	/**
 	* Returns the redirect value as a query string ready to use in a direct
@@ -286,148 +462,14 @@ class Controller_XM_Login extends Controller_Private {
 		} else {
 			return '';
 		}
-	} // function get_redirect_query
+	}
 
 	/**
-	* A basic implementation of the "Forgot password" functionality
-	*/
-	public function action_forgot() {
-		// If user already signed-in to redirect them to the default page
-		if (Auth::instance()->logged_in()) {
-			$this->login_success_redirect();
-		}
-
-		Kohana::load(Kohana::find_file('vendor/recaptcha', 'recaptchalib'));
-
-		$default_options = Kohana::$config->load('xm_login');
-
-		// set the template page_title (see Controller_Base for implementation)
-		$this->template->page_title = 'Forgot Password - ' . $this->page_title_append;
-
-		if (isset($_POST['reset_username'])) {
-			// If recaptcha is valid and is received
-			$captcha_received = FALSE;
-			if (isset($_POST['recaptcha_challenge_field']) && isset($_POST['recaptcha_response_field'])) {
-				$captcha_received = TRUE;
-				$resp = recaptcha_check_answer(RECAPTCHA_PRIVATE_KEY, $_SERVER['REMOTE_ADDR'], $_POST['recaptcha_challenge_field'], $_POST['recaptcha_response_field']);
-			}
-
-			$user = ORM::factory('User')->where('username', '=', $_POST['reset_username'])
-				->where_active('user')
-				->find();
-
-			// Admin passwords cannot be reset by email
-			if ($captcha_received && $resp->is_valid && $user->loaded() && ! in_array($user->username, $default_options['admin_accounts'])) {
-				// send an email with the account reset token
-				$user->set('reset_token', Text::random('alnum', 32))
-					->is_valid()
-					->save();
-
-				$mail = new Mail();
-				$mail->IsHTML();
-				$mail->AddUser($user->id);
-				$mail->Subject = LONG_NAME . ' Password Reset';
-
-				// build a link with action reset including their username and the reset token
-				$url = URL::site(Route::get(Route::name($this->request->route()))->uri(array('action' => 'reset')) . '?' . http_build_query(array(
-					'username' => $user->username,
-					'reset_token' => $user->reset_token,
-				)), FALSE);
-
-				$mail->Body = View::factory('xm/login/forgot_link')
-					->set('app_name', LONG_NAME)
-					->set('url', $url)
-					->set('admin_email', ADMIN_EMAIL);
-
-				$mail->Send();
-
-				Message::add(__(Kohana::message('login', 'reset_link_sent')), Message::$notice);
-
-			} else if (in_array($user->username, $default_options['admin_accounts'])) {
-				Message::add(__(Kohana::message('login', 'reset_admin_account')), Message::$warning);
-
-			} else {
-				Message::add(__(Kohana::message('login', 'reset_not_found')), Message::$warning);
-				if ( ! $captcha_received || ! $resp->is_valid) {
-					Message::add(__(Kohana::message('user', 'recaptcha_not_valid')), Message::$warning);
-				}
-			}
-		} // if post
-
-		$this->template->body_html = View::factory('xm/login/forgot');
-	} // function action_forgot
-
-	/**
-	* A basic version of "reset password" functionality.
-	*
-	* @todo consider changing this to not send the password, but instead allow them enter a new password right there; this might be more secure, but since we've sent them a link anyway, it's probably too late for security; the only thing is email is insecure (not HTTPS)
-	*/
-	function action_reset() {
-		// If user already signed-in to redirect them to the default page
-		if (Auth::instance()->logged_in()) {
-			$this->login_success_redirect();
-		}
-
-		$default_options = Kohana::$config->load('xm_login');
-
-		// set the template title (see Controller_Base for implementation)
-		$this->template->page_title = 'Password Reset - ' . $this->page_title_append;
-
-		$username = XM::get_param('username');
-		if ($username !== null) $username = trim($username);
-		$reset_token = XM::get_param('reset_token');
-
-		// make sure that the reset_token has exactly 32 characters (not doing that would allow resets with token length 0)
-		// also make sure we aren't trying to reset the password for an admin
-		if ( ! empty($username) && ! empty($reset_token) && strlen($reset_token) == 32) {
-			$user = ORM::factory('User')
-				->where('username', '=', $_REQUEST['username'])
-				->and_where('reset_token', '=', $_REQUEST['reset_token'])
-				->where_active('user')
-				->find();
-
-			// admin passwords cannot be reset by email
-			if (is_numeric($user->id) && ! in_array($user->username, $default_options['admin_accounts'])) {
-				$password = xm_Auth::generate_password();
-				$user->values(array(
-						'password' => $password,
-						// reset the failed login count
-						'failed_login_count' => 0,
-						// send the user to the password update page
-						'force_update_password_flag' => 1,
-					))
-					->is_valid()
-					->save();
-
-				$mail = new Mail();
-				$mail->IsHTML();
-				$mail->AddUser($user->id);
-				$mail->Subject = LONG_NAME . ' New Password';
-
-				// provide a link to the user including their username
-				$url = URL::site(Route::get(Route::name($this->request->route()))->uri() . '?' . http_build_query(array('username' => $user->username)), FALSE);
-
-				$mail->Body = View::factory('xm/login/forgot_reset')
-					->set('app_name', LONG_NAME)
-					->set('username', $user->username)
-					->set('password', $password)
-					->set('url', $url)
-					->set('admin_email', ADMIN_EMAIL);
-
-				$mail->Send();
-
-				Message::add(__(Kohana::message('login', 'password_emailed')), Message::$notice);
-
-				$this->redirect(Route::get(Route::name($this->request->route()))->uri());
-
-			} else {
-				Message::add(__(Kohana::message('login', 'password_email_username_not_found')), Message::$error);
-				$this->redirect(Route::get(Route::name($this->request->route()))->uri(array('action' => 'forgot')));
-			}
-
-		} else {
-			Message::add(__(Kohana::message('login', 'password_email_partial')), Message::$error);
-			$this->redirect(Route::get(Route::name($this->request->route()))->uri(array('action' => 'forgot')));
-		}
-	} // function action_reset
-} // class Controller_xm_Login
+	 * Returns the current route object.
+	 *
+	 * @return  Route
+	 */
+	protected function current_route() {
+		return Route::get(Route::name($this->request->route()));
+	}
+}

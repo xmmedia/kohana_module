@@ -1,14 +1,16 @@
-<div class="login_box forgot_password_wrapper">
-	<h1>Forgot Password</h1>
+<div class="login_box">
+	<h1>Reset Your Password</h1>
 
-	<p>Please send me a link to reset my password.</p>
+	<?php echo Form::open(Request::current()),
+		Form::hidden('forgot_submitted', 1); ?>
 
-<?php echo Form::open(Request::current()); ?>
-	<p>To start, enter your email address: <?php echo Form::input('reset_username', '', array('autofocus')); ?></p>
-	<p>Also enter the characters you see in the CAPTCHA below:</p>
-<?php
-echo recaptcha_get_html(RECAPTCHA_PUBLIC_KEY);
-echo Form::submit(NULL, 'Reset Password');
-echo Form::close();
-?>
+	<div class="field">
+		<label for="reset_username">To start, enter your email address:</label>
+		<?php echo Form::input('reset_username', NULL, array('autofocus', 'size' => 30, 'maxlength' => 100, 'id' => 'reset_username')); ?>
+	</div>
+
+	<?php echo Form::submit(NULL, 'Reset Password'),
+		Form::close(); ?>
+
+	<div class="go_link"><?php echo HTML::anchor(Route::get('login')->uri(), 'Login') ?></div>
 </div>

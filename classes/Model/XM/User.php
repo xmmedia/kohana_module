@@ -118,18 +118,6 @@ class Model_XM_User extends Model_Auth_User {
 			'view_flag'      => TRUE,
 			'is_nullable'    => FALSE,
 		),
-		'reset_token' => array(
-			'field_type'     => 'Text',
-			'list_flag'      => FALSE,
-			'edit_flag'      => FALSE,
-			'search_flag'    => FALSE,
-			'view_flag'      => FALSE,
-			'is_nullable'    => FALSE,
-			'field_attributes' => array(
-				'size' => 32,
-				'maxlength' => 32,
-			),
-		),
 		'force_update_password_flag' => array(
 			'field_type'     => 'Checkbox',
 			'list_flag'      => TRUE,
@@ -149,8 +137,8 @@ class Model_XM_User extends Model_Auth_User {
 	);
 
 	/**
-	 * Auto-serialize and unserialize columns on get/set
-	 * The settings field needs to be serialized
+	 * Auto-serialize and unserialize columns on get/set.
+	 * The settings field needs to be serialized.
 	 * @var array
 	 */
 	protected $_serialize_columns = array('settings');
@@ -171,8 +159,10 @@ class Model_XM_User extends Model_Auth_User {
 		'auth_log' => array(
 			'model'       => 'Auth_Log',
 			'foreign_key' => 'user_id',
-			'through'     => 'auth_log',
-			'far_key'     => 'id',
+		),
+		'user_reset' => array(
+			'model' => 'User_Reset',
+			'foreign_key' => 'user_id',
 		),
 	);
 
@@ -197,10 +187,9 @@ class Model_XM_User extends Model_Auth_User {
 		90 => 'last_login',
 		100 => 'failed_login_count',
 		110 => 'last_failed_login',
-		120 => 'reset_token',
-		130 => 'force_update_password_flag',
-		140 => 'force_update_profile_flag',
-		150 => 'group',
+		120 => 'force_update_password_flag',
+		130 => 'force_update_profile_flag',
+		140 => 'group',
 	);
 
 	/**
@@ -224,6 +213,8 @@ class Model_XM_User extends Model_Auth_User {
 	 * @return array
 	 */
 	public function rules() {
+		$password_min_length = (int) Kohana::$config->load('auth.password_min_length');
+
 		return array(
 			'username' => array(
 				array('not_empty'),
@@ -245,7 +236,7 @@ class Model_XM_User extends Model_Auth_User {
 				array('not_empty'),
 				// the min length won't have much an affect anywhere because before the rules are run, the filter to hash the password will already have been run
 				// therefore, this is only here so it can be used else where, like the profile edit
-				array('min_length', array(':value', 6)),
+				array('min_length', array(':value', $password_min_length)),
 			),
 		);
 	} // function rules
@@ -269,7 +260,6 @@ class Model_XM_User extends Model_Auth_User {
 			'last_login'                  => 'Last Login',
 			'failed_login_count'          => 'Failed Login Count',
 			'last_failed_login'           => 'Last Failed Login',
-			'reset_token'                 => 'Reset Password Token',
 			'force_update_password_flag'  => 'Force Password Update',
 			'force_update_profile_flag'   => 'Force Profile Update',
 		);

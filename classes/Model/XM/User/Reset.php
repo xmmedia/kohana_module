@@ -45,6 +45,7 @@ class Model_XM_User_Reset extends ORM {
 				'source' => array(
 					'source' => 'model',
 					'data' => 'User',
+					'label' => 'username',
 				),
 			),
 		),
@@ -67,6 +68,29 @@ class Model_XM_User_Reset extends ORM {
 			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
 		),
+		'browser' => array(
+			'field_type' => 'Text',
+			'list_flag' => TRUE,
+			'edit_flag' => TRUE,
+			'search_flag' => TRUE,
+			'view_flag' => TRUE,
+			'is_nullable' => FALSE,
+			'field_attributes' => array(
+				'maxlength' => 255,
+			),
+		),
+		'ip_address' => array(
+			'field_type' => 'Text',
+			'list_flag' => TRUE,
+			'edit_flag' => TRUE,
+			'search_flag' => TRUE,
+			'view_flag' => TRUE,
+			'is_nullable' => FALSE,
+			'field_attributes' => array(
+				'maxlength' => 15,
+				'size' => 15,
+			),
+		),
 	);
 
 	/**
@@ -86,6 +110,8 @@ class Model_XM_User_Reset extends ORM {
 			'user_id' => 'User',
 			'token' => 'Token',
 			'datetime' => 'Date Time',
+			'browser' => 'Browser',
+			'ip_address' => 'IP Address',
 		);
 	}
 

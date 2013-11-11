@@ -312,6 +312,8 @@ class Controller_XM_Login extends Controller_Private {
 					->values(array(
 						'user_id' => $user->pk(),
 						'token' => Text::random('alnum', 32),
+						'browser' => ( ! empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''),
+						'ip_address' => ( ! empty($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : ''),
 					))
 					->save();
 

@@ -224,6 +224,8 @@ class Model_XM_User extends Model_Auth_User {
 	 * @return array
 	 */
 	public function rules() {
+		$password_min_length = (int) Kohana::$config->load('auth.password_min_length');
+
 		return array(
 			'username' => array(
 				array('not_empty'),
@@ -245,7 +247,7 @@ class Model_XM_User extends Model_Auth_User {
 				array('not_empty'),
 				// the min length won't have much an affect anywhere because before the rules are run, the filter to hash the password will already have been run
 				// therefore, this is only here so it can be used else where, like the profile edit
-				array('min_length', array(':value', 6)),
+				array('min_length', array(':value', $password_min_length)),
 			),
 		);
 	} // function rules

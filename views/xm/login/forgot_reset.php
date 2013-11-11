@@ -1,7 +1,19 @@
-<p>Your password has been reset. Your new login information is as follows:</p>
-<p>Username: <?php echo $username; ?><br>
-Password: <?php echo $password; ?></p>
-<p>To login, <?php echo HTML::anchor($url, 'click here', array('target' => '_blank'), TRUE); ?> or copy and paste the following link into your browser:</p>
-<p><?php echo HTML::chars(URL::site($url, TRUE)); ?></p>
-<p>If you continue to have problems, please contact the administrator at <?php echo $admin_email; ?>. If this request was not made by you, please also contact the administrator.</p>
-<p>Thank you,<br><?php echo HTML::chars($app_name); ?></p>
+<div class="login_box">
+	<h1>Enter a New Password</h1>
+
+	<?php echo Form::open(Request::current()),
+		Form::hidden('new_password_entered', 1),
+		Form::hidden('username', $username),
+		Form::hidden('reset_token', $reset_token); ?>
+
+	<div class="field">
+		<label for="password" class="block">New Password</label>
+		<?php echo Form::password('password', NULL, array('size' => 20, 'maxlength' => 255, 'id' => 'password')); ?>
+	</div>
+	<div class="field">
+		<label for="password_confirm" class="block">Retype Password</label>
+		<?php echo Form::password('password_confirm', NULL, array('size' => 20, 'maxlength' => 255, 'id' => 'password_confirm')); ?>
+	</div>
+
+	<?php echo Form::submit(NULL, 'Submit'), Form::close(); ?>
+</div>

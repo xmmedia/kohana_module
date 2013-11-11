@@ -1,10 +1,8 @@
 <div class="login_box">
 	<h1>Login</h1>
 	<p>Login with your email address and password.</p>
-	<?php /*<p>If you do not already have an account, <?php echo HTML::anchor('login/register', 'create one') ?> first.</p>*/ ?>
 
-	<?php echo Form::open(Route::get('login')->uri()); ?>
-	<?php echo Form::hidden('redirect', $redirect); ?>
+	<?php echo Form::open(Route::get('login')->uri()), Form::hidden('redirect', $redirect); ?>
 
 	<ul class="xm_form">
 		<li>
@@ -26,10 +24,7 @@
 		<?php echo recaptcha_get_html(RECAPTCHA_PUBLIC_KEY); ?>
 	<?php } ?>
 
-	<?php
-	echo Form::submit(NULL, 'Login', array('class' => 'login_button'));
-	echo Form::close();
-	?>
+	<?php echo Form::submit(NULL, 'Login'), Form::close(); ?>
 
 	<div class="forgot_link"><?php echo HTML::anchor(Route::get('login')->uri(array('action' => 'forgot')), 'Forgot your password?') ?></div>
 	<div class="clear"></div>

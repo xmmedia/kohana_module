@@ -8,8 +8,9 @@ return array(
 	'reset_admin_account' => 'This password for this account cannot be reset using this method.',
 	'reset_not_found' => 'The username cannot be found.',
 	'reset_error' => 'There was a problem with the forgot password. Please try again later.',
-	'password_emailed' => 'Your new password has been emailed to you.',
-	'password_email_error' => 'There was a problem resetting your password. The administrators have been notified.',
 	'password_email_username_not_found' => 'The username could not be found. Please try copying and pasting the link from the email or contacting the administrator.',
 	'password_email_partial' => 'Only partial information was received to reset your password. Please try copying and pasting the link from the email or contacting the administrator.',
+	'password_min_length' => 'Please enter a password with a minimum length of ' . (int) Kohana::$config->load('auth.password_min_length') . ' characters.',
+	'passwords_different' => 'The passwords you entered are different. Please enter the same password in both fields.',
+	'password_saved' => 'Your password has been reset. Please login.',
 );

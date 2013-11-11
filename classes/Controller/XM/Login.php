@@ -298,6 +298,7 @@ class Controller_XM_Login extends Controller_Private {
 		}
 
 		$reset_username = UTF8::trim($this->request->post('reset_username'));
+		$forgot_submitted = (bool) $this->request->post('forgot_submitted');
 
 		if ( ! empty($reset_username)) {
 			$user = ORM::factory('User')
@@ -339,6 +340,8 @@ class Controller_XM_Login extends Controller_Private {
 			} else {
 				Message::add(__(Kohana::message('login', 'reset_not_found')), Message::$warning);
 			}
+		} else if ($forgot_submitted) {
+			Message::add(__(Kohana::message('login', 'reset_email_empty')), Message::$error);
 		} // if post
 
 		$this->template->page_title = 'Reset Your Password - ' . $this->page_title_append;
@@ -374,9 +377,9 @@ class Controller_XM_Login extends Controller_Private {
 
 			// admin passwords cannot be reset by email
 			if ($user->loaded() && ! in_array($user->username, $this->login_config['admin_accounts'])) {
-				$new_password_entered = (bool) $this->request->post('new_password_entered');
+				$new_password_submitted = (bool) $this->request->post('new_password_submitted');
 
-				if ($new_password_entered) {
+				if ($new_password_submitted) {
 					$password = $this->request->post('password');
 					$password_confirm = $this->request->post('password_confirm');
 					$password_min_length = (int) Kohana::$config->load('auth.password_min_length');
@@ -413,7 +416,10 @@ class Controller_XM_Login extends Controller_Private {
 
 						$mail->Send();
 
-						Message::add(__(Kohana::message('login', 'password_saved')), Message::$error);
+						Session::instance()->set_path($this->login_config['session_key'] . '.force_captcha', FALSE);
+						Session::instance()->set_path($this->login_config['session_key'] . '.attempts', 0);
+
+						Message::add(__(Kohana::message('login', 'password_saved')), Message::$notice);
 						$this->redirect($this->current_route()->uri());
 					}
 				}

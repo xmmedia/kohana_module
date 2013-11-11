@@ -3,12 +3,11 @@
 
 	<?php echo Form::open(Request::current()),
 		Form::hidden('new_password_submitted', 1),
-		Form::hidden('username', $username),
-		Form::hidden('reset_token', $reset_token); ?>
+		Form::hidden('token', $token); ?>
 
 	<div class="field">
 		<label for="password" class="block">New Password</label>
-		<?php echo Form::password('password', NULL, array('size' => 20, 'maxlength' => 255, 'id' => 'password')); ?>
+		<?php echo Form::password('password', NULL, array('size' => 20, 'maxlength' => 255, 'id' => 'password', 'autofocus')); ?>
 	</div>
 	<div class="field">
 		<label for="password_confirm" class="block">Retype Password</label>

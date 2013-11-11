@@ -9,7 +9,6 @@ class Model_XM_User_Profile extends Model_User {
 		$this->_table_columns['last_login']['edit_flag'] = FALSE;
 		$this->_table_columns['failed_login_count']['edit_flag'] = FALSE;
 		$this->_table_columns['last_failed_login']['edit_flag'] = FALSE;
-		$this->_table_columns['reset_token']['edit_flag'] = FALSE;
 		$this->_table_columns['force_update_profile_flag']['edit_flag'] = FALSE;
 		$this->_table_columns['force_update_password_flag']['edit_flag'] = FALSE;
 

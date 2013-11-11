@@ -10,7 +10,6 @@ class Model_XM_User_Password extends Model_User {
 		$this->_table_columns['login_count']['edit_flag'] = FALSE;
 		$this->_table_columns['failed_login_count']['edit_flag'] = FALSE;
 		$this->_table_columns['last_failed_login']['edit_flag'] = FALSE;
-		$this->_table_columns['reset_token']['edit_flag'] = FALSE;
 
 		parent::_initialize();
 	}

@@ -308,9 +308,11 @@ class Controller_XM_Login extends Controller_Private {
 
 			// Admin passwords cannot be reset by email
 			if ($user->loaded() && ! in_array($user->username, $this->login_config['admin_accounts'])) {
-				// send an email with the account reset token
-				$user->set('reset_token', Text::random('alnum', 32))
-					->is_valid()
+				$reset = ORM::factory('User_Reset')
+					->values(array(
+						'user_id' => $user->pk(),
+						'token' => Text::random('alnum', 32),
+					))
 					->save();
 
 				$mail = new Mail();
@@ -320,8 +322,7 @@ class Controller_XM_Login extends Controller_Private {
 
 				// build a link with action reset including their username and the reset token
 				$url = URL::site($this->current_route()->uri(array('action' => 'reset')) . '?' . http_build_query(array(
-					'username' => $user->username,
-					'reset_token' => $user->reset_token,
+					'token' => $reset->token,
 				)), FALSE);
 
 				$mail->Body = View::factory('xm/login/forgot_link_email')
@@ -359,78 +360,84 @@ class Controller_XM_Login extends Controller_Private {
 			$this->login_success_redirect();
 		}
 
-		$username = UTF8::trim($this->request->query('username'));
-		$reset_token = UTF8::trim($this->request->query('reset_token'));
-		if (empty($username)) {
-			$username = UTF8::trim($this->request->post('username'));
-			$reset_token = UTF8::trim($this->request->post('reset_token'));
+		$token = UTF8::trim($this->request->query('token'));
+		if (empty($token)) {
+			$token = UTF8::trim($this->request->post('token'));
 		}
 
-		// make sure that the reset_token has exactly 32 characters (not doing that would allow resets with token length 0)
-		// also make sure we aren't trying to reset the password for an admin
-		if ( ! empty($username) && ! empty($reset_token) && UTF8::strlen($reset_token) == 32) {
-			$user = ORM::factory('User')
-				->where('username', 'LIKE', $username)
-				->where('reset_token', '=', $reset_token)
-				->where_active('user')
+		// make sure that the token has exactly 32 characters
+		if ( ! empty($token) && UTF8::strlen($token) == 32) {
+			$reset = ORM::factory('User_Reset')
+				->where('token', '=', $token)
+				->where('datetime', '>=', Date::formatted_time('-' . $this->login_config['reset_valid_time']))
 				->find();
 
-			// admin passwords cannot be reset by email
-			if ($user->loaded() && ! in_array($user->username, $this->login_config['admin_accounts'])) {
-				$new_password_submitted = (bool) $this->request->post('new_password_submitted');
+			if ($reset->loaded()) {
+				$user = $reset->user;
 
-				if ($new_password_submitted) {
-					$password = $this->request->post('password');
-					$password_confirm = $this->request->post('password_confirm');
-					$password_min_length = (int) Kohana::$config->load('auth.password_min_length');
+				// make sure we found the user & their account is active
+				// admin passwords cannot be reset by email
+				if ($user->loaded() && $user->active_flag && ! in_array($user->username, $this->login_config['admin_accounts'])) {
+					$new_password_submitted = (bool) $this->request->post('new_password_submitted');
 
-					if (empty($password) || UTF8::strlen($password) < $password_min_length) {
-						Message::add(__(Kohana::message('login', 'password_min_length')), Message::$error);
-					} else if ($password != $password_confirm) {
-						Message::add(__(Kohana::message('login', 'passwords_different')), Message::$error);
-					} else {
-						$user->values(array(
-								'password' => $password,
-								// reset the failed login count
-								'failed_login_count' => 0,
-								// don't force the user to update their password on login since they've just updated their password
-								'force_update_password_flag' => 0,
-								'reset_token' => '',
-							))
-							->is_valid()
-							->save();
+					if ($new_password_submitted) {
+						$password = $this->request->post('password');
+						$password_confirm = $this->request->post('password_confirm');
+						$password_min_length = (int) Kohana::$config->load('auth.password_min_length');
 
-						$mail = new Mail();
-						$mail->IsHTML();
-						$mail->AddUser($user->pk());
-						$mail->Subject = LONG_NAME . ' New Password Confirmation';
+						if (empty($password) || UTF8::strlen($password) < $password_min_length) {
+							Message::add(__(Kohana::message('login', 'password_min_length')), Message::$error);
+						} else if ($password != $password_confirm) {
+							Message::add(__(Kohana::message('login', 'passwords_different')), Message::$error);
+						} else {
+							$user->values(array(
+									'password' => $password,
+									// reset the failed login count
+									'failed_login_count' => 0,
+									// don't force the user to update their password on login since they've just updated their password
+									'force_update_password_flag' => 0,
+								))
+								->is_valid()
+								->save();
 
-						// provide a link to the user including their username
-						$url = URL::site($this->current_route()->uri() . '?' . http_build_query(array('username' => $user->username)), FALSE);
+							foreach($user->user_reset->find_all() as $_reset) {
+								$_reset->delete();
+							}
 
-						$mail->Body = View::factory('xm/login/forgot_confirm_email')
-							->set('app_name', LONG_NAME)
-							->set('username', $user->username)
-							->set('url', $url)
-							->set('admin_email', ADMIN_EMAIL);
+							$mail = new Mail();
+							$mail->IsHTML();
+							$mail->AddUser($user->pk());
+							$mail->Subject = LONG_NAME . ' New Password Confirmation';
 
-						$mail->Send();
+							// provide a link to the user including their username
+							$url = URL::site($this->current_route()->uri() . '?' . http_build_query(array('username' => $user->username)), FALSE);
 
-						Session::instance()->set_path($this->login_config['session_key'] . '.force_captcha', FALSE);
-						Session::instance()->set_path($this->login_config['session_key'] . '.attempts', 0);
+							$mail->Body = View::factory('xm/login/forgot_confirm_email')
+								->set('app_name', LONG_NAME)
+								->set('username', $user->username)
+								->set('url', $url)
+								->set('admin_email', ADMIN_EMAIL);
 
-						Message::add(__(Kohana::message('login', 'password_saved')), Message::$notice);
-						$this->redirect($this->current_route()->uri());
+							$mail->Send();
+
+							Session::instance()->set_path($this->login_config['session_key'] . '.force_captcha', FALSE);
+							Session::instance()->set_path($this->login_config['session_key'] . '.attempts', 0);
+
+							Message::add(__(Kohana::message('login', 'password_saved')), Message::$notice);
+							$this->redirect($this->current_route()->uri());
+						}
 					}
+
+					$this->template->page_title = 'Enter a New Password - ' . $this->page_title_append;
+					$this->template->body_html = View::factory('xm/login/forgot_reset')
+						->set('token', $token);
+
+				} else {
+					Message::add(__(Kohana::message('login', 'token_not_found')), Message::$error);
+					$this->redirect($this->current_route()->uri(array('action' => 'forgot')));
 				}
-
-				$this->template->page_title = 'Enter a New Password - ' . $this->page_title_append;
-				$this->template->body_html = View::factory('xm/login/forgot_reset')
-					->set('username', $user->username)
-					->set('reset_token', $reset_token);
-
 			} else {
-				Message::add(__(Kohana::message('login', 'password_email_username_not_found')), Message::$error);
+				Message::add(__(Kohana::message('login', 'token_not_found')), Message::$error);
 				$this->redirect($this->current_route()->uri(array('action' => 'forgot')));
 			}
 

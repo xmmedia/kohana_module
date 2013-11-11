@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 
-if ( ! Kohana::load(Kohana::find_file('vendor', 'phpmailer/class.phpmailer'))) {
-	throw new Kohana_Exception('Unable to find PHPMailer. Ensure it\'s in a vendor folder');
+if ( ! Kohana::load(Kohana::find_file('vendor', 'phpmailer/PHPMailerAutoload'))) {
+	throw new Kohana_Exception('Unable to find PHPMailer. Ensure the auto loader is in the phpmailer vendor folder');
 }
 
 class XM_Mail extends PHPMailer {

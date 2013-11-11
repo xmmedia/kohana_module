@@ -30,6 +30,7 @@ return array(
 		'Permission' => 'Permission',
 		'User_Admin' => NULL,
 		'User_Group' => 'User - Group',
+		'User_Reset' => 'User - Password Resets',
 	),
 	'default_model' => NULL, // used to determine which model to display by default; if set to null, the default will be the model in model_list
 	// an array of actions that shouldn't be used in permission checking (because it saves on a lot of extra permissions)

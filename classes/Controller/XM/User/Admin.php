@@ -1060,7 +1060,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 		$mail = new Mail();
 		$mail->IsHTML();
 		$mail->AddUser($to_user->pk());
-		$mail->Subject = SHORT_NAME . ' Login Information';
+		$mail->Subject = LONG_NAME . ' Login Information';
 
 		$editing_user = Auth::instance()->get_user();
 		if ( ! empty($editing_user->username) && Valid::email($editing_user->username)) {

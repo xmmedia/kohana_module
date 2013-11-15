@@ -279,10 +279,7 @@ class XM_Form extends Kohana_Form {
 			$options['view'] = 'xm/form/radios_' . $view_name;
 		} // if
 
-		if (empty($attributes['id'])) {
-			// since we have no ID, but we need one for the labels, so just use a unique id
-			$attributes['id'] = uniqid();
-		}
+		$attributes = Form::set_attribute_id($attributes);
 
 		$fields = array();
 		foreach ($source as $radio_key => $radio_value) {
@@ -338,7 +335,8 @@ class XM_Form extends Kohana_Form {
 
 	/**
 	* generate a series of checkboxes
-	* $options['orientation'] => the way that radio buttons and checkboxes are laid out, allowed: horizontal, vertical, table (default: horizontal)
+	* $options['orientation'] => the way that radio buttons and checkboxes are laid out, allowed: horizontal, vertical, table, ul, div (default: horizontal)
+	* [!!!] `order_vertically` doesn't work with grouped checkboxes.
 	*
 	* @param mixed $name          The name attribute of the checkbox fields (will be an array)
 	* @param array $source        An array
@@ -350,33 +348,29 @@ class XM_Form extends Kohana_Form {
 	public static function checkboxes($name, $source, array $checked = NULL, array $attributes = NULL, array $options = array()) {
 		$html = '';
 
+		$checked = (array) $checked;
+		$attributes = Form::set_attribute_id($attributes);
+
 		$default_options = array(
 			'orientation' => 'table',
 			'table_tag' => TRUE,
 			'table_attributes' => array(),
 			'columns' => 2,
-			'escape_label' => TRUE,
 			'checkbox_hidden' => TRUE,
 			'source_value' => Form::$default_source_value,
 			'source_label' => Form::$default_source_label,
-			'add_nbsp' => TRUE,
 			'group_header_open' => '<strong>',
 			'group_header_close' => '</strong>',
+			'order_vertically' => TRUE,
 		);
 		$options += $default_options;
 
-		if (empty($attributes['id'])) {
-			// since we have no ID, but we need one for the labels, so just use a unique ID
-			$attributes['id'] = uniqid();
-		}
-
-		$checked = (array) $checked;
 		if (substr($name, -2, 2) != '[]') {
 			throw new Kohana_Exception('Input Error: The field name (:name) for checkboxes was missing the square brackets required', array(':name' => $name));
 		}
 
 		if ($options['checkbox_hidden']) {
-			$html .= parent::hidden($name, 0);
+			$html .= Form::hidden($name, 0);
 		}
 
 		if ($options['orientation'] == 'table' && $options['table_tag']) {
@@ -384,44 +378,59 @@ class XM_Form extends Kohana_Form {
 		}
 
 		$first_checkbox = TRUE;
-
 		$col = 1;
-		foreach ($source as $checkbox_value => $label) {
-			if (is_array($label)) { // is array so we have a sub
-				// 20101123 CSN what is this supposed to be doing and what is $id supposed to be?  right now I think it is undefined
-				if ($options['orientation'] == 'table') {
-					if ($col > 1) $html .= '</tr>';
-					$html .= EOL . '<tr><td colspan="' . HTML::chars($options['columns']) . '">' . $options['group_header_open'] . HTML::chars($id) . $options['group_header_close'] . '</td></tr>' . EOL;
-				} else {
-					$html .= HEOL . $options['group_header_open'] . HTML::chars($id) . $options['group_header_close'] . HEOL;
-				} // if
 
-				$col = 1; // restart back at column 1
+		// re-order the source vertically
+		// so the ordering goes down and then across
+		// at the moment, this doesn't work along with grouped checkboxes
+		if ($options['order_vertically']) {
+			$source_count = count($source);
+			$max_rows = ceil($source_count / $options['columns']);
 
-				foreach ($label as $sub_checkbox_value => $sub_label) {
-					$_attributes = Arr::overwrite($attributes, array(
-						'id' => $attributes['id'] . '-' . $sub_checkbox_value,
-					));
-					$_options = $options;
-					$_options['first_checkbox'] = $first_checkbox;
+			$numeric_array = array();
+			foreach ($source as $key => $value) {
+				$numeric_array[] = array(
+					'key' => $key,
+					'value' => $value,
+				);
+			}
 
-					$html .= Form::_checkbox_layout($name, $col, $sub_label, $sub_checkbox_value, $checked, $_attributes, $_options);
+			for ($row = 0; $row < $max_rows; $row ++) {
+				for ($i = $row; $i < $source_count; $i += $max_rows) {
+					$checkbox_value = $numeric_array[$i]['key'];
+					$label = $numeric_array[$i]['value'];
 
+					$html .= Form::_checkbox_build_simple($name, $col, $first_checkbox, $checkbox_value, $label, $checked, $attributes, $options);
 					$first_checkbox = FALSE;
 				}
-
-			} else { // only 1 level of checkboxes
-				$_attributes = Arr::overwrite($attributes, array(
-					'id' => $attributes['id'] . '-' . $checkbox_value,
-				));
-				$_options = $options;
-				$_options['first_checkbox'] = $first_checkbox;
-
-				$html .= Form::_checkbox_layout($name, $col, $label, $checkbox_value, $checked, $_attributes, $_options);
-
-				$first_checkbox = FALSE;
 			}
-		} // foreach source
+
+		// don't re-order vertically
+		} else {
+			foreach ($source as $checkbox_value => $label) {
+				// is array so we have a sub/grouped checkboxes
+				if (is_array($label)) {
+					if ($options['orientation'] == 'table') {
+						if ($col > 1) $html .= '</tr>';
+						$html .= EOL . '<tr><td colspan="' . HTML::chars($options['columns']) . '">' . $options['group_header_open'] . HTML::chars($label['group_header']) . $options['group_header_close'] . '</td></tr>' . EOL;
+					} else {
+						$html .= HEOL . $options['group_header_open'] . HTML::chars($label['group_header']) . $options['group_header_close'] . HEOL;
+					} // if
+
+					$col = 1; // restart back at column 1
+
+					foreach ($label as $sub_checkbox_value => $sub_label) {
+						$html .= Form::_checkbox_build_simple($name, $col, $first_checkbox, $sub_checkbox_value, $sub_label, $checked, $attributes, $options);
+						$first_checkbox = FALSE;
+					}
+
+				// only 1 level of checkboxes
+				} else {
+					$html .= Form::_checkbox_build_simple($name, $col, $first_checkbox, $checkbox_value, $label, $checked, $attributes, $options);
+					$first_checkbox = FALSE;
+				}
+			} // foreach source
+		}
 
 		if ($options['orientation'] == 'table' && $options['table_tag']) {
 			$html .= '</table>';
@@ -429,6 +438,30 @@ class XM_Form extends Kohana_Form {
 
 		return $html;
 	} // function
+
+	/**
+	 * Creates a basic checkbox layout, setting ID attribute and the `first_checkbox` option.
+	 *
+	 * @param   string  $name            The name of the field.
+	 * @param   &       $col             The column number. Used in the table orientation.
+	 * @param   boolean $first_checkbox  If this is the first checkbox in the list.
+	 * @param   int/string $value        The value of the checkbox
+	 * @param   string  $label           The value of the label.
+	 * @param   boolean $checked         If the checkbox is checked.
+	 * @param   array   $attributes      The field attributes. ID is set as a cobination of the field ID and the checkbox value.
+	 * @param   array   $options         Options.
+	 *
+	 * @return  string
+	 */
+	protected static function _checkbox_build_simple($name, & $col, $first_checkbox, $value, $label, $checked, $attributes, $options) {
+		$_attributes = Arr::overwrite($attributes, array(
+			'id' => $attributes['id'] . '-' . $value,
+		));
+		$_options = $options;
+		$_options['first_checkbox'] = $first_checkbox;
+
+		return Form::_checkbox_layout($name, $col, $label, $value, $checked, $_attributes, $_options);
+	}
 
 	/**
 	 * Runs one of the checkbox layout methods based on the orientation.
@@ -445,6 +478,9 @@ class XM_Form extends Kohana_Form {
 			case 'ul' :
 				return Form::checkbox_layout_ul($name, $label, $checkbox_value, in_array($checkbox_value, $checked), $attributes, $options);
 				break;
+			case 'div' :
+				return Form::checkbox_layout_div($name, $label, $checkbox_value, in_array($checkbox_value, $checked), $attributes, $options);
+				break;
 			default :
 				return Form::checkbox_layout($name, $label, $checkbox_value, in_array($checkbox_value, $checked), $attributes, $options);
 		}
@@ -456,27 +492,20 @@ class XM_Form extends Kohana_Form {
 		$options += array(
 			'orientation' => 'horizontal',
 			'table_tag' => TRUE,
-			'add_nbsp' => TRUE,
-			'escape_label' => TRUE,
 			'first_checkbox' => TRUE,
 		);
 
-		if (empty($attributes['id'])) {
-			// since we have no ID, but we need one for the labels, so just use a unique id
-			$attributes['id'] = uniqid();
-		}
+		$attributes = Form::set_attribute_id($attributes);
 
 		if ( ! $options['first_checkbox']) {
 			if ($options['orientation'] == 'vertical') {
 				$html .= HEOL;
-			} else if ($options['orientation'] == 'horitzonal') {
-				$html .= '&nbsp;&nbsp;&nbsp;';
 			} else {
 				$html .= EOL;
 			}
 		}
 
-		$html .= Form::checkbox($name, $value, $checked, $attributes) . '<label' . HTML::attributes(array('for' => $attributes['id'])) . '>' . ( ! $options['add_nbsp'] ? '' : '&nbsp;')  . ($options['escape_label'] ? HTML::chars($label) : $label) . '</label>';
+		$html .= Form::checkbox_with_label($label, $name, $value, $checked, $attributes, $options);
 
 		return $html;
 	} // function
@@ -487,17 +516,22 @@ class XM_Form extends Kohana_Form {
 	 * @return  string
 	 */
 	public static function checkbox_layout_ul($name, $label = '', $value, $checked = FALSE, array $attributes = NULL, array $options = array()) {
-		$options += array(
-			'add_nbsp' => TRUE,
-			'escape_label' => TRUE,
-		);
+		$attributes = Form::set_attribute_id($attributes);
 
-		// since we have no ID, but we need one for the labels, so just use a unique id
-		if (empty($attributes['id'])) {
-			$attributes['id'] = uniqid();
-		}
+		$html = '<li>' . Form::checkbox_with_label($label, $name, $value, $checked, $attributes, $options) . '</li>';
 
-		$html = '<li>' . Form::checkbox($name, $value, $checked, $attributes) . '<label' . HTML::attributes(array('for' => $attributes['id'])) . '>' . ( ! $options['add_nbsp'] ? '' : '&nbsp;')  . ($options['escape_label'] ? HTML::chars($label) : $label) . '</label></li>';
+		return $html;
+	} // function
+
+	/**
+	 * Returns an `<div>` with the checkbox and label.
+	 *
+	 * @return  string
+	 */
+	public static function checkbox_layout_div($name, $label = '', $value, $checked = FALSE, array $attributes = NULL, array $options = array()) {
+		$attributes = Form::set_attribute_id($attributes);
+
+		$html = '<div>' . Form::checkbox_with_label($label, $name, $value, $checked, $attributes, $options) . '</div>';
 
 		return $html;
 	} // function
@@ -505,20 +539,11 @@ class XM_Form extends Kohana_Form {
 	public static function checkbox_layout_table($name, & $col, $label = '', $value, $checked = FALSE, array $attributes = NULL, array $options = array()) {
 		$html = '';
 
-		$options += array(
-			'orientation' => 'table',
-			'add_nbsp' => TRUE,
-			'escape_label' => TRUE,
-		);
-
-		if (empty($attributes['id'])) {
-			// since we have no ID, but we need one for the labels, so just use a unique id
-			$attributes['id'] = uniqid();
-		}
+		$attributes = Form::set_attribute_id($attributes);
 
 		if ($col == 1) $html .= '<tr>';
 
-		$html .= '<td>' . Form::checkbox($name, $value, $checked, $attributes) . '<label' . HTML::attributes(array('for' => $attributes['id'])) . '>' . ( ! $options['add_nbsp'] ? '' : '&nbsp;')  . ($options['escape_label'] ? HTML::chars($label) : $label) . '</label></td>' . EOL;
+		$html .= '<td>' . Form::checkbox_with_label($label, $name, $value, $checked, $attributes, $options) . '</td>' . EOL;
 
 		++ $col;
 
@@ -529,6 +554,30 @@ class XM_Form extends Kohana_Form {
 
 		return $html;
 	} // function
+
+	/**
+	 * Returns the checkbox with the label after it.
+	 *
+	 * @param   string  $label       The checkbox label (just the string, not the HTMl).
+	 * @param   string  $name        The name of the checkbox
+	 * @param   int/string $value    The value of the checkbox.
+	 * @param   boolean $checked     Checked status.
+	 * @param   array   $attributes  HTML attributes.
+	 * @param   array   $options     Options.
+	 *
+	 * Type      | Setting    | Description                                    | Default Value
+	 * ----------|------------|------------------------------------------------|---------------
+	 * `boolean` | escape_label | If TRUE, the label will be escaped before being passed to `Form::label()` | `TRUE`
+	 *
+	 * @return  string
+	 */
+	public static function checkbox_with_label($label, $name, $value, $checked, $attributes, $options) {
+		$options += array(
+			'escape_label' => TRUE,
+		);
+
+		return Form::checkbox($name, $value, $checked, $attributes) . Form::label($attributes['id'], ($options['escape_label'] ? HTML::chars($label) : $label));
+	}
 
 	/**
 	* Pass an empty (string), FALSE (bool), 0000-00-00 (string), 0000-00-00 00:00:00 (string) or an invalid date to get a blank field.
@@ -580,7 +629,6 @@ class XM_Form extends Kohana_Form {
 			'year_order' => 'DESC',
 			'year_start' => date('Y') - 80,
 			'year_end' => date('Y'),
-			'add_nbsp' => TRUE,
 			'month' => TRUE,
 			'day' => TRUE,
 			'year' => TRUE,
@@ -637,7 +685,6 @@ class XM_Form extends Kohana_Form {
 
 				$html .= Form::select($name . '[month]', $months, $month, $month_attributes, $options['month_options']);
 			}
-			$html .= ! $options['add_nbsp'] ? '' : '&nbsp;';
 		}
 
 		if ($options['day']) {
@@ -655,7 +702,6 @@ class XM_Form extends Kohana_Form {
 
 				$html .= Form::select($name . '[day]', $days, $day, $day_attributes, $options['day_options']);
 			}
-			$html .= ! $options['add_nbsp'] ? '' : '&nbsp;';
 		}
 
 		if ($options['year']) {
@@ -1349,10 +1395,7 @@ class XM_Form extends Kohana_Form {
 		);
 		$options += $default_options;
 
-		if (empty($attributes['id'])) {
-			// since we have no ID, but we need one for the labels, so just use a unique id
-			$attributes['id'] = uniqid();
-		}
+		$attributes = Form::set_attribute_id($attributes);
 
 		$radios = array();
 		foreach ($source as $radio_key => $radio_value) {
@@ -1407,4 +1450,20 @@ class XM_Form extends Kohana_Form {
 
 		return $html;
 	} // function hidden_array
+
+	/**
+	 * Sets the `id` attribute if it's not already set to a unique ID.
+	 * Returns the updated attributes.
+	 *
+	 * @param  array  $attributes  The attributes.
+	 * @return array
+	 */
+	protected static function set_attribute_id(array $attributes) {
+		// since we have no ID, but we need one for the labels, so just use a unique id
+		if (empty($attributes['id'])) {
+			$attributes['id'] = uniqid();
+		}
+
+		return $attributes;
+	}
 } // class XM_Form

@@ -122,15 +122,15 @@ class Controller_XM_Login extends Controller_Private {
 							}
 						}
 
+						// they have permission to access the page, so redirect them there
 						if (isset($next_controller) && Auth::instance()->allowed($next_controller, $found_params['action'])) {
-							// they have permission to access the page, so redirect them there
 							$this->login_success_redirect($redirect);
+						// they don't have permission to access the page, so just go to the default page
 						} else {
-							// they don't have permission to access the page, so just go to the default page
 							$this->login_success_redirect();
 						}
+					// redirect to the defualt location
 					} else {
-						// redirect to the defualt location (by default this is user account)
 						$this->login_success_redirect();
 					}
 
@@ -251,9 +251,9 @@ class Controller_XM_Login extends Controller_Private {
 	*/
 	public function action_timeoutpost() {
 		// we want to redirect the user to the previous form, first creating the form and then submitting it with JS
-		$session_key = Kohana::$config->load('xm_login.timeout_post_session_key');
+		$timeout_post_session_key = Kohana::$config->load('xm_login.timeout_post_session_key');
 
-		$timeout_post = Session::instance()->get(Kohana::$config->load('xm_login.timeout_post_session_key'));
+		$timeout_post = Session::instance()->get($timeout_post_session_key);
 		if ( ! Kohana::$config->load('xm_login.enable_timeout_post') || empty($timeout_post)) {
 			$this->login_success_redirect();
 		}
@@ -271,7 +271,7 @@ class Controller_XM_Login extends Controller_Private {
 			$this->template->body_html = $form_html;
 			$this->add_on_load_js('$(\'#timeout_post\').submit();');
 
-			Session::instance()->delete(Kohana::$config->load('xm_login.timeout_post_session_key'));
+			Session::instance()->delete($timeout_post_session_key);
 		} catch (Exception $e) {
 			Kohana_Exception::handler_continue($e);
 			$this->login_success_redirect();

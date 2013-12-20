@@ -181,7 +181,7 @@ class XM_ORM_File extends ORM_FieldType {
 			$link = $file_options['file_download_url'] . '/' . $value;
 
 		// no file_download_url but there is a target route, so use it
-		} else if ( ! empty($file_options['target_route'])) {
+		} else if ( ! empty($file_options['target_route']) && $orm_model->loaded()) {
 			// try to determine the model name
 			if ( ! empty($file_options['model_name'])) {
 				$model_name = $file_options['model_name'];

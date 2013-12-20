@@ -21,6 +21,10 @@ class Controller_XM_Model_Create extends Controller_Private {
 	public function before() {
 		parent::before();
 
+		if ($this->auto_render) {
+			$this->template->page_title = 'Model Create - ' . $this->page_title_append;
+		}
+
 		$this->add_css();
 	} // function before
 

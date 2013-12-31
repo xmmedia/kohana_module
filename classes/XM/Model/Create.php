@@ -137,8 +137,19 @@ class XM_Model_Create {
 			$label = substr($column_name, 0, strrpos($column_name, '_'));
 		} else if ($column_name == 'id') {
 			$label = 'ID';
+		} else if (isset($this->options['special_labels'][$column_name])) {
+			$label = $this->options['special_labels'][$column_name];
 		} else {
 			$label = $column_name;
+
+			// attempt to find the special labels within a field
+			// we add underscores on both ends, only the beginning and only the end so we only find part of column name
+			// and only whole "words"
+			foreach ($this->options['special_labels'] as $special_column_name => $special_label) {
+				$_search = array('_' . $special_column_name . '_', '_' . $special_column_name, $special_column_name . '_');
+				$_replace = array('_' . $special_label . '_', '_' . $special_label, $special_label . '_');
+				$label = str_replace($_search, $_replace, $label);
+			}
 		}
 
 		return XM::underscores_to_words($label);
@@ -529,7 +540,7 @@ class XM_Model_Create {
 		$model_code .= TAB . 'public function labels() {' . EOL;
 		$model_code .= TAB . TAB . 'return array(' . EOL;
 		foreach ($this->columns as $column_name => $column_data) {
-			$label = (isset($this->options['special_labels'][$column_name]) ? $this->options['special_labels'][$column_name] : $this->make_column_label($column_name));
+			$label = $this->make_column_label($column_name);
 			$model_code .= TAB . TAB . TAB . '\'' . $column_name . '\' => \'' . $label . '\',' . EOL;
 		} // foreach
 		$model_code .= TAB . TAB . ');' . EOL;

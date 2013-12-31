@@ -52,6 +52,6 @@
 	</div>
 
 	<div class="page_top">
-		<div class="page_top_logo"><a href="<?php echo URL::base(); ?>"><?php echo HTML::chars(LONG_NAME); if (isset($pageTitle) && trim($pageTitle) != '') echo ' - ' . HTML::chars($pageTitle); ?></a></div>
+		<div class="page_top_logo"><a href="<?php echo URL::base(); ?>"><?php echo HTML::chars(LONG_NAME); ?></a></div>
 	</div>
 </header>

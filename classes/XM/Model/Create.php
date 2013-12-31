@@ -229,7 +229,7 @@ class XM_Model_Create {
 		// try to detect the field type
 		$last_field_part = substr($column_name, strrpos($column_name, '_'));
 
-		if ($last_field_part == '_flag' || ($column_data['data_type'] == 'tinyint' && $column_data['display'] == '1')) {
+		if ($last_field_part == '_flag' || (($column_data['data_type'] == 'tinyint' || $column_data['data_type'] == 'tinyint unsigned') && $column_data['display'] == '1')) {
 			$meta_data['field_type'] = 'Checkbox';
 		}
 		if ($last_field_part == '_id') {

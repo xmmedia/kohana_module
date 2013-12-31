@@ -232,14 +232,15 @@ class XM_Core extends Kohana_Core {
 	} // function
 
 	/**
-	* generate a nicer looking name by replacing _ (underscores) with spaces and upper casing words
-	*
-	* @param mixed $name
-	* @return string
-	*/
+	 * Generates a nicer looking name by replacing _ (underscores) with spaces and making the first letter of words upper case.
+	 *
+	 * @param   string  $name  The string replace the underscores in.
+	 *
+	 * @return  string
+	 */
 	public static function underscores_to_words($name) {
-		return ucwords(str_replace('_',' ',$name));
-	} // function
+		return ucwords(str_replace('_', ' ', $name));
+	}
 
 	/**
 	* Recursively translates all the values and optionally the keys of an array

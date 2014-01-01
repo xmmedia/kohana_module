@@ -108,6 +108,7 @@ class XM_Kohana_Exception extends Kohana_Kohana_Exception {
 				// Log the exception
 				Kohana_Exception::log($e);
 				Kohana_Exception::notify($e);
+				Kohana_Exception::store($e);
 
 				if (PHP_SAPI == 'cli') {
 					echo Kohana_Exception::text($e), PHP_EOL;
@@ -245,6 +246,114 @@ class XM_Kohana_Exception extends Kohana_Kohana_Exception {
 			Kohana::$log->write();
 		}
 	} // function notify
+
+	/**
+	 * Notifies the programmer about the error that occured, including the full stack trace.
+	 * Sends an email with the HTML stack trace attached to the file.
+	 * IF the email fails, it will log that error as well.
+	 *
+	 * @param   Exception  $e
+	 * @return  void
+	 */
+	public static function store(Exception $e) {
+		try {
+			// Get the exception information
+			$class   = get_class($e);
+			$code    = $e->getCode();
+			$message = $e->getMessage();
+			$file    = $e->getFile();
+			$line    = $e->getLine();
+			$trace   = $e->getTrace();
+
+			/**
+			 * HTTP_Exceptions are constructed in the HTTP_Exception::factory()
+			 * method. We need to remove that entry from the trace and overwrite
+			 * the variables from above.
+			 */
+			if ($e instanceof HTTP_Exception AND $trace[0]['function'] == 'factory') {
+				extract(array_shift($trace));
+			}
+
+			if ($e instanceof ErrorException) {
+				/**
+				 * If XDebug is installed, and this is a fatal error,
+				 * use XDebug to generate the stack trace
+				 */
+				if (function_exists('xdebug_get_function_stack') AND $code == E_ERROR) {
+					$trace = array_slice(array_reverse(xdebug_get_function_stack()), 4);
+
+					foreach ($trace as & $frame) {
+						/**
+						 * XDebug pre 2.1.1 doesn't currently set the call type key
+						 * http://bugs.xdebug.org/view.php?id=695
+						 */
+						if ( ! isset($frame['type'])) {
+							$frame['type'] = '??';
+						}
+
+						// XDebug also has a different name for the parameters array
+						if (isset($frame['params']) AND ! isset($frame['args'])) {
+							$frame['args'] = $frame['params'];
+						}
+					}
+				}
+
+				if (isset(Kohana_Exception::$php_errors[$code])) {
+					// Use the human-readable error name
+					$code = Kohana_Exception::$php_errors[$code];
+				}
+			}
+
+			/**
+			 * The stack trace becomes unmanageable inside PHPUnit.
+			 *
+			 * The error view ends up several GB in size, taking
+			 * serveral minutes to render.
+			 */
+			if (defined('PHPUnit_MAIN_METHOD')) {
+				$trace = array_slice($trace, 0, 2);
+			}
+
+			$error_log_filename = Error::error_log_dir() . DIRECTORY_SEPARATOR . uniqid(time() . '_') . EXT;
+
+			$error_data = array(
+				'timestamp' => time(),
+				'message' => Kohana_Exception::text($e),
+				'class' => $class,
+				'code' => $code,
+				'message' => $message,
+				'file' => $file,
+				'line' => $line,
+				'trace' => $trace,
+				'html' => (string) View::factory(Kohana_Exception::$error_view, get_defined_vars()),
+			);
+
+			foreach (array('_GET' => 'get', '_POST' => 'post', '_FILES' => 'files', '_COOKIE' => 'cookie', '_SERVER' => 'server') as $global_var => $_var) {
+				if (empty($GLOBALS[$global_var]) || ! is_array($GLOBALS[$global_var])) {
+					continue;
+				}
+
+				$error_data[$_var] = $GLOBALS[$global_var];
+			}
+
+			if ( ! empty(Session::$instances)) {
+				$error_data['session'] = Session::instance()->as_array();
+			} else if (isset($_SESSION)) {
+				$error_data['session'] = $_SESSION;
+			}
+
+			file_put_contents($error_log_filename, Error::error_log_file_prefix() . json_encode($error_data));
+
+		// catch a PhpMailer exception
+		} catch (phpmailerException $e) {
+			Kohana::$log->add(Log::ERROR, $error_email->ErrorInfo);
+			Kohana::$log->write();
+		// catch a general exception
+		} catch (Exception $e) {
+			Kohana::$log->add(Log::ERROR, Kohana_Exception::text($e));
+			Kohana::$log->write();
+		}
+	} // function store
 
 	/**
 	 * Returns an JSON data for AJAX.

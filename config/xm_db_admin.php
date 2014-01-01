@@ -25,6 +25,7 @@ return array(
 		'Content' => 'Content',
 		'Content_History' => 'Content - History',
 		'Content_Page' => 'Content - Page',
+		'Error_Log' => 'Error Logs',
 		'Group' => 'Groups',
 		'Group_Permission' => 'Group - Permissions',
 		'Permission' => 'Permissions',

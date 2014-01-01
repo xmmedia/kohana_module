@@ -143,9 +143,20 @@ class XM_Nav {
 					}
 
 					$sub_nav_tags[] = '<ul' . HTML::attributes(array('class' => $css_class)) . '>';
+
+					$sub_nav_items = array();
 					foreach ($nav_item['item_details']['sub_menu']['items'] as $_item_name => $_item_details) {
 						$_item_details += Nav::$nav_item_defaults;
 
+						$sub_nav_items[$_item_details['order']] = array(
+							'label' => $_item_name,
+							'item_details' => $_item_details,
+						);
+					}
+
+					ksort($sub_nav_items);
+
+					foreach ($sub_nav_items as $_item_details) {
 						if ( ! Nav::allowed($logged_in, $_item_details['item_details'])) {
 							continue;
 						}

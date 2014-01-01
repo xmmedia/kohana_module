@@ -97,7 +97,6 @@ class XM_Nav {
 			$nav_tags[] = '<ul' . HTML::attributes(array('class' => Nav::$navs[$nav]['class'])) . '>';
 
 			$nav_items = array();
-
 			foreach (Nav::$navs[$nav]['items'] as $nav_item => $item_details) {
 				Nav::$navs[$nav]['items'][$nav_item] += Nav::$nav_item_defaults;
 
@@ -114,13 +113,7 @@ class XM_Nav {
 				$current_nav_tags = array();
 				$sub_nav_tags = array();
 
-				// check to see if they're required to be logged in or logged out to see the menu/menu item
-				if (($nav_item['item_details']['logged_in_only'] && ! $logged_in) || ($nav_item['item_details']['logged_out_only'] && $logged_in)) {
-					continue;
-				}
-
-				// check to see if there is a required perm & if they have it to see the menu/menu item
-				if ( ! $nav_item['item_details']['perm'] || (is_string($nav_item['item_details']['perm']) && ! Auth::instance()->allowed($nav_item['item_details']['perm']))) {
+				if ( ! Nav::allowed($logged_in, $nav_item['item_details'])) {
 					continue;
 				}
 
@@ -137,17 +130,11 @@ class XM_Nav {
 
 				$current_nav_tags[] = '<li' . HTML::attributes(array('class' => $css_class)) . '>';
 
-				if (isset($nav_item['item_details']['route'])) {
-					$uri = Route::get($nav_item['item_details']['route'])->uri($nav_item['item_details']['params']);
-				} else {
-					$uri = $nav_item['item_details']['uri'];
-				}
-
 				$label = $nav_item['label'];
 				if (isset($nav_item['item_details']['menu_replace'])) {
 					$label = Nav::get_replace_label($nav_item['item_details']['menu_replace']);
 				}
-				$current_nav_tags[] = HTML::anchor($uri, $label . ($has_subnav ? Nav::$sub_nav_more_tag : ''));
+				$current_nav_tags[] = HTML::anchor(Nav::uri($nav_item['item_details']), $label . ($has_subnav ? Nav::$sub_nav_more_tag : ''));
 
 				if ($has_subnav) {
 					$css_class = Nav::$sub_nav_css_class;
@@ -156,37 +143,36 @@ class XM_Nav {
 					}
 
 					$sub_nav_tags[] = '<ul' . HTML::attributes(array('class' => $css_class)) . '>';
+
+					$sub_nav_items = array();
 					foreach ($nav_item['item_details']['sub_menu']['items'] as $_item_name => $_item_details) {
 						$_item_details += Nav::$nav_item_defaults;
 
-						// check to see if they're required to be logged in to see the menu/menu item
-						if (($_item_details['logged_in_only'] && ! $logged_in) || ($_item_details['logged_out_only'] && $logged_in)) {
-							continue;
-						}
+						$sub_nav_items[$_item_details['order']] = array(
+							'label' => $_item_name,
+							'item_details' => $_item_details,
+						);
+					}
 
-						// check to see if there is a required perm & if they have it to see the menu/menu item
-						if ( ! $_item_details['perm'] || (is_string($_item_details['perm']) && ! Auth::instance()->allowed($_item_details['perm']))) {
+					ksort($sub_nav_items);
+
+					foreach ($sub_nav_items as $_item_details) {
+						if ( ! Nav::allowed($logged_in, $_item_details['item_details'])) {
 							continue;
 						}
 
 						$css_class = NULL;
-						if ( ! empty($_item_details['class'])) {
-							$css_class .= $_item_details['class'];
+						if ( ! empty($_item_details['item_details']['class'])) {
+							$css_class .= $_item_details['item_details']['class'];
 						}
 
 						$sub_nav_tags[] = '<li' . HTML::attributes(array('class' => $css_class)) . '>';
 
-						if (isset($_item_details['route'])) {
-							$uri = Route::get($_item_details['route'])->uri($_item_details['params']);
-						} else {
-							$uri = $_item_details['uri'];
+						$_label = $_item_details['label'];
+						if (isset($_item_details['item_details']['menu_replace'])) {
+							$_label = Nav::get_replace_label($_item_details['item_details']['menu_replace']);
 						}
-
-						$_label = $_item_name;
-						if (isset($_item_details['menu_replace'])) {
-							$_label = Nav::get_replace_label($_item_details['menu_replace']);
-						}
-						$sub_nav_tags[] = HTML::anchor($uri, $_label);
+						$sub_nav_tags[] = HTML::anchor(Nav::uri($_item_details['item_details']), $_label);
 
 						$sub_nav_tags[] = '</li>'; // sub nav item
 					}
@@ -211,6 +197,44 @@ class XM_Nav {
 			return implode('', $nav_tags);
 		} else {
 			return NULL;
+		}
+	}
+
+	/**
+	 * Checks if the user is allowed to see the nav item.
+	 * TRUE if allowed, FALSE if not allowed.
+	 *
+	 * @param   boolean  $logged_in     If the user is logged in.
+	 * @param   array    $item_details  The nav item details, including logged_in_only, logged_out_only and perm keys.
+	 *
+	 * @return  boolean
+	 */
+	public static function allowed($logged_in, $item_details) {
+		// check to see if they're required to be logged in or logged out to see the menu/menu item
+		if (($item_details['logged_in_only'] && ! $logged_in) || ($item_details['logged_out_only'] && $logged_in)) {
+			return FALSE;
+		}
+
+		// check to see if there is a required perm & if they have it to see the menu/menu item
+		if ( ! $item_details['perm'] || (is_string($item_details['perm']) && ! Auth::instance()->allowed($item_details['perm']))) {
+			return FALSE;
+		}
+
+		return TRUE;
+	}
+
+	/**
+	 * Returns the URI based on the route or uri keys.
+	 *
+	 * @param   array  $item_details  The items details, includ the route, params and uri keys.
+	 *
+	 * @return  string
+	 */
+	public static function uri($item_details) {
+		if (isset($item_details['route'])) {
+			return Route::get($item_details['route'])->uri($item_details['params']);
+		} else {
+			return $item_details['uri'];
 		}
 	}
 

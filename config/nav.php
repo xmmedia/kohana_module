@@ -32,10 +32,17 @@ return array(
 				'sub_menu' => array(
 					// the items in the sub nav
 					'items' => array(
+						'Content Admin' => array(
+							'route' => 'content_admin',
+							'perm' => 'content_admin',
+							'class' => 'content_admin',
+							'order' => 100,
+						),
 						'User Admin' => array(
 							'route' => 'user_admin',
 							'perm' => 'user_admin/index',
 							'class' => 'user_admin',
+							'order' => 200,
 						),
 						'Groups / Permissions' => array(
 							// the route to use to generate the uri
@@ -45,16 +52,13 @@ return array(
 							// the permission to use to check if the user has permission to the nav item
 							'perm' => 'user_admin/group/index',
 							'class' => 'user_admin_groups',
-						),
-						'Content Admin' => array(
-							'route' => 'content_admin',
-							'perm' => 'content_admin',
-							'class' => 'content_admin',
+							'order' => 300,
 						),
 						'DB Admin' => array(
 							'route' => 'xm_db_admin',
 							'perm' => 'xm_db_admin',
 							'class' => 'xm_db_admin',
+							'order' => 400,
 						),
 						'Kohana User Guide' => array(
 							'route' => 'docs/guide',
@@ -62,21 +66,25 @@ return array(
 							// in which case, TRUE will show the nav item and FALSE will hide it
 							'perm' => (XM::is_dev() && Auth::instance()->allowed('userguide')),
 							'class' => 'user_guide',
+							'order' => 500,
 						),
 						'Kohana API Browser' => array(
 							'route' => 'docs/api',
 							'perm' => (XM::is_dev() && Auth::instance()->allowed('userguide')),
 							'class' => 'user_guide_api',
+							'order' => 600,
 						),
 						'Model Create' => array(
 							'route' => 'model_create',
 							'perm' => (XM::is_dev() && Auth::instance()->allowed('xm_db_admin/model_create')),
 							'class' => 'model_create',
+							'order' => 600,
 						),
 						'DB Change' => array(
 							'route' => 'db_change',
 							'perm' => 'db_change/index',
 							'class' => 'db_change',
+							'order' => 700,
 						),
 					),
 				),
@@ -104,11 +112,13 @@ return array(
 							'params' => array('action' => 'profile'),
 							'perm' => 'account/profile',
 							'class' => 'account',
+							'order' => 100,
 						),
 						'Logout' => array(
 							'route' => 'login',
 							'params' => array('action' => 'logout'),
 							'class' => 'logout',
+							'order' => 200,
 						),
 					),
 				),

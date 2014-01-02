@@ -3,7 +3,7 @@
 /**
 * provides file upload/copy/move features
 */
-class XM_File {
+class XM_XMFile {
 	/**
 	* Options for use within the object
 	* @var array

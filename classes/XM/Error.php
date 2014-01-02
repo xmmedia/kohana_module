@@ -26,8 +26,26 @@ class XM_Error {
 		return Kohana::FILE_SECURITY . ' ?>'. PHP_EOL . PHP_EOL;
 	}
 
+	public static function error_log_file($file) {
+		return realpath(Error::error_log_dir() . DIRECTORY_SEPARATOR . $file);
+	}
+
+	public static function delete_error_log_file($file) {
+		$error_log_file = Error::error_log_file($file);
+		if (empty($error_log_file)) {
+			throw new Kohana_Exception('The error log file could not be found: :file', array(':file' => Debug::path($file)));
+		}
+
+		if ( ! unlink($error_log_file)) {
+			throw new Kohana_Exception('The error log file could be deleted: :file', array(':file' => Debug::path($file)));
+		}
+	}
+
 	public static function parse($file) {
-		$error_log_file = Error::error_log_dir() . DIRECTORY_SEPARATOR . $file;
+		$error_log_file = Error::error_log_file($file);
+		if (empty($error_log_file)) {
+			throw new Kohana_Exception('The error log file could not be found: :file', array(':file' => Debug::path($file)));
+		}
 
 		$error_log = file_get_contents($error_log_file);
 		if (empty($error_log)) {
@@ -89,7 +107,7 @@ class XM_Error {
 			}
 		}
 
-		$error_log_model->save();
+		return $error_log_model->save();
 	}
 
 	public static function check_json_error() {

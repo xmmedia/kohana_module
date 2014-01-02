@@ -10,7 +10,6 @@
  */
 class XM_Task_Error_Log_Parse extends Minion_Task {
 	protected $_options = array(
-		'file' => NULL,
 		'delete_file' => TRUE,
 	);
 
@@ -30,8 +29,8 @@ class XM_Task_Error_Log_Parse extends Minion_Task {
 		Minion_CLI::write('Parsed error log: ' . $params['file']);
 	}
 
-	public function build_validation(Validation $validation) {
+	/*public function build_validation(Validation $validation) {
 		return parent::build_validation($validation)
 			->rule('file', 'not_empty');
-	}
+	}*/
 }

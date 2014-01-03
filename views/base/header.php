@@ -3,7 +3,6 @@
 		<nav>
 			<?php echo Nav::get('private'); ?>
  			<?php echo Nav::get('private_right'); ?>
-
 		</nav>
 	</div>
 

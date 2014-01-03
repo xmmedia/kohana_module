@@ -6,7 +6,7 @@
  * @package    XM
  * @category   Models
  * @author     XM Media Inc.
- * @copyright  (c) 2013 XM Media Inc.
+ * @copyright  (c) 2014 XM Media Inc.
  */
 class Model_XM_Error_Log extends ORM {
 	protected $_table_names_plural = FALSE;
@@ -212,5 +212,14 @@ class Model_XM_Error_Log extends ORM {
 			'html' => 'HTML',
 			'resolved' => 'Resolved',
 		);
+	}
+
+	/**
+	 * Returns the Debug::path() version of the file path.
+	 *
+	 * @return  string
+	 */
+	public function clean_file() {
+		return Debug::path($this->file);
 	}
 } // class

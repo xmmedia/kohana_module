@@ -1,0 +1,3 @@
+<p>The following error occured on <?php echo HTML::chars(LONG_NAME); ?> at <?php echo HTML::chars($error_log_model->datetime); ?>:
+<p style="padding-left: 30px;"><?php echo HTML::chars($error_log_model->message), ' in ', HTML::chars($error_log_model->clean_file()), ' on line ', HTML::chars($error_log_model->line); ?></p>
+<p>There are <strong>unresolved <?php echo $occurances, ' ', Inflector::plural('occurance', $occurances); ?></strong> of this error.</p>

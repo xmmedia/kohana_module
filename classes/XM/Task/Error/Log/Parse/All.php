@@ -19,21 +19,22 @@ class XM_Task_Error_Log_Parse_All extends Minion_Task {
 	 * @return null
 	 */
 	protected function _execute(array $params) {
-		$file_count = 0;
+		$_error_log_files = Directory_Helper::list_files(Error::error_log_dir(), FALSE);
+		$error_log_files = array();
+		foreach ($_error_log_files as $_error_log_file) {
+			$error_log_files[] = str_replace(Error::error_log_dir() . DIRECTORY_SEPARATOR, '', $_error_log_file);
+		}
 
-		$error_log_files = Directory_Helper::list_files(Error::error_log_dir(), FALSE);
+		$file_count = count($error_log_files);
+
+		Error::parse($error_log_files);
+
+		if ($params['delete_files']) {
+			Error::delete_error_log_file($error_log_files);
+		}
+
 		foreach ($error_log_files as $error_log_file) {
-			$error_log_file = str_replace(Error::error_log_dir() . DIRECTORY_SEPARATOR, '', $error_log_file);
-
-			Error::parse($error_log_file);
-
-			if ($params['delete_files']) {
-				Error::delete_error_log_file($error_log_file);
-			}
-
 			Minion_CLI::write('Parsed error log: ' . $error_log_file);
-
-			++ $file_count;
 		}
 
 		Minion_CLI::write('Parsing successful. Parsed ' . $file_count . ' ' . Inflector::plural('file', $file_count) . '.');

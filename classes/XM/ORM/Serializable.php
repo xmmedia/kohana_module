@@ -2,7 +2,14 @@
 
 class XM_ORM_Serializable extends ORM_TextArea {
 	public static function edit($column_name, $html_name, $body, array $attributes = NULL, array $options = array(), ORM $orm_model = NULL) {
-		return Form::textarea($html_name, json_encode($body), $attributes)
+		// if the value is NULL, then we don't want to display anything
+		if ($body === NULL) {
+			$body = '';
+		} else {
+			$body = json_encode($body);
+		}
+
+		return Form::textarea($html_name, $body, $attributes)
 			// display a little extra help regarding using JSONmate to edit
 			. View::factory('xm/field_help')
 				->set('mode', 'edit')

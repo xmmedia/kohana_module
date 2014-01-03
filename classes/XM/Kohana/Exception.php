@@ -230,7 +230,7 @@ class XM_Kohana_Exception extends Kohana_Kohana_Exception {
 			$error_email = new Mail();
 			$error_email->AddAddress(XM::get_error_email());
 			$error_email->Subject = 'Error on ' . LONG_NAME;
-			$error_email->MsgHTML(Kohana_Exception::text($e));
+			$error_email->MsgHTML(HTML::chars(Kohana_Exception::text($e)));
 
 			$error_email->AddStringAttachment($view, 'error_details.html', 'base64', 'text/html');
 

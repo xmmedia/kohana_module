@@ -60,31 +60,37 @@ return array(
 							'class' => 'xm_db_admin',
 							'order' => 400,
 						),
+						'Error Admin' => array(
+							'route' => 'error_admin',
+							// 'perm' => 'error_admin',
+							'class' => 'error_admin',
+							'order' => 500,
+						),
 						'Kohana User Guide' => array(
 							'route' => 'docs/guide',
 							// instead of a string, the 'perm' key can also be a boolean
 							// in which case, TRUE will show the nav item and FALSE will hide it
 							'perm' => (XM::is_dev() && Auth::instance()->allowed('userguide')),
 							'class' => 'user_guide',
-							'order' => 500,
+							'order' => 600,
 						),
 						'Kohana API Browser' => array(
 							'route' => 'docs/api',
 							'perm' => (XM::is_dev() && Auth::instance()->allowed('userguide')),
 							'class' => 'user_guide_api',
-							'order' => 600,
+							'order' => 700,
 						),
 						'Model Create' => array(
 							'route' => 'model_create',
 							'perm' => (XM::is_dev() && Auth::instance()->allowed('xm_db_admin/model_create')),
 							'class' => 'model_create',
-							'order' => 600,
+							'order' => 800,
 						),
 						'DB Change' => array(
 							'route' => 'db_change',
 							'perm' => 'db_change/index',
 							'class' => 'db_change',
-							'order' => 700,
+							'order' => 900,
 						),
 					),
 				),

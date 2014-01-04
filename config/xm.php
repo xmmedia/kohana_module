@@ -10,6 +10,7 @@ return array(
 		'db_change' => TRUE,
 		'user_admin' => TRUE,
 		'change_script' => FALSE,
+		'error_admin' => TRUE,
 	),
 
 	// if in production (based on Kohana::$environment), then email the errors including the HTML view including the trace

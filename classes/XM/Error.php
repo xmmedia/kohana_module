@@ -139,7 +139,7 @@ class XM_Error {
 				$send_email = TRUE;
 			}
 
-			if ( ! $send_email) {
+			if ($send_email) {
 				$error_log_model = ORM::factory('Error_Log', $_error_log_ids[0]);
 				if ( ! $error_log_model->loaded()) {
 					throw new Kohana_Exception('Unable to load the error log: :error_log_id', array(':error_log_id' => $_error_log_ids[0]));
@@ -152,7 +152,7 @@ class XM_Error {
 				$error_email = new Mail();
 				$error_email->AddAddress(XM::get_error_email());
 				$error_email->Subject = 'Error on ' . LONG_NAME . ' - ' . Text::limit_chars($error_log_model->message); // limit msg to 100 chars
-				$error_email->MsgHTML((string) View::factory('error/email')
+				$error_email->MsgHTML((string) View::factory('error_admin/notification_email')
 					->bind('error_log_model', $error_log_model)
 					->bind('occurances', $occurances));
 

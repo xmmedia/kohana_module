@@ -75,6 +75,7 @@ class XM_Error {
 					'message' => $error_data['message'],
 					'file' => $error_data['file'],
 					'line' => $error_data['line'],
+					'code' => $error_data['code'],
 					'trace' => $error_data['trace'],
 					'html' => $error_data['html'],
 				));

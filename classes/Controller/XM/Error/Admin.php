@@ -42,7 +42,7 @@ class Controller_XM_Error_Admin extends Controller_Private {
 		foreach ((array) $error_log->server as $key => $value) {
 			$server_items[] = (string) View::factory('error_admin/view_item')
 				->bind('key', $key)
-				->set('value', Debug::vars($value))
+				->set('value', $value)
 				->set('pre', TRUE);
 		}
 		if ( ! empty($server_items)) {
@@ -55,7 +55,7 @@ class Controller_XM_Error_Admin extends Controller_Private {
 		foreach ((array) $error_log->post as $key => $value) {
 			$post_items[] = (string) View::factory('error_admin/view_item')
 				->bind('key', $key)
-				->set('value', Debug::vars($value))
+				->set('value', $value)
 				->set('pre', TRUE);
 		}
 		if ( ! empty($post_items)) {
@@ -68,7 +68,7 @@ class Controller_XM_Error_Admin extends Controller_Private {
 		foreach ((array) $error_log->get as $key => $value) {
 			$get_items[] = (string) View::factory('error_admin/view_item')
 				->bind('key', $key)
-				->set('value', Debug::vars($value))
+				->set('value', $value)
 				->set('pre', TRUE);
 		}
 		if ( ! empty($get_items)) {
@@ -81,7 +81,7 @@ class Controller_XM_Error_Admin extends Controller_Private {
 		foreach ((array) $error_log->files as $key => $value) {
 			$file_items[] = (string) View::factory('error_admin/view_item')
 				->bind('key', $key)
-				->set('value', Debug::vars($value))
+				->set('value', $value)
 				->set('pre', TRUE);
 		}
 		if ( ! empty($file_items)) {
@@ -94,7 +94,7 @@ class Controller_XM_Error_Admin extends Controller_Private {
 		foreach ((array) $error_log->cookie as $key => $value) {
 			$cookie_items[] = (string) View::factory('error_admin/view_item')
 				->bind('key', $key)
-				->set('value', Debug::vars($value))
+				->set('value', $value)
 				->set('pre', TRUE);
 		}
 		if ( ! empty($cookie_items)) {
@@ -107,7 +107,7 @@ class Controller_XM_Error_Admin extends Controller_Private {
 		foreach ((array) $error_log->session as $key => $value) {
 			$session_items[] = (string) View::factory('error_admin/view_item')
 				->bind('key', $key)
-				->set('value', Debug::vars($value))
+				->set('value', $value)
 				->set('pre', TRUE);
 		}
 		if ( ! empty($session_items)) {
@@ -136,11 +136,62 @@ class Controller_XM_Error_Admin extends Controller_Private {
 			$similar_errors = '<p class="no_errors">No similar errors.</p>';
 		}
 
+		$error_id = uniqid('error');
+
+		$trace_items = array();
+		foreach ($error_log->trace as $i => $step) {
+			$trace_item = '<li>
+				<p>
+					<span class="file">';
+					if ($step['file']) {
+						$source_id = $error_id . 'source' . $i;
+						$trace_item .= '<a href="#' . $source_id . '" onclick="return koggle(\'' . $source_id . '\')">' . Debug::path($step['file']) . ' [ ' . $step['line'] . ' ]</a>';
+					} else {
+						$trace_item .= '{' . __('PHP internal call') . '}';
+					}
+					$trace_item .= '</span>
+						&raquo;
+						' . $step['function']  . '(';
+
+					if ($step['args']) {
+						$args_id = $error_id . 'args' . $i;
+						$trace_item .= '<a href="#' . $args_id . '" onclick="return koggle(\'' . $args_id . '\')">' . __('arguments') . '</a>';
+					}
+					$trace_item .= ')'
+				 . '</p>';
+
+				if (isset($args_id)) {
+					$trace_item .= '<div id="' . $args_id . '" class="collapsed">
+					<table cellspacing="0">';
+					foreach ($step['args'] as $name => $arg) {
+						$trace_item .= '<tr>
+							<td><code>' . $name . '</code></td>
+							<td><pre>' . $arg . '</pre></td>
+						</tr>';
+					}
+					$trace_item .= '</table>
+					</div>';
+				}
+				if (isset($source_id)) {
+					$trace_item .= '<pre id="' . $source_id . '" class="source collapsed"><code>' . $step['source'] . '</code></pre>';
+				}
+			$trace_item .= '</li>';
+			unset($args_id, $source_id);
+
+			$trace_items[] = $trace_item;
+		} // foreach trace
+		if ( ! empty($trace_items)) {
+			$trace_items = implode(PHP_EOL, $trace_items);
+		} else {
+			$trace_items = '<p class="no_errors">No backtrace available.</p>';
+		}
+
 		$right_col = View::factory('error_admin/view_group')
 			->bind('error_log', $error_log)
 			->bind('resolve_link', $resolve_link)
 			->bind('occurance_count', $occurance_count)
 			->bind('html_file_link', $html_file_link)
+			->bind('trace_items', $trace_items)
 			->bind('server_items', $server_items)
 			->bind('post_items', $post_items)
 			->bind('get_items', $get_items)
@@ -206,13 +257,11 @@ class Controller_XM_Error_Admin extends Controller_Private {
 	}
 
 	protected function error_group_list() {
-		$error_groups = DB::select(array('eg.id', 'error_group_id'), array('el.id', 'error_log_id'))
+		$error_groups = DB::select('el.error_group_id', array('el.id', 'error_log_id'))
 			->select('el.message', 'el.datetime', array(DB::expr('COUNT(el.id)'), 'occurances'))
-			->from(array('error_group', 'eg'))
-			->join(array('error_log', 'el'), 'INNER')
-				->on('el.error_group_id', '=', 'eg.id')
+			->from(array('error_log', 'el'))
 			->where('el.resolved', '=', 0)
-			->group_By('eg.id')
+			->group_by('el.error_group_id')
 			->order_by('el.datetime', 'DESC')
 			->execute();
 

@@ -28,12 +28,16 @@
 			<div class="value"><?php echo HTML::chars($error_log->file . ':' . $error_log->line); ?></div>
 		</div>
 		<div>
-			<div class="label">Remote Address</div>
-			<div class="value"><?php echo HTML::chars($error_log->remote_address); ?></div>
+			<div class="label">Code</div>
+			<div class="value"><?php echo HTML::chars($error_log->code); ?></div>
 		</div>
 		<div>
 			<div class="label">URL</div>
 			<div class="value"><?php echo HTML::chars($error_log->url); ?></div>
+		</div>
+		<div>
+			<div class="label">Remote Address</div>
+			<div class="value"><?php echo HTML::chars($error_log->remote_address); ?></div>
 		</div>
 		<?php if ( ! empty($html_file_link)) { ?>
 		<div>
@@ -41,6 +45,12 @@
 			<div class="value"><?php echo $html_file_link; ?></div>
 		</div>
 		<?php } ?>
+	</div>
+
+	<div class="details js_details kohana_error" rel="backtrace">
+		<ol class="trace">
+			<?php echo $trace_items; ?>
+		</ol>
 	</div>
 
 	<div class="details js_details" rel="server">
@@ -63,7 +73,7 @@
 		<?php echo $cookie_items; ?>
 	</div>
 
-	<div class="details js_details" rel="session">
+	<div class="details js_details kohana_error" rel="session">
 		<?php echo $session_items; ?>
 	</div>
 

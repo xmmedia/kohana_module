@@ -314,6 +314,15 @@ class XM_Kohana_Exception extends Kohana_Kohana_Exception {
 				$trace = array_slice($trace, 0, 2);
 			}
 
+			$_trace = Debug::trace($trace);
+			foreach ($_trace as $i => $step) {
+				if ($step['args']) {
+					foreach ($step['args'] as $name => $arg) {
+						$_trace[$i]['args'][$name] = Debug::dump($arg);
+					}
+				}
+			}
+
 			$error_log_filename = Error::error_log_dir() . DIRECTORY_SEPARATOR . uniqid(time() . '_') . EXT;
 
 			$error_data = array(
@@ -324,22 +333,33 @@ class XM_Kohana_Exception extends Kohana_Kohana_Exception {
 				'message' => $message,
 				'file' => $file,
 				'line' => $line,
-				'trace' => $trace,
+				'trace' => $_trace,
 				'html' => (string) View::factory(Kohana_Exception::$error_view, get_defined_vars()),
 			);
 
-			foreach (array('_GET' => 'get', '_POST' => 'post', '_FILES' => 'files', '_COOKIE' => 'cookie', '_SERVER' => 'server') as $global_var => $_var) {
+			if (isset($_SERVER)) {
+				$error_data['server'] = $_SERVER;
+			}
+
+			foreach (array('_GET' => 'get', '_POST' => 'post', '_FILES' => 'files', '_COOKIE' => 'cookie') as $global_var => $_var) {
 				if (empty($GLOBALS[$global_var]) || ! is_array($GLOBALS[$global_var])) {
 					continue;
 				}
 
-				$error_data[$_var] = $GLOBALS[$global_var];
+				foreach ($GLOBALS[$global_var] as $key => $value) {
+					$error_data[$_var][$key] = Debug::dump($value);
+				}
 			}
 
 			if ( ! empty(Session::$instances)) {
-				$error_data['session'] = Session::instance()->as_array();
+				$session = Session::instance()->as_array();
 			} else if (isset($_SESSION)) {
-				$error_data['session'] = $_SESSION;
+				$session = $_SESSION;
+			}
+			if (isset($session)) {
+				foreach ($session as $key => $value) {
+					$error_data['session'][$key] = Debug::dump($value);
+				}
 			}
 
 			file_put_contents($error_log_filename, Error::error_log_file_prefix() . json_encode($error_data));

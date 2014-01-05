@@ -92,6 +92,17 @@ class Model_XM_Error_Log extends ORM {
 				'size' => 10,
 			),
 		),
+		'code' => array(
+			'field_type' => 'Text',
+			'list_flag' => TRUE,
+			'edit_flag' => TRUE,
+			'search_flag' => TRUE,
+			'view_flag' => TRUE,
+			'is_nullable' => FALSE,
+			'field_attributes' => array(
+				'maxlength' => 100,
+			),
+		),
 		'trace' => array(
 			'field_type' => 'Serializable',
 			'edit_flag' => TRUE,
@@ -200,6 +211,7 @@ class Model_XM_Error_Log extends ORM {
 			'message' => 'Message',
 			'file' => 'File',
 			'line' => 'Line',
+			'code' => 'Code',
 			'trace' => 'Trace',
 			'url' => 'URL',
 			'remote_address' => 'Remote Address',

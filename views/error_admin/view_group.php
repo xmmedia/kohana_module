@@ -11,7 +11,7 @@
 
 <div class="error_details">
 	<ul class="tabs js_tabs">
-		<li><a href="" rel="summary">Summary</a></li>
+		<li><a href="" class="current" rel="summary">Summary</a></li>
 		<li><a href="" rel="backtrace">Backtrace</a></li>
 		<li><a href="" rel="server">Server</a></li>
 		<li><a href="" rel="post">Post</a></li>
@@ -55,11 +55,21 @@
 		<?php echo $get_items; ?>
 	</div>
 
+	<div class="details js_details" rel="files">
+		<?php echo $file_items; ?>
+	</div>
+
 	<div class="details js_details" rel="cookie">
 		<?php echo $cookie_items; ?>
 	</div>
 
 	<div class="details js_details" rel="session">
 		<?php echo $session_items; ?>
+	</div>
+
+	<div class="details js_details" rel="similar">
+		<ul class="similar_errors">
+			<?php echo $similar_errors; ?>
+		</ul>
 	</div>
 </div>

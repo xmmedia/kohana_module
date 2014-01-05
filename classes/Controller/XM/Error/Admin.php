@@ -34,10 +34,6 @@ class Controller_XM_Error_Admin extends Controller_Private {
 			$resolve_link = HTML::anchor($resolve_url . '0', 'Resolved', array('class' => 'resolved', 'title' => 'Mark the entire group of errors as Unresolved.'));
 		}
 
-		$occurance_count = $error_group->error_log
-			->where('resolved', '=', 0)
-			->count_all();
-
 		if ( ! empty($error_log->html)) {
 			$html_file_link = HTML::anchor(Route::get('error_admin')->uri(array('action' => 'download_html', 'id' => $error_group->pk())) . '?error_log_id=' . $error_log->pk(), 'Download', array('target' => '_blank'));
 		}
@@ -49,6 +45,11 @@ class Controller_XM_Error_Admin extends Controller_Private {
 				->set('value', Debug::vars($value))
 				->set('pre', TRUE);
 		}
+		if ( ! empty($server_items)) {
+			$server_items = implode(PHP_EOL, $server_items);
+		} else {
+			$server_items = '<p class="no_errors">No Server data.</p>';
+		}
 
 		$post_items = array();
 		foreach ((array) $error_log->post as $key => $value) {
@@ -56,6 +57,11 @@ class Controller_XM_Error_Admin extends Controller_Private {
 				->bind('key', $key)
 				->set('value', Debug::vars($value))
 				->set('pre', TRUE);
+		}
+		if ( ! empty($post_items)) {
+			$post_items = implode(PHP_EOL, $post_items);
+		} else {
+			$post_items = '<p class="no_errors">No Post data.</p>';
 		}
 
 		$get_items = array();
@@ -65,6 +71,24 @@ class Controller_XM_Error_Admin extends Controller_Private {
 				->set('value', Debug::vars($value))
 				->set('pre', TRUE);
 		}
+		if ( ! empty($get_items)) {
+			$get_items = implode(PHP_EOL, $get_items);
+		} else {
+			$get_items = '<p class="no_errors">No Get data.</p>';
+		}
+
+		$file_items = array();
+		foreach ((array) $error_log->files as $key => $value) {
+			$file_items[] = (string) View::factory('error_admin/view_item')
+				->bind('key', $key)
+				->set('value', Debug::vars($value))
+				->set('pre', TRUE);
+		}
+		if ( ! empty($file_items)) {
+			$file_items = implode(PHP_EOL, $file_items);
+		} else {
+			$file_items = '<p class="no_errors">No File data.</p>';
+		}
 
 		$cookie_items = array();
 		foreach ((array) $error_log->cookie as $key => $value) {
@@ -72,6 +96,11 @@ class Controller_XM_Error_Admin extends Controller_Private {
 				->bind('key', $key)
 				->set('value', Debug::vars($value))
 				->set('pre', TRUE);
+		}
+		if ( ! empty($cookie_items)) {
+			$cookie_items = implode(PHP_EOL, $cookie_items);
+		} else {
+			$cookie_items = '<p class="no_errors">No Cookie data.</p>';
 		}
 
 		$session_items = array();
@@ -81,17 +110,44 @@ class Controller_XM_Error_Admin extends Controller_Private {
 				->set('value', Debug::vars($value))
 				->set('pre', TRUE);
 		}
+		if ( ! empty($session_items)) {
+			$session_items = implode(PHP_EOL, $session_items);
+		} else {
+			$session_items = '<p class="no_errors">No Session data.</p>';
+		}
+
+		$_similar_errors = $occurance_count = $error_group->error_log
+			->where('resolved', '=', 0)
+			->find_all();
+		$occurance_count = $_similar_errors->count();
+		$similar_errors = array();
+		foreach ($_similar_errors as $_error_log) {
+			$message_a = HTML::anchor(Route::get('error_admin')->uri(array('action' => 'view_group', 'id' => $error_group->pk())) . '?error_log_id=' . $_error_log->pk(), HTML::chars($_error_log->message));
+
+			$similar_errors[] = '<li>'
+					. '<div class="date">' . HTML::chars($_error_log->datetime) . '</div>'
+					. '<div class="message">' . $message_a . '</div>'
+				. '</li>';
+		}
+		if ( ! empty($similar_errors)) {
+			$similar_errors = '<li class="header"><div class="date">When</div><div class="message">Message</div></li>'
+				. implode(PHP_EOL, $similar_errors);
+		} else {
+			$similar_errors = '<p class="no_errors">No similar errors.</p>';
+		}
 
 		$right_col = View::factory('error_admin/view_group')
 			->bind('error_log', $error_log)
 			->bind('resolve_link', $resolve_link)
 			->bind('occurance_count', $occurance_count)
 			->bind('html_file_link', $html_file_link)
-			->set('server_items', implode(PHP_EOL, $server_items))
-			->set('post_items', implode(PHP_EOL, $post_items))
-			->set('get_items', implode(PHP_EOL, $get_items))
-			->set('cookie_items', implode(PHP_EOL, $cookie_items))
-			->set('session_items', implode(PHP_EOL, $session_items));
+			->bind('server_items', $server_items)
+			->bind('post_items', $post_items)
+			->bind('get_items', $get_items)
+			->bind('file_items', $file_items)
+			->bind('cookie_items', $cookie_items)
+			->bind('session_items', $session_items)
+			->bind('similar_errors', $similar_errors);
 
 		$this->template->page_title = $this->page_title_append;
 		$this->template->body_html = View::factory('error_admin/index')

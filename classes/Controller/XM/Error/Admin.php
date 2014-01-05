@@ -257,20 +257,30 @@ class Controller_XM_Error_Admin extends Controller_Private {
 	}
 
 	protected function error_group_list() {
-		$error_groups = DB::select('el.error_group_id', array('el.id', 'error_log_id'))
-			->select('el.message', 'el.datetime', array(DB::expr('COUNT(el.id)'), 'occurances'))
-			->from(array('error_log', 'el'))
-			->where('el.resolved', '=', 0)
-			->group_by('el.error_group_id')
-			->order_by('el.datetime', 'DESC')
-			->execute();
+		$_error_groups = ORM::factory('Error_Group')
+			->find_all();
+		$error_groups = array();
+		foreach ($_error_groups as $error_group) {
+			$error_log = $error_group->error_log->find();
+
+			if ($error_log->loaded()) {
+				$error_groups[strtotime($error_log->datetime) . '-' . $error_group->pk()] = array(
+					'error_group' => $error_group,
+					'error_log' => $error_log,
+					'occurances' => $error_group->error_log->where('resolved', '=', 0)->count_all(),
+				);
+			}
+		}
+
+		ksort($error_groups);
 
 		$list = array();
 		foreach ($error_groups as $error_group) {
-			$view_url = URL::site($this->uri('view_group', $error_group['error_group_id'], $error_group['error_log_id']));
+			$view_url = URL::site($this->uri('view_group', $error_group['error_group']->pk(), $error_group['error_log']->pk()));
 
 			$list[] = (string) View::factory('error_admin/error_group_list_item')
-				->bind('error_group', $error_group)
+				->bind('error_log', $error_group['error_log'])
+				->bind('occurances', $error_group['occurances'])
 				->bind('view_url', $view_url);
 		}
 

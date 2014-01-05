@@ -27,7 +27,7 @@ class Controller_XM_Error_Admin extends Controller_Private {
 		$error_group = $this->retrieve_error_group();
 		$error_log = $this->retrieve_error_log();
 
-		$resolve_url = Route::get('error_admin')->uri(array('action' => 'resolve', 'id' => $error_group->pk())) . '?error_log_id=' . $error_log->pk() . '&resolve=';
+		$resolve_url = $this->uri('resolve', $error_group, $error_log) . '?resolve=';
 		if ( ! $error_log->resolved) {
 			$resolve_link = HTML::anchor($resolve_url . '1', 'Unresolved', array('class' => 'unresolved', 'title' => 'Mark the entire group of errors as Resolved.'));
 		} else {
@@ -35,7 +35,7 @@ class Controller_XM_Error_Admin extends Controller_Private {
 		}
 
 		if ( ! empty($error_log->html)) {
-			$html_file_link = HTML::anchor(Route::get('error_admin')->uri(array('action' => 'download_html', 'id' => $error_group->pk())) . '?error_log_id=' . $error_log->pk(), 'Download', array('target' => '_blank'));
+			$html_file_link = HTML::anchor($this->uri('download_html', $error_group, $error_log), 'Download', array('target' => '_blank'));
 		}
 
 		$server_items = array();
@@ -122,7 +122,7 @@ class Controller_XM_Error_Admin extends Controller_Private {
 		$occurance_count = $_similar_errors->count();
 		$similar_errors = array();
 		foreach ($_similar_errors as $_error_log) {
-			$message_a = HTML::anchor(Route::get('error_admin')->uri(array('action' => 'view_group', 'id' => $error_group->pk())) . '?error_log_id=' . $_error_log->pk(), HTML::chars($_error_log->message));
+			$message_a = HTML::anchor($this->uri('view_group', $error_group, $_error_log), HTML::chars($_error_log->message));
 
 			$similar_errors[] = '<li>'
 					. '<div class="date">' . HTML::chars($_error_log->datetime) . '</div>'
@@ -172,7 +172,7 @@ class Controller_XM_Error_Admin extends Controller_Private {
 		$count = $error_logs->count();
 		Message::add($count . ' ' . Inflector::plural('error', $count) . ' ' . Text::have($count) . ' been marked as resolved.', Message::$notice);
 
-		$this->redirect(Route::get('error_admin')->uri(array('action' => 'view_group', 'id' => $error_group->pk())) . '?error_log_id=' . $error_log->pk());
+		$this->redirect($this->uri('view_group', $error_group, $error_log));
 	}
 
 	public function action_download_html() {
@@ -188,7 +188,7 @@ class Controller_XM_Error_Admin extends Controller_Private {
 	}
 
 	protected function retrieve_error_group() {
-		$error_group = ORM::factory('Error_Group', (int) $this->request->param('id'));
+		$error_group = ORM::factory('Error_Group', (int) $this->request->param('error_group_id'));
 		if ( ! $error_group->loaded()) {
 			throw new Kohana_Exception('The error group could not be found or no error group ID passed');
 		}
@@ -197,7 +197,7 @@ class Controller_XM_Error_Admin extends Controller_Private {
 	}
 
 	protected function retrieve_error_log() {
-		$error_log = ORM::factory('Error_Log', (int) $this->request->query('error_log_id'));
+		$error_log = ORM::factory('Error_Log', (int) $this->request->param('error_log_id'));
 		if ( ! $error_log->loaded()) {
 			throw new Kohana_Exception('The error log could not be found or no error log ID passed');
 		}
@@ -218,10 +218,7 @@ class Controller_XM_Error_Admin extends Controller_Private {
 
 		$list = array();
 		foreach ($error_groups as $error_group) {
-			$view_url = URL::site(Route::get('error_admin')->uri(array(
-					'action' => 'view_group',
-					'id' => $error_group['error_group_id'],
-				)) . '?error_log_id=' . $error_group['error_log_id']);
+			$view_url = URL::site($this->uri('view_group', $error_group['error_group_id'], $error_group['error_log_id']));
 
 			$list[] = (string) View::factory('error_admin/error_group_list_item')
 				->bind('error_group', $error_group)
@@ -233,5 +230,21 @@ class Controller_XM_Error_Admin extends Controller_Private {
 		}
 
 		return $list;
+	}
+
+	protected function uri($action, $error_group, $error_log) {
+		if (is_object($error_group)) {
+			$error_group = $error_group->pk();
+		}
+
+		if (is_object($error_log)) {
+			$error_log = $error_log->pk();
+		}
+
+		return Route::get('error_admin')->uri(array(
+			'action' => $action,
+			'error_group_id' => $error_group,
+			'error_log_id' => $error_log,
+		));
 	}
 }

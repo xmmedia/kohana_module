@@ -93,7 +93,7 @@ if ($routes['content_admin']) {
 }
 
 if ($routes['error_admin']) {
-	Route::set('error_admin', 'error_admin(/<action>(/<id>))')
+	Route::set('error_admin', 'error_admin(/<action>(/<error_group_id>(/<error_log_id>)))')
 		->defaults(array(
 			'controller' => 'Error_Admin',
 			'action' => NULL,

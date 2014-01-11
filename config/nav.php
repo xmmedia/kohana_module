@@ -62,7 +62,7 @@ return array(
 						),
 						'Error Admin' => array(
 							'route' => 'error_admin',
-							// 'perm' => 'error_admin',
+							'perm' => 'error_admin',
 							'class' => 'error_admin',
 							'order' => 500,
 						),

@@ -3,6 +3,13 @@
 class Controller_XM_Error_Admin extends Controller_Private {
 	public $page = 'error_admin';
 
+	public $secure_actions = array(
+		'index' => 'error_admin',
+		'view_group' => 'error_admin',
+		'resolve' => 'error_admin',
+		'download_html' => 'error_admin',
+	);
+
 	protected $no_auto_render_actions = array('download_html');
 
 	protected $show_resolved = FALSE;

@@ -122,6 +122,8 @@ class XM_Error {
 			$error_log_ids[$error_log_model->error_group_id][] = $error_log_model->pk();
 		}
 
+		$reoccurance_email_time = (int) Kohana::$config->load('error_admin.reoccurance_email_time');
+
 		foreach ($error_log_ids as $error_group_id => $_error_log_ids) {
 			$error_group = ORM::factory('Error_Group', $error_group_id);
 			if ( ! $error_group->loaded()) {
@@ -136,7 +138,7 @@ class XM_Error {
 			$send_email = FALSE;
 			if ( ! $last_error_log->loaded()) {
 				$send_email = TRUE;
-			} else if (strtotime($last_error_log->datetime) < strtotime('-2 hours')) {
+			} else if (strtotime($last_error_log->datetime) < strtotime('-' . $reoccurance_email_time . ' minutes')) {
 				$send_email = TRUE;
 			}
 

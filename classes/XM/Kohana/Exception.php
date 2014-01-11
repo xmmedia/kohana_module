@@ -107,8 +107,24 @@ class XM_Kohana_Exception extends Kohana_Kohana_Exception {
 			try {
 				// Log the exception
 				Kohana_Exception::log($e);
-				Kohana_Exception::notify($e);
-				Kohana_Exception::store($e);
+
+				$notify = TRUE;
+				$store = FALSE;
+				if (Kohana::$config) {
+					try {
+						$notify = (boolean) Kohana::$config->load('error_admin.send_error_immediately');
+						$store = (boolean) Kohana::$config->load('error_admin.use_error_admin');
+					} catch (Exception $e) {
+						Kohana_Exception::log($e);
+					}
+				}
+
+				if ($notify) {
+					Kohana_Exception::notify($e);
+				}
+				if ($store) {
+					Kohana_Exception::store($e);
+				}
 
 				if (PHP_SAPI == 'cli') {
 					echo Kohana_Exception::text($e), PHP_EOL;

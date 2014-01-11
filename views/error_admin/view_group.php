@@ -5,7 +5,16 @@
 <div class="error_header">
 	<h1><?php echo HTML::chars($error_log->message); ?></h1>
 
-	<h2 class="occurances"><div><?php echo $occurance_count; ?></div> <?php echo Inflector::plural('Occurance', $occurance_count); ?></h2>
+	<h2 class="occurances">
+		<div>
+			<div><?php echo $occurance_count; ?></div> Unresolved <?php echo Inflector::plural('Occurance', $occurance_count); ?>
+		</div>
+		<?php if ($occurance_count != $all_occurrance_count) { ?>
+			<div>
+				<div><?php echo $all_occurrance_count; ?></div> Total <?php echo Inflector::plural('Occurance', $all_occurrance_count); ?>
+			</div>
+		<?php } ?>
+	</h2>
 	<h2 class="occurred">Occurred: <?php echo HTML::Chars($error_log->datetime); ?></h2>
 </div>
 

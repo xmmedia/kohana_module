@@ -5,6 +5,8 @@ class Controller_XM_Error_Admin extends Controller_Private {
 
 	protected $no_auto_render_actions = array('download_html');
 
+	protected $show_resolved = FALSE;
+
 	public function before() {
 		parent::before();
 
@@ -14,13 +16,22 @@ class Controller_XM_Error_Admin extends Controller_Private {
 			$this->add_style('error_admin', 'xm/css/error_admin.css')
 				->add_script('error_admin', 'xm/js/error_admin.min.js');
 		}
+
+		$this->show_resolved = $this->request->query('show_resolved');
+		if ($this->show_resolved !== NULL) {
+			$this->show_resolved = (boolean) $this->show_resolved;
+			Session::instance()->set_path('error_admin.show_resolved', $this->show_resolved);
+		} else {
+			$this->show_resolved = (boolean) Session::instance()->path('error_admin.show_resolved');
+		}
 	}
 
 	public function action_index() {
 		$this->template->page_title = $this->page_title_append;
 		$this->template->body_html = View::factory('error_admin/index')
 			->set('group_list', implode(PHP_EOL, $this->error_group_list()))
-			->set('right_col', '<p class="no_errors">Select an error to continue.</p>');
+			->bind('show_resolved', $this->show_resolved)
+			->set('right_col', '<p class="no_data no_errors">Select an error to continue.</p>');
 	}
 
 	public function action_view_group() {
@@ -116,22 +127,35 @@ class Controller_XM_Error_Admin extends Controller_Private {
 			$session_items = '<p class="no_errors">No Session data.</p>';
 		}
 
-		$_similar_errors = $occurance_count = $error_group->error_log
-			->where('resolved', '=', 0)
+		$occurance_count = $error_group->error_log->where('resolved', '=', 0)->count_all();
+		$all_occurrance_count = $error_group->error_log->count_all();
+
+		$_similar_errors = $error_group->error_log
+			->where('id', '!=', $error_log->pk())
 			->find_all();
-		$occurance_count = $_similar_errors->count();
-		$similar_errors = array();
+		$similar_errors = $resolved_similar_errors = array();
 		foreach ($_similar_errors as $_error_log) {
 			$message_a = HTML::anchor($this->uri('view_group', $error_group, $_error_log), HTML::chars($_error_log->message));
 
-			$similar_errors[] = '<li>'
+			$li = '<li>'
 					. '<div class="date">' . HTML::chars($_error_log->datetime) . '</div>'
 					. '<div class="message">' . $message_a . '</div>'
 				. '</li>';
+
+			if ($_error_log->resolved) {
+				$resolved_similar_errors[] = $li;
+			} else {
+				$similar_errors[] = $li;
+			}
 		}
-		if ( ! empty($similar_errors)) {
+		if ( ! empty($similar_errors) || ! empty($resolved_similar_errors)) {
 			$similar_errors = '<li class="header"><div class="date">When</div><div class="message">Message</div></li>'
 				. implode(PHP_EOL, $similar_errors);
+
+			if ( ! empty($resolved_similar_errors)) {
+				$similar_errors .= '<li class="header"><h3>Resolved</h3></li>'
+					. implode(PHP_EOL, $resolved_similar_errors);
+			}
 		} else {
 			$similar_errors = '<p class="no_errors">No similar errors.</p>';
 		}
@@ -190,6 +214,7 @@ class Controller_XM_Error_Admin extends Controller_Private {
 			->bind('error_log', $error_log)
 			->bind('resolve_link', $resolve_link)
 			->bind('occurance_count', $occurance_count)
+			->bind('all_occurrance_count', $all_occurrance_count)
 			->bind('html_file_link', $html_file_link)
 			->bind('trace_items', $trace_items)
 			->bind('server_items', $server_items)
@@ -203,6 +228,7 @@ class Controller_XM_Error_Admin extends Controller_Private {
 		$this->template->page_title = $this->page_title_append;
 		$this->template->body_html = View::factory('error_admin/index')
 			->set('group_list', implode(PHP_EOL, $this->error_group_list()))
+			->bind('show_resolved', $this->show_resolved)
 			->bind('right_col', $right_col);
 	}
 
@@ -261,13 +287,23 @@ class Controller_XM_Error_Admin extends Controller_Private {
 			->find_all();
 		$error_groups = array();
 		foreach ($_error_groups as $error_group) {
-			$error_log = $error_group->error_log->find();
+			if ($this->show_resolved) {
+				$error_log = $error_group->error_log->find();
+			} else {
+				$error_log = $error_group->error_log->where('resolved', '=', 0)->find();
+			}
 
 			if ($error_log->loaded()) {
+				if ($this->show_resolved) {
+					$occurances = $error_group->error_log->count_all();
+				} else {
+					$occurances = $error_group->error_log->where('resolved', '=', 0)->count_all();
+				}
+
 				$error_groups[strtotime($error_log->datetime) . '-' . $error_group->pk()] = array(
 					'error_group' => $error_group,
 					'error_log' => $error_log,
-					'occurances' => $error_group->error_log->where('resolved', '=', 0)->count_all(),
+					'occurances' => $occurances,
 				);
 			}
 		}

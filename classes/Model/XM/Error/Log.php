@@ -13,6 +13,7 @@ class Model_XM_Error_Log extends ORM {
 	protected $_table_name = 'error_log';
 	// protected $_primary_val = 'name'; // default: name (column used as primary value)
 	public $_table_name_display = 'Error Log'; // xm specific
+	protected $_log = FALSE; // don't log changes
 
 	// default sorting
 	protected $_sorting = array(

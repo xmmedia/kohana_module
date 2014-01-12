@@ -4,7 +4,7 @@
  * Model for `error_log`.
  *
  * @package    XM
- * @category   Models
+ * @category   Errors
  * @author     XM Media Inc.
  * @copyright  (c) 2014 XM Media Inc.
  */

@@ -1,5 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
+/**
+ * Methods for working with errors for the Error Admin.
+ *
+ * @package    XM
+ * @category   Errors
+ * @author     XM Media Inc.
+ * @copyright  (c) 2014 XM Media Inc.
+ */
 class XM_Error {
 	public static function error_log_dir() {
 		$logs_dir = ABS_ROOT . DIRECTORY_SEPARATOR . 'logs';

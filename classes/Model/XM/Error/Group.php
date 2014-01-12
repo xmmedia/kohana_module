@@ -3,8 +3,8 @@
 /**
  * Model for `error_group`.
  *
- * @package    XM Template
- * @category   Models
+ * @package    XM
+ * @category   Errors
  * @author     XM Media Inc.
  * @copyright  (c) 2014 XM Media Inc.
  */

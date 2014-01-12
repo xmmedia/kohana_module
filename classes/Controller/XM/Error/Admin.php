@@ -1,5 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
+/**
+ * The Error Admin controller.
+ *
+ * @package    XM
+ * @category   Errors
+ * @author     XM Media Inc.
+ * @copyright  (c) 2014 XM Media Inc.
+ */
 class Controller_XM_Error_Admin extends Controller_Private {
 	public $page = 'error_admin';
 

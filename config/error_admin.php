@@ -7,4 +7,7 @@ return array(
 	'send_error_immediately' => FALSE,
 	// if TRUE, errors will be stored in files for parsing with the error admin tools
 	'use_error_admin' => TRUE,
+	// the maximum number of errors clicking the "parse" link will parse
+	// this is to avoid taking too much memory and/or too long
+	'web_parse_limit' => 25,
 );

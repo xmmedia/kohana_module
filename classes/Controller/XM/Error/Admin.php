@@ -8,6 +8,7 @@ class Controller_XM_Error_Admin extends Controller_Private {
 		'view_group' => 'error_admin',
 		'resolve' => 'error_admin',
 		'download_html' => 'error_admin',
+		'parse_errors' => 'error_admin',
 	);
 
 	protected $no_auto_render_actions = array('download_html');
@@ -36,8 +37,9 @@ class Controller_XM_Error_Admin extends Controller_Private {
 	public function action_index() {
 		$this->template->page_title = $this->page_title_append;
 		$this->template->body_html = View::factory('error_admin/index')
-			->set('group_list', implode(PHP_EOL, $this->error_group_list()))
 			->bind('show_resolved', $this->show_resolved)
+			->set('unparsed_count', $this->unparsed_count())
+			->set('group_list', implode(PHP_EOL, $this->error_group_list()))
 			->set('right_col', '<p class="no_data no_errors">Select an error to continue.</p>');
 	}
 
@@ -234,8 +236,9 @@ class Controller_XM_Error_Admin extends Controller_Private {
 
 		$this->template->page_title = $this->page_title_append;
 		$this->template->body_html = View::factory('error_admin/index')
-			->set('group_list', implode(PHP_EOL, $this->error_group_list()))
 			->bind('show_resolved', $this->show_resolved)
+			->set('unparsed_count', $this->unparsed_count())
+			->set('group_list', implode(PHP_EOL, $this->error_group_list()))
 			->bind('right_col', $right_col);
 	}
 
@@ -269,6 +272,44 @@ class Controller_XM_Error_Admin extends Controller_Private {
 
 		$this->response->body($error_log->html);
 		$this->response->send_file(TRUE, Error::error_user_filename($error_log->pk()));
+	}
+
+	public function action_parse_errors() {
+		$_error_log_files = Directory_Helper::list_files(Error::error_log_dir());
+		if (empty($_error_log_files)) {
+			Message::add('No errors to parse.', Message::$warning);
+			$this->redirect(Route::get('error_admin')->uri());
+		}
+
+		$error_log_files = array();
+		$i = 0;
+		$web_parse_limit = (int) Kohana::$config->load('error_admin.web_parse_limit');
+		foreach ($_error_log_files as $_error_log_file) {
+			++ $i;
+			$error_log_files[] = str_replace(Error::error_log_dir() . DIRECTORY_SEPARATOR, '', $_error_log_file);
+
+			if ($i >= $web_parse_limit) {
+				break;
+			}
+		}
+
+		$file_count = count($error_log_files);
+
+		Error::parse($error_log_files);
+
+		Error::delete_error_log_file($error_log_files);
+
+		// look for the last error in the db
+		$error_log = ORM::factory('Error_Log')
+			->find();
+
+		$msg = $file_count . ' ' . Inflector::plural('error', $file_count) . ' ' . Text::were($file_count) . ' parsed.';
+		if (count($_error_log_files) > $web_parse_limit) {
+			$msg .= ' ' . (count($_error_log_files) - $web_parse_limit) . ' remaining.';
+		}
+
+		Message::add($msg, Message::$notice);
+		$this->redirect($this->uri('view_group', $error_log->error_group, $error_log));
 	}
 
 	protected function retrieve_error_group() {
@@ -332,6 +373,10 @@ class Controller_XM_Error_Admin extends Controller_Private {
 		}
 
 		return $list;
+	}
+
+	protected function unparsed_count() {
+		return count(Directory_Helper::list_files(Error::error_log_dir()));
 	}
 
 	protected function uri($action, $error_group, $error_log) {

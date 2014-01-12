@@ -19,7 +19,7 @@ class XM_Task_Error_Log_Parse_All extends Minion_Task {
 	 * @return null
 	 */
 	protected function _execute(array $params) {
-		$_error_log_files = Directory_Helper::list_files(Error::error_log_dir(), FALSE);
+		$_error_log_files = Directory_Helper::list_files(Error::error_log_dir());
 		$error_log_files = array();
 		foreach ($_error_log_files as $_error_log_file) {
 			$error_log_files[] = str_replace(Error::error_log_dir() . DIRECTORY_SEPARATOR, '', $_error_log_file);

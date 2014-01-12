@@ -38,6 +38,7 @@ class XM_Minion_Exception extends Kohana_Minion_Exception {
 				echo "--", PHP_EOL, $e->getTraceAsString(), PHP_EOL;
 			} else {
 				Kohana_Exception::notify($e);
+				Kohana_Exception::store($e);
 			}
 
 			$exit_code = $e->getCode();

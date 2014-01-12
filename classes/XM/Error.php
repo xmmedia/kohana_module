@@ -30,6 +30,10 @@ class XM_Error {
 		return realpath(Error::error_log_dir() . DIRECTORY_SEPARATOR . $file);
 	}
 
+	public static function error_user_filename($pk) {
+		return XMFile::clean_filename('error_details-' . strtolower(LONG_NAME) . '-' . $pk . '.html');
+	}
+
 	public static function delete_error_log_file($files) {
 		$files = (array) $files;
 
@@ -152,14 +156,35 @@ class XM_Error {
 					->where('resolved', '=', 0)
 					->count_all();
 
+				$view_error_url = URL::site(Route::get('error_admin')->uri(array(
+					'action' => 'view_group',
+					'error_group_id' => $error_group->pk(),
+					'error_log_id' => $error_log_model->pk(),
+				)));
+
+				// will be limited to 100 chars
+				$additional_subject = ' in '
+					. substr($error_log_model->file, strripos($error_log_model->file, DIRECTORY_SEPARATOR) + 1)
+					. ':' . $error_log_model->line
+					. ' - ' . $error_log_model->message;
+
+				$trace_file_list = array();
+				foreach ($error_log_model->trace as $_trace) {
+					if (isset($_trace['file']) && isset($_trace['line'])) {
+						$trace_file_list[] = Debug::path($_trace['file']) . ':' . $_trace['line'];
+					}
+				}
+
 				$error_email = new Mail();
 				$error_email->AddAddress(XM::get_error_email());
-				$error_email->Subject = 'Error on ' . LONG_NAME . ' - ' . Text::limit_chars($error_log_model->message); // limit msg to 100 chars
+				$error_email->Subject = 'Error on ' . LONG_NAME . Text::limit_chars($additional_subject);
 				$error_email->MsgHTML((string) View::factory('error_admin/notification_email')
 					->bind('error_log_model', $error_log_model)
-					->bind('occurances', $occurances));
+					->bind('trace_file_list', $trace_file_list)
+					->bind('occurances', $occurances)
+					->bind('view_error_url', $view_error_url));
 
-				$error_email->AddStringAttachment($error_log_model->html, 'error_details.html', 'base64', 'text/html');
+				$error_email->AddStringAttachment($error_log_model->html, Error::error_user_filename($error_log_model->pk()), 'base64', 'text/html');
 
 				$error_email->Send();
 			}

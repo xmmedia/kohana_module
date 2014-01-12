@@ -268,7 +268,7 @@ class Controller_XM_Error_Admin extends Controller_Private {
 		}
 
 		$this->response->body($error_log->html);
-		$this->response->send_file(TRUE, 'error_details.html');
+		$this->response->send_file(TRUE, Error::error_user_filename($error_log->pk()));
 	}
 
 	protected function retrieve_error_group() {
@@ -315,7 +315,7 @@ class Controller_XM_Error_Admin extends Controller_Private {
 			}
 		}
 
-		ksort($error_groups);
+		krsort($error_groups);
 
 		$list = array();
 		foreach ($error_groups as $error_group) {

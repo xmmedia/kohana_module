@@ -142,8 +142,9 @@ class XM_Error {
 				throw new Kohana_Exception('Unable to load the error group: :group_id', array(':group_id' => $error_group_id));
 			}
 
-			// find the last error log before the one(s) we've just added
+			// find the unresolved last error log before the one(s) we've just added
 			$last_error_log = $error_group->error_log
+				->where('resolved', '=', 0)
 				->where('id', 'NOT IN', $_error_log_ids)
 				->find();
 

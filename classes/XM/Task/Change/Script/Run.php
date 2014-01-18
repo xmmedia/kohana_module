@@ -110,7 +110,7 @@ class XM_Task_Change_Script_Run extends Task_Change_Script {
 
 					// run the script using the method for it's script type
 					$method = 'run_' . strtolower($script_type);
-					$log = $this->$method($change_script_full_path, $file_contents);
+					$log = (string) $this->$method($change_script_full_path, $file_contents);
 
 					// log that the change log has been run
 					DB::insert($this->_config['log_table'], array('filename', 'type', 'applied', 'description', 'log'))

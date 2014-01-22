@@ -7,6 +7,6 @@
 	</div>
 
 	<div class="page_top">
-		<div class="page_top_logo"><a href="<?php echo URL::base(); ?>"><?php echo HTML::chars(LONG_NAME); ?></a></div>
+		<div class="page_top_logo"><a href="<?php echo URL::base(); ?>"><?php echo (isset($page_top_logo) ? $page_top_logo : HTML::chars(LONG_NAME)); ?></a></div>
 	</div>
 </header>

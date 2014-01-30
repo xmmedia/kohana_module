@@ -60,7 +60,7 @@ class Model_XM_Request_Log extends ORM {
 			),
 		),
 		'get' => array(
-			'field_type' => 'TextArea',
+			'field_type' => 'Serializable',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -68,7 +68,7 @@ class Model_XM_Request_Log extends ORM {
 			'is_nullable' => FALSE,
 		),
 		'post' => array(
-			'field_type' => 'TextArea',
+			'field_type' => 'Serializable',
 			'list_flag' => TRUE,
 			'edit_flag' => TRUE,
 			'search_flag' => TRUE,
@@ -76,23 +76,6 @@ class Model_XM_Request_Log extends ORM {
 			'is_nullable' => FALSE,
 		),
 	);
-
-	//protected $_serialize_columns = array('get', 'post');
-
-	/**
-	 * @var  array  $_display_order  The order to display columns in, if different from as listed in $_table_columns.
-	 * Columns not listed here will be added beneath these columns, in the order they are listed in $_table_columns.
-	 */
-	/*
-	protected $_display_order = array(
-		'id',
-		'datetime',
-		'user_id',
-		'path',
-		'get',
-		'post',
-	);
-	*/
 
 	/**
 	* Labels for columns
@@ -147,5 +130,5 @@ class Model_XM_Request_Log extends ORM {
 		DB::insert('request_log', array_keys($_data))
 			->values($_data)
 			->execute();
-	} // function store_request
+	}
 } // class

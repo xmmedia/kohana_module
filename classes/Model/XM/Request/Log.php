@@ -11,6 +11,11 @@ class Model_XM_Request_Log extends ORM {
 
 	protected $_log = FALSE;
 
+	// default sorting
+	protected $_sorting = array(
+		'datetime' => 'DESC',
+	);
+
 	// relationships
 	protected $_belongs_to = array(
 		'user' => array(

@@ -1,9 +1,9 @@
 <?php  if ( ! empty($messages)) { ?>
-<ul class="xm_message">
+<ul class="xm_message js_xm_message">
 <?php
 	foreach ($messages as $message) {
-		echo '<li class="' . $level_to_class[$message['level']] . '">' . $message['message'] . '</li>' . EOL;
-	} // foreach
+		echo '<li class="' . $level_to_class[$message['level']] . ' js_xm_message_item"><a href="" class="hide js_hide">X</a>' . $message['message'] . '</li>' . EOL;
+	}
 ?>
 </ul>
-<?php } // if ?>
+<?php } ?>

@@ -510,25 +510,25 @@ class XM_MultiORM {
 
 			// add 'start of row' buttons as dictated by $list_options['per_row_links'] array:
 			if ($list_options['per_row_links']['view']) {
-				$first_col .= HTML::anchor('/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'view', 'id' => $id)), HTML::icon('view'), array(
+				$first_col .= HTML::anchor('/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'view', 'id' => $id)), HTML::icon('search'), array(
 					'title' => __('View this record'),
 				));
 			} // if
 
 			if ($list_options['per_row_links']['edit']) {
-				$first_col .= HTML::anchor('/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'edit', 'id' => $id)), HTML::icon('edit'), array(
+				$first_col .= HTML::anchor('/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'edit', 'id' => $id)), HTML::icon('pencil'), array(
 					'title' => __('Edit this record'),
 				));
 			}
 
 			if ($list_options['per_row_links']['delete']) {
-				$first_col .= HTML::anchor('/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'delete', 'id' => $id)), HTML::icon('delete'), array(
+				$first_col .= HTML::anchor('/' . $target_route->uri(array('model' => $this->_url_model_name, 'action' => 'delete', 'id' => $id)), HTML::icon('remove_2'), array(
 					'title' => __('Delete this record'),
 				));
 			}
 
 			if ($list_options['per_row_links']['add']) {
-				$first_col .= HTML::anchor($target_route->uri(array('model' => $this->_url_model_name, 'action' => 'add', 'id' => $id)), HTML::icon('add'), array(
+				$first_col .= HTML::anchor($target_route->uri(array('model' => $this->_url_model_name, 'action' => 'add', 'id' => $id)), HTML::icon('plus'), array(
 					'title' => __('Duplicate this record'),
 				));
 			}

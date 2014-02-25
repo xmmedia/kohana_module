@@ -134,7 +134,7 @@ class XM_HTML extends Kohana_HTML {
 	 * @return  string
 	 */
 	public static function icon($icon) {
-		return '<span class="xm_icon xm_' . $icon . '"></span>';
+		return '<span class="glyphicons ' . $icon . '"></span>';
 	}
 
 	/**

@@ -321,30 +321,30 @@ class Controller_XM_User_Admin extends Controller_Private {
 	protected function get_list_row_links($user) {
 		$id = $user->pk();
 
-		$first_col = HTML::anchor($this->request->route()->uri(array('action' => 'view', 'id' => $id)), HTML::icon('view'), array(
+		$first_col = HTML::anchor($this->request->route()->uri(array('action' => 'view', 'id' => $id)), HTML::icon('search'), array(
 			'title' => __('View this user'),
 		));
 
 		if (Auth::instance()->allowed('user_admin/edit')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'edit', 'id' => $id)), HTML::icon('edit'), array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'edit', 'id' => $id)), HTML::icon('pencil'), array(
 				'title' => __('Edit this user'),
 			));
 		}
 
 		if (Auth::instance()->allowed('user_admin/delete')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'delete', 'id' => $id)), HTML::icon('delete'), array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'delete', 'id' => $id)), HTML::icon('remove_2'), array(
 				'title' => __('Delete this user'),
 			));
 		}
 
 		if (Auth::instance()->allowed('user_admin/add')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'add', 'id' => $id)), HTML::icon('add'), array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'add', 'id' => $id)), HTML::icon('plus'), array(
 				'title' => __('Copy this user'),
 			));
 		}
 
 		if (Auth::instance()->allowed('user_admin/email_password')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'email_password', 'id' => $id)), HTML::icon('mail'), array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'email_password', 'id' => $id)), HTML::icon('message_lock'), array(
 				'title' => __('Email a new random password to this user'),
 			));
 		}
@@ -727,24 +727,24 @@ class Controller_XM_User_Admin extends Controller_Private {
 	protected function get_group_list_row_links($group) {
 		$id = $group->pk();
 
-		$first_col = HTML::anchor($this->request->route()->uri(array('action' => 'view_group', 'id' => $id)), HTML::icon('view'), array(
+		$first_col = HTML::anchor($this->request->route()->uri(array('action' => 'view_group', 'id' => $id)), HTML::icon('search'), array(
 			'title' => __('View this user'),
 		));
 
 		if (Auth::instance()->allowed('user_admin/group/edit')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'edit_group', 'id' => $id)), HTML::icon('edit'), array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'edit_group', 'id' => $id)), HTML::icon('pencil'), array(
 				'title' => __('Edit this group'),
 			));
 		}
 
 		if (Auth::instance()->allowed('user_admin/group/delete')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'delete_group', 'id' => $id)), HTML::icon('delete'), array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'delete_group', 'id' => $id)), HTML::icon('remove_2'), array(
 				'title' => __('Delete this group'),
 			));
 		}
 
 		if (Auth::instance()->allowed('user_admin/group/add')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'add_group', 'id' => $id)), HTML::icon('add'), array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'add_group', 'id' => $id)), HTML::icon('plus'), array(
 				'title' => __('Copy this group'),
 			));
 		}
@@ -756,7 +756,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 		}
 
 		if (Auth::instance()->allowed('user_admin/group/users')) {
-			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'group_users', 'id' => $id)), HTML::icon('contact2'), array(
+			$first_col .= HTML::anchor($this->request->route()->uri(array('action' => 'group_users', 'id' => $id)), HTML::icon('user'), array(
 				'title' => __('Edit the users that have this permission group'),
 			));
 		}

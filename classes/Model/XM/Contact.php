@@ -9,6 +9,10 @@ class Model_XM_Contact extends ORM {
 	protected $_table_name = 'contact';
 	public $_table_name_display = 'Contact'; // xm-specific
 
+	protected $_sorting = array(
+		'date_submitted' => 'DESC',
+	);
+
 	// column definitions
 	protected $_table_columns = array(
 		'id' => array(
@@ -132,7 +136,18 @@ class Model_XM_Contact extends ORM {
 	 */
 	public function filters() {
 		return array(
-		    TRUE => array(array('trim')),
+			'name' => array(
+				array('trim'),
+			),
+			'phone' => array(
+				array('trim'),
+			),
+			'email' => array(
+				array('trim'),
+			),
+			'message' => array(
+				array('trim'),
+			),
 		);
 	}
 

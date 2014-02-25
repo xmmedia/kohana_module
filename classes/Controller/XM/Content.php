@@ -77,12 +77,12 @@ class Controller_XM_Content extends Controller_Private {
 				if ( ! empty($content_item->content_page_id) && ! empty($content_item->content_page->url)) {
 					$links .= HTML::anchor($content_item->content_page->url . '?content_admin_show=' . $content_item->code, HTML::icon('search'), array('title' => 'View', 'target' => '_blank'));
 				} else {
-					$links .= '<span class="xm_icon"></span>';
+					$links .= '<a>' . HTML::icon('') . '</a>';
 				}
-				$links .= HTML::anchor($route->uri(array('action' => 'history', 'id' => $content_item->id)), HTML::icon('search'), array('title' => 'View History'));
+				$links .= HTML::anchor($route->uri(array('action' => 'history', 'id' => $content_item->id)), HTML::icon('history'), array('title' => 'View History'));
 
 				if ($content_item->has_draft()) {
-					$draft_links = HTML::anchor($content_item->content_page->url . '?content_admin_show=' . $content_item->code . '&draft=1', '<span class="xm_icon xm_checked"></span>', array('title' => 'View the Draft', 'target' => '_blank'))
+					$draft_links = HTML::anchor($content_item->content_page->url . '?content_admin_show=' . $content_item->code . '&draft=1', HTML::icon('search'), array('title' => 'View the Draft', 'target' => '_blank'))
 						. HTML::anchor($route->uri(array('action' => 'discard_draft', 'id' => $content_item->id)), HTML::icon('remove_2'), array('title' => 'Discard the Draft'));
 				} else {
 					$draft_links = '';
@@ -284,16 +284,16 @@ setTimeout("window.close();", 2000);
 		$found_live_version = FALSE;
 		foreach ($content_history as $history) {
 			if ( ! $found_live_version && ! Form::check_date_empty_value($history->post_date)) {
-				$is_live_html = ' <span class="xm_icon xm_checked" title="This is the live version"></span>';
+				$is_live_html = ' <span class="glyphicons checked" title="This is the live version"></span>';
 				$found_live_version = TRUE;
 			} else {
 				$is_live_html = '';
 			}
 
 			$content_history_table->add_row(array(
-				HTML::anchor(Route::get('content_admin')->uri(array('action' => 'view_changes', 'id' => $history->id)), HTML::icon('search'), array('title' => 'View Changes'))
+				HTML::anchor(Route::get('content_admin')->uri(array('action' => 'view_changes', 'id' => $history->id)), HTML::icon('git_compare'), array('title' => 'View Changes'))
 					. HTML::anchor(Route::get('content_admin')->uri(array('action' => 'history_view', 'id' => $history->id)), HTML::icon('search'), array('class' => 'js_history_view', 'title' => 'View this Version'))
-					. ( ! empty($is_live_html) ? HTML::anchor(Route::get('content_admin')->uri(array('action' => 'restore', 'id' => $history->id)), HTML::icon('refresh'), array('class' => 'js_restore', 'title' => 'Restore this Version')) : '<span class="xm_icon"></span>'),
+					. ( ! empty($is_live_html) ? HTML::anchor(Route::get('content_admin')->uri(array('action' => 'restore', 'id' => $history->id)), HTML::icon('unshare'), array('class' => 'js_restore', 'title' => 'Restore this Version')) : '<a>' . HTML::icon('') . '</a>'),
 				HTML::chars($history->creation_date) . $is_live_html,
 				HTML::chars($history->creation_user->name()),
 				HTML::chars($history->comments),

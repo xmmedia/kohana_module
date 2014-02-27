@@ -1266,7 +1266,7 @@ class XM_ORM extends Kohana_ORM {
 			// add a where clause with the ids
 			$this->_db_pending[] = array(
 				'name' => 'where',
-				'args' => array($this->_table_name . '.' . $this->_primary_key, 'IN', $ids),
+				'args' => array($this->_object_name . '.' . $this->_primary_key, 'IN', $ids),
 			);
 		} // if
 
@@ -1981,7 +1981,7 @@ class XM_ORM extends Kohana_ORM {
 	*/
 	public function group_concat($columns = NULL, $order_by = NULL, $separator = NULL) {
 		if (empty($columns)) {
-			$columns = Database::instance()->quote_identifier($this->_table_name . '.' . $this->_primary_val);
+			$columns = Database::instance()->quote_identifier($this->_object_name . '.' . $this->_primary_val);
 		}
 
 		if (empty($order_by)) {
@@ -2005,13 +2005,13 @@ class XM_ORM extends Kohana_ORM {
 				}
 
 				if (strpos($column, '.') === FALSE) {
-					$column = $this->_table_name . '.' . $column;
+					$column = $this->_object_name . '.' . $column;
 				}
 
 				$sort[] = Database::instance()->quote_identifier($column) . $direction;
 			}
 
-			$order_by = 'ORDER BY '.implode(', ', $sort);
+			$order_by = 'ORDER BY ' . implode(', ', $sort);
 		} else {
 			$order_by = '';
 		}

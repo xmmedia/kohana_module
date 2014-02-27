@@ -1008,17 +1008,22 @@ class XM_Form extends Kohana_Form {
 
 	/**
 	 * Creates a set of input fields to capture a structured phone number.
-	 * The database field needs to be 32 characters long to accomodate the entire phone number
+	 * The database field needs to be 32 characters long to accomodate the entire phone number.
 	 *
-	 * The format is [country code]-[area code]-[exchange]-[line]-[extension]:
+	 * The phone number is stored in the format:
 	 *
-	 *	 echo Form::phone('start_date','1-613-744-7011-1'); 1 (613) 744-7011 x1
-	 *	 echo Form::phone('start_date','-613-744-7011-'); (613) 744-7011
-	 *	 echo Form::phone('start_date','--744-7011-'); 744-7011
+	 *     [country code]-[area code]-[exchange]-[line]-[extension]
 	 *
-	 * @param   string  input name
-	 * @param   string  input value false will set the field to be empty, this the default;
-	 * @param   array   html attributes
+	 * Examples:
+	 *
+	 *	   echo Form::phone('phone_number', '1-613-744-7011-1'); 1 (613) 744-7011 x1
+	 *	   echo Form::phone('phone_number', '-613-744-7011-'); (613) 744-7011
+	 *	   echo Form::phone('phone_number', '--744-7011-'); 744-7011
+	 *
+	 * @param   string  $name     The input name.
+	 * @param   string  $value    The input value.
+	 * @param   array   $attributes  HTML tag attributes.
+	 * @param   array   $options  Additional options to customize the fields.
 	 * @return  string
 	 */
 	public static function phone($name, $value = NULL, array $attributes = array(), array $options = array()) {

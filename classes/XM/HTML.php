@@ -138,6 +138,16 @@ class XM_HTML extends Kohana_HTML {
 	}
 
 	/**
+	 * Returns the HTML for the XM CSS spinner.
+	 * If using within in JS, `xm.spinner` can also be used.
+	 *
+	 * @return  string
+	 */
+	public static function spinner() {
+		return '<div class="xm_spinner"><div class="bounce_1"></div><div class="bounce_2"></div><div class="bounce_3"></div></div>';
+	}
+
+	/**
 	* If the class attribute is not set, it will add it otherwise, it will add the new class prefixed with a space
 	*
 	* @param mixed $attributes

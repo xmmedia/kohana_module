@@ -276,10 +276,10 @@ class Controller_XM_Base extends Controller_Template {
 				Session::instance()->delete($timeout_post_session_key);
 			}
 		} // if
-	} // function process_timeout
+	}
 
 	/**
-	 * Adds the base style, which is the compiled version of the SASS files.
+	 * Adds `css/base.css`.
 	 *
 	 * @return  Controller_Base
 	 */
@@ -287,11 +287,11 @@ class Controller_XM_Base extends Controller_Template {
 		$this->add_style('base', 'css/base.css');
 
 		return $this;
-	} // function add_template_styles
+	}
 
 	/**
-	 * Sets up the template script var, add's jquery, jquery ui, and base.js if they are not already set.
-	 * If not in dev, base.min.js will be added instead of base.
+	 * Adds the default JS, including jQuery, jQuery UI and `js/base.min.js`.
+	 * If on dev, `xm/js/debug.js` will also be added.
 	 *
 	 * @return  Controller_Base
 	 */
@@ -306,7 +306,7 @@ class Controller_XM_Base extends Controller_Template {
 		$this->add_script('base', 'js/base.min.js');
 
 		return $this;
-	} // function add_template_js
+	}
 
 	/**
 	 * Adds JavaScript to the template on_load_js var, including checking to see if there should be a line break before the addition.
@@ -321,7 +321,7 @@ class Controller_XM_Base extends Controller_Template {
 		$this->on_load_js .= $js;
 
 		return $this;
-	} // function add_on_load_js
+	}
 
 	/**
 	 * Adds a CSS file.

@@ -23,25 +23,18 @@ class Controller_XM_Private extends Controller_Base {
 		if ($this->auto_render) {
 			$this->add_style('private', 'css/private.css');
 		}
-	} // function before
+	}
 
 	/**
-	 * Sets up the template script var, add's jquery, jquery ui, jquery outside, xm.js, ajax.js, and base.js.
-	 * If not in dev, private.min.js will be added instead of jquery outside, xm, ajax and base.
+	 * Adds `js/private.min.js` in addition to the JS added in `Controller_Base`.
 	 *
-	 * @return  Controller_Base
+	 * @return  Controller_Private
 	 */
 	public function add_template_js() {
-		$this->add_script('jquery', '//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js')
-			->add_script('jquery_ui', '//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js');
+		parent::add_template_js();
 
-		if (XM::is_dev()) {
-			$this->add_script('xm_debug', 'xm/js/debug.js');
-		}
-
-		$this->add_script('base', 'js/base.min.js')
-			->add_script('private', 'js/private.min.js');
+		$this->add_script('private', 'js/private.min.js');
 
 		return $this;
-	} // function add_template_js
+	}
 }

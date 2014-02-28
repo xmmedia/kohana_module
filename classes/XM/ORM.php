@@ -2698,6 +2698,20 @@ class XM_ORM extends Kohana_ORM {
 	}
 
 	/**
+	 * Calls `set_table_columns()`.
+	 * Just the singular version of the method.
+	 *
+	 * @param  string  $column_name  The column name
+	 * @param  string  $option_path  The path to the option within the _table_columns array
+	 * @param  mixed   $value        The value to set the option to
+	 * @chainable
+	 * @return ORM
+	 */
+	public function set_table_column($column_name, $option_path, $value = NULL) {
+		return $this->set_table_columns($column_name, $option_path, $value);
+	}
+
+	/**
 	* Sets a field option for a table column
 	*
 	* @param  string  $column_name  The column name

@@ -128,13 +128,27 @@ class XM_HTML extends Kohana_HTML {
 	} // function chars
 
 	/**
-	 * Returns the HTML for an xm icon.
+	 * Returns the HTML for an Glyphicon.
+	 * HTML output will be similar to:
 	 *
-	 * @param  string  $icon  The name of the icon. "xm_" is added.
+	 *      <span class="glypicons remove"></span>
+	 *
+	 * @param  string  $class  The name of the class for the icon from the Glyphicon set.
+	 * @param  array   $attributes  Additional attributes to apply to the span tag.
 	 * @return  string
+	 *
+	 * @see  http://glyphicons.com/
 	 */
-	public static function icon($icon) {
-		return '<span class="glyphicons ' . $icon . '"></span>';
+	public static function icon($class, array $attributes = NULL) {
+		$attributes = (array) $attributes;
+		if (isset($attributes['class'])) {
+			$attributes['class'] .= ' ';
+		} else {
+			$attributes['class'] = '';
+		}
+		$attributes['class'] .= 'glyphicons ' . $class;
+
+		return '<span' . HTML::attributes($attributes) . '></span>';
 	}
 
 	/**

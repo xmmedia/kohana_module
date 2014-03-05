@@ -912,7 +912,7 @@ class XM_ORM extends Kohana_ORM {
 				} // if
 			} // foreach
 		} // if
-		//echo Debug::vars($this->_field_html, $this->_table_columns);
+
 		return $this;
 	} // function prepare_form
 

@@ -102,11 +102,10 @@ class Model_XM_State extends ORM {
 
 	/**
 	 * @var  array  $_expires_column  The time this row expires and is no longer returned in standard searches.
-	 * Use format => 'Y-m-j H:i:s' for DATETIMEs and format => TRUE for TIMESTAMPs.
 	 */
 	protected $_expires_column = array(
 		'column' 	=> 'expiry_date',
-		'default'	=> 0,
+		'default'	=> '0000-00-00 00:00:00',
 	);
 
 

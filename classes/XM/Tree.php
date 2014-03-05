@@ -218,7 +218,7 @@ class XM_Tree {
 		if ( ! $keep_children) {
 			if ($expiry_col) {
 				DB::update($table_name)
-					->set(array('expiry_date' => DB::expr("NOW()")))
+					->set(array('expiry_date' => Date::formatted_time()))
 					->where('lft', 'BETWEEN', array(DB::expr("@myLeft"), DB::expr("@myRight")))
 					->where_expiry()
 					->execute();
@@ -248,7 +248,7 @@ class XM_Tree {
 		} else {
 			if ($expiry_col) {
 				DB::update($table_name)
-					->set(array('expiry_date' => DB::expr("NOW()")))
+					->set(array('expiry_date' => Date::formatted_time()))
 					->where('lft', '=', DB::expr('@myLeft'))
 					->where_expiry()
 					->execute();

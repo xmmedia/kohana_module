@@ -8,11 +8,11 @@ abstract class XM_Database_Query_Builder_Where extends Kohana_Database_Query_Bui
 	*
 	* @param  string  $table_name  The table name, default: none, just use the column name
 	* @param  string  $column      The column name, default: expiry_date
-	* @param  mixed   $default     The default value, default: 0
+	* @param  mixed   $default     The default value, default: 0000-00-00 00:00:00
 	*
 	* @return  $this
 	*/
-	public function where_expiry($table_name = NULL, $column = 'expiry_date', $default = 0) {
+	public function where_expiry($table_name = NULL, $column = 'expiry_date', $default = '0000-00-00 00:00:00') {
 		if ( ! empty($table_name)) {
 			$table_name .= '.';
 		} else {
@@ -22,7 +22,7 @@ abstract class XM_Database_Query_Builder_Where extends Kohana_Database_Query_Bui
 		$this->where($table_name . $column, '=', $default);
 
 		return $this;
-	} // function where_expiry
+	}
 
 	/**
 	* Adds an active flag where clause similar to:
@@ -45,5 +45,5 @@ abstract class XM_Database_Query_Builder_Where extends Kohana_Database_Query_Bui
 		$this->where($table_name . $column, '=', $status);
 
 		return $this;
-	} // function where_active
-} // class XM_Database_Query_Builder_Select
+	}
+}

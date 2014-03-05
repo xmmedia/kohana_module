@@ -168,7 +168,7 @@ class Model_XM_User extends Model_Auth_User {
 
 	protected $_expires_column = array(
 		'column' 	=> 'expiry_date',
-		'default'	=> 0,
+		'default'	=> '0000-00-00 00:00:00',
 	);
 
 	/**
@@ -290,7 +290,7 @@ class Model_XM_User extends Model_Auth_User {
 		$this->_log_next_query = FALSE;
 
 		$this->failed_login_count = DB::expr('failed_login_count + 1');
-		$this->last_failed_login = DB::expr('NOW()');
+		$this->last_failed_login = Date::formatted_time();
 		// save and then retrieve the record so the object is updated with the failed count and date
 		$this->is_valid()
 			->save()
@@ -311,7 +311,7 @@ class Model_XM_User extends Model_Auth_User {
 	public function add_auth_log($auth_type, $username = NULL) {
 		$auth_log_data = array(
 			'username' => ($username !== NULL ? $username : ''),
-			'access_time' => DB::expr("NOW()"),
+			'access_time' => Date::formatted_time(),
 			'auth_type_id' => $auth_type,
 			'browser' => ( ! empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''),
 			'ip_address' => ( ! empty($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : ''),
@@ -365,7 +365,7 @@ class Model_XM_User extends Model_Auth_User {
 		$this->login_count = DB::expr('login_count + 1');
 
 		// Set the last login date
-		$this->last_login = DB::expr('NOW()');
+		$this->last_login = Date::formatted_time();
 
 		// Save the user
 		$this->save();

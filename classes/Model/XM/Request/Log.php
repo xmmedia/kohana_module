@@ -125,7 +125,7 @@ class Model_XM_Request_Log extends ORM {
 		}
 
 		$_data = array(
-			'datetime' => (array_key_exists('datetime', $data) ? $data['datetime'] : DB::expr("NOW()")),
+			'datetime' => (array_key_exists('datetime', $data) ? $data['datetime'] : Date::formatted_time()),
 			'user_id' => (array_key_exists('user_id', $data) ? $data['user_id'] : 0),
 			'path' => (array_key_exists('path', $data) ? $data['path'] : Request::current()->uri()),
 			'get' => json_encode(array_key_exists('get', $data) ? $data['get'] : $get),

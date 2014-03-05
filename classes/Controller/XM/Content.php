@@ -149,7 +149,7 @@ window.close();
 						->find_all();
 					foreach ($existing_content_history as $content_history) {
 						$content_history->values(array(
-								'history_date' => DB::expr("NOW()"),
+								'history_date' => Date::formatted_time(),
 								'history_user_id' => Auth::instance()->get_user()->pk(),
 							))
 							->save();
@@ -165,7 +165,7 @@ window.close();
 					// only set the post date and user when we are going live with this immediately
 					if ($immediately_live) {
 						$content_history->values(array(
-								'post_date' => DB::expr("NOW()"),
+								'post_date' => Date::formatted_time(),
 								'post_user_id' => Auth::instance()->get_user()->pk(),
 							));
 					}
@@ -174,7 +174,7 @@ window.close();
 					// if making it live immediately, update the last update fields
 					if ($immediately_live) {
 						$content_item->values(array(
-								'last_update' => DB::expr("NOW()"),
+								'last_update' => Date::formatted_time(),
 								'last_update_user_id' => Auth::instance()->get_user()->pk(),
 							))
 							->save();
@@ -456,7 +456,7 @@ setTimeout("window.close();", 2000);
 				->find_all();
 			foreach ($existing_content_history as $content_history) {
 				$content_history->values(array(
-						'history_date' => DB::expr("NOW()"),
+						'history_date' => Date::formatted_time(),
 						'history_user_id' => Auth::instance()->get_user()->pk(),
 					))
 					->save();
@@ -467,14 +467,14 @@ setTimeout("window.close();", 2000);
 					'content_id' => $content_item->id,
 					'creation_user_id' => Auth::instance()->get_user()->pk(),
 					'content' => $content_item->content,
-					'post_date' => DB::expr("NOW()"),
+					'post_date' => Date::formatted_time(),
 					'post_user_id' => Auth::instance()->get_user()->pk(),
 				))
 				->save();
 
 			$content_item->values(array(
 					'content' => $history_content,
-					'last_update' => DB::expr("NOW()"),
+					'last_update' => Date::formatted_time(),
 					'last_update_user_id' => Auth::instance()->get_user()->pk(),
 				))
 				->save();

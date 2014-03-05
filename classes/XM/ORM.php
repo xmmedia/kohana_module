@@ -884,6 +884,7 @@ class XM_ORM extends Kohana_ORM {
 						// note: never disable the hidden checkbox or save_values() will not initiate the saving of the related data
 						$checkbox_options = array(
 							'orientation' => 'vertical',
+							'order_vertically' => FALSE,
 							'source_value' => $related_pk,
 							'source_label' => $related_label,
 						);

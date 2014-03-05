@@ -365,6 +365,11 @@ class XM_Form extends Kohana_Form {
 		);
 		$options += $default_options;
 
+		// don't order vertically when we're doing a vertical list
+		if ($options['orientation'] == 'vertical') {
+			$options['order_vertically'] = FALSE;
+		}
+
 		if (substr($name, -2, 2) != '[]') {
 			throw new Kohana_Exception('Input Error: The field name (:name) for checkboxes was missing the square brackets required', array(':name' => $name));
 		}

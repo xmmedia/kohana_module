@@ -2397,7 +2397,7 @@ class XM_ORM extends Kohana_ORM {
 			if ( ! empty($this->_expires_column)) {
 				// Expire the object
 				$num_affected = DB::update($this->_table_name)
-					->set(array($this->_expires_column['column'] => DB::expr('NOW()')))
+					->set(array($this->_expires_column['column'] => Date::formatted_time()))
 					->where($this->_primary_key, '=', $id)
 					->execute($this->_db);
 
@@ -2412,7 +2412,7 @@ class XM_ORM extends Kohana_ORM {
 							'query_type' => 'UPDATE',
 							'row_count' => $num_affected,
 							'sql' => $this->last_query(),
-							'changed' => array($this->_expires_column['column'] => DB::expr('NOW()')),
+							'changed' => array($this->_expires_column['column'] => Date::formatted_time()),
 						));
 					$this->_change_log_ids[] = $change_log->pk();
 				} // if

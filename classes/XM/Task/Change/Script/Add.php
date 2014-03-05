@@ -89,7 +89,7 @@ class XM_Task_Change_Script_Add extends Task_Change_Script {
 			}
 
 			DB::insert($this->_config['log_table'], array('filename', 'type', 'applied', 'description', 'log'))
-				->values(array($change_script, $script_type, DB::expr("NOW()"), $description, '@manual'))
+				->values(array($change_script, $script_type, Date::formatted_time(), $description, '@manual'))
 				->execute();
 			fwrite(STDOUT, ' -- done');
 		} // foreach

@@ -114,7 +114,7 @@ class XM_Task_Change_Script_Run extends Task_Change_Script {
 
 					// log that the change log has been run
 					DB::insert($this->_config['log_table'], array('filename', 'type', 'applied', 'description', 'log'))
-						->values(array($to_apply_change_script, $script_type, DB::expr("NOW()"), $description, $log))
+						->values(array($to_apply_change_script, $script_type, Date::formatted_time(), $description, $log))
 						->execute();
 					fwrite(STDOUT, ' -- done' . PHP_EOL);
 				}

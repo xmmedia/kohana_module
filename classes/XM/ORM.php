@@ -141,7 +141,7 @@ class XM_ORM extends Kohana_ORM {
 		parent::_initialize();
 
 		if ( ! empty($this->_expires_column) && ! array_key_exists('default', $this->_expires_column)) {
-			$this->_expires_column['default'] = 0;
+			$this->_expires_column['default'] = '0000-00-00 00:00:00';
 		}
 	} // function _initialize
 

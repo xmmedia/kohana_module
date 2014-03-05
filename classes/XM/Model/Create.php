@@ -505,11 +505,10 @@ class XM_Model_Create {
 	protected function build_expiry_column() {
 		$model_code = TAB . '/**' . EOL;
 		$model_code .= TAB . ' * @var  array  $_expires_column  The time this row expires and is no longer returned in standard searches.' . EOL;
-		$model_code .= TAB . ' * Use format => \'Y-m-j H:i:s\' for DATETIMEs and format => TRUE for TIMESTAMPs.' . EOL;
 		$model_code .= TAB . ' */' . EOL;
 		$model_code .= TAB . ( ! isset($this->columns['expiry_date']) ? '/*' : '') . 'protected $_expires_column = array(' . EOL;
 		$model_code .= TAB . TAB . '\'column\' 	=> \'expiry_date\',' . EOL;
-		$model_code .= TAB . TAB . '\'default\'	=> 0,' . EOL;
+		$model_code .= TAB . TAB . '\'default\'	=> \'0000-00-00 00:00:00\',' . EOL;
 		$model_code .= TAB . ');' . ( ! isset($this->columns['expiry_date']) ? '*/' : '') . EOL;
 
 		return $model_code;

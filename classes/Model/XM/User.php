@@ -168,7 +168,7 @@ class Model_XM_User extends Model_Auth_User {
 
 	protected $_expires_column = array(
 		'column' 	=> 'expiry_date',
-		'default'	=> 0,
+		'default'	=> '0000-00-00 00:00:00',
 	);
 
 	/**

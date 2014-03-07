@@ -43,7 +43,6 @@ class Controller_XM_Content extends Controller_Private {
 			$this->add_style('content_admin', 'xm/css/content.css');
 
 			$this->add_script('tinymce_jquery', 'js/tinymce/jquery.tinymce.min.js')
-				->add_script('tinymce', 'js/tinymce/tinymce.min.js')
 				->add_script('tinymce_config', 'js/tinymce_config.min.js')
 				->add_script('content_admin', 'xm/js/content.js');
 		}

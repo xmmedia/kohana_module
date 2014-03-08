@@ -158,7 +158,7 @@ class XM_HTML extends Kohana_HTML {
 	 * @return  string
 	 */
 	public static function spinner() {
-		return '<div class="xm_spinner"><div class="bounce_1"></div><div class="bounce_2"></div><div class="bounce_3"></div></div>';
+		return '<div class="xm_spinner js_xm_spinner"><div class="bounce_1"></div><div class="bounce_2"></div><div class="bounce_3"></div></div>';
 	}
 
 	/**

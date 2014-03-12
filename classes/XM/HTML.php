@@ -131,7 +131,7 @@ class XM_HTML extends Kohana_HTML {
 	 * Returns the HTML for an Glyphicon.
 	 * HTML output will be similar to:
 	 *
-	 *      <span class="glypicons remove"></span>
+	 *      <span class="glypicons remove" aria-hidden="true"></span>
 	 *
 	 * @param  string  $class  The name of the class for the icon from the Glyphicon set.
 	 * @param  array   $attributes  Additional attributes to apply to the span tag.
@@ -147,6 +147,10 @@ class XM_HTML extends Kohana_HTML {
 			$attributes['class'] = '';
 		}
 		$attributes['class'] .= 'glyphicons ' . $class;
+
+		if ( ! isset($attributes['aria-hidden'])) {
+			$attributes['aria-hidden'] = 'true';
+		}
 
 		return '<span' . HTML::attributes($attributes) . '></span>';
 	}

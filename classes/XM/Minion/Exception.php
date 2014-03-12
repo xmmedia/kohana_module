@@ -37,8 +37,23 @@ class XM_Minion_Exception extends Kohana_Minion_Exception {
 				// display the trace when in development
 				echo "--", PHP_EOL, $e->getTraceAsString(), PHP_EOL;
 			} else {
-				Kohana_Exception::notify($e);
-				Kohana_Exception::store($e);
+				$notify = TRUE;
+				$store = FALSE;
+				if (Kohana::$config) {
+					try {
+						$notify = (boolean) Kohana::$config->load('error_admin.send_error_immediately');
+						$store = (boolean) Kohana::$config->load('error_admin.use_error_admin');
+					} catch (Exception $e) {
+						Kohana_Exception::log($e);
+					}
+				}
+
+				if ($notify) {
+					Kohana_Exception::notify($e);
+				}
+				if ($store) {
+					Kohana_Exception::store($e);
+				}
 			}
 
 			$exit_code = $e->getCode();

@@ -51,6 +51,7 @@ class Model_XM_Content_Page extends ORM {
 			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
 			'field_attributes' => array(
+				'size' => 75,
 				'maxlength' => 100,
 			),
 		),
@@ -62,6 +63,7 @@ class Model_XM_Content_Page extends ORM {
 			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
 			'field_attributes' => array(
+				'size' => 75,
 				'maxlength' => 100,
 			),
 		),

@@ -49,11 +49,11 @@ class Controller_XM_DB_Change extends Controller_Private {
 		$this->add_on_load_js(<<<EOA
 $(function() {
 	$('a.select_all').click(function() {
-		$('input[name="db[]"]').check();
+		$('input[name="db[]"]').attr('checked', 'checked');
 		return false;
 	});
 	$('a.select_none').click(function() {
-		$('input[name="db[]"]').uncheck();
+		$('input[name="db[]"]').removeAttr('checked');
 		return false;
 	});
 	$('input.clear').click(function() {

@@ -435,7 +435,7 @@ class XM_PDF extends FPDI {
 			$w = $this->CalculatePercentageWidth($w);
 		}
 
-		if ( ! is_array($border)) {
+		if (is_string($border)) {
 			$border = strtoupper($border);
 		}
 
@@ -477,7 +477,7 @@ class XM_PDF extends FPDI {
 			$w = $this->CalculatePercentageWidth($w);
 		}
 
-		if ( ! is_array($border)) {
+		if (is_string($border)) {
 			$border = strtoupper($border);
 		}
 

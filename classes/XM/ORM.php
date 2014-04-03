@@ -928,6 +928,8 @@ class XM_ORM extends Kohana_ORM {
 	public function get_field_help($column_name, $field_html_name = NULL) {
 		if ( ! empty($this->_field_help[$column_name][$this->_mode])) {
 			$field_help = $this->_field_help[$column_name][$this->_mode];
+		} else if (($this->_mode == 'add' || $this->_mode == 'edit') && ! empty($this->_field_help[$column_name]['add_edit'])) {
+			$field_help = $this->_field_help[$column_name]['add_edit'];
 		} else if ( ! empty($this->_field_help[$column_name]['all'])) {
 			$field_help = $this->_field_help[$column_name]['all'];
 		} else {

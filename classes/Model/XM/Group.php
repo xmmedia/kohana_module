@@ -99,8 +99,7 @@ class Model_XM_Group extends ORM {
 
 	protected $_field_help = array(
 		'privileged' => array(
-			'add' => 'Checking privileged will only allow this group to be access by users with the privileged group permission.',
-			'edit' => 'Checking privileged will only allow this group to be access by users with the privileged group permission.',
+			'add_edit' => 'Checking privileged will only allow this group to be access by users with the privileged group permission.',
 		),
 	);
 

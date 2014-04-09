@@ -279,7 +279,7 @@ class XM_Form extends Kohana_Form {
 			$options['view'] = 'xm/form/radios_' . $view_name;
 		} // if
 
-		$attributes = Form::set_attribute_id($attributes);
+		$attributes = Form::set_attribute_id((array) $attributes);
 
 		$fields = array();
 		foreach ($source as $radio_key => $radio_value) {
@@ -349,7 +349,7 @@ class XM_Form extends Kohana_Form {
 		$html = '';
 
 		$checked = (array) $checked;
-		$attributes = Form::set_attribute_id($attributes);
+		$attributes = Form::set_attribute_id((array) $attributes);
 
 		$default_options = array(
 			'orientation' => 'table',
@@ -500,7 +500,7 @@ class XM_Form extends Kohana_Form {
 			'first_checkbox' => TRUE,
 		);
 
-		$attributes = Form::set_attribute_id($attributes);
+		$attributes = Form::set_attribute_id((array) $attributes);
 
 		if ( ! $options['first_checkbox']) {
 			if ($options['orientation'] == 'vertical') {
@@ -521,7 +521,7 @@ class XM_Form extends Kohana_Form {
 	 * @return  string
 	 */
 	public static function checkbox_layout_ul($name, $label = '', $value, $checked = FALSE, array $attributes = NULL, array $options = array()) {
-		$attributes = Form::set_attribute_id($attributes);
+		$attributes = Form::set_attribute_id((array) $attributes);
 
 		$html = '<li>' . Form::checkbox_with_label($label, $name, $value, $checked, $attributes, $options) . '</li>';
 
@@ -534,7 +534,7 @@ class XM_Form extends Kohana_Form {
 	 * @return  string
 	 */
 	public static function checkbox_layout_div($name, $label = '', $value, $checked = FALSE, array $attributes = NULL, array $options = array()) {
-		$attributes = Form::set_attribute_id($attributes);
+		$attributes = Form::set_attribute_id((array) $attributes);
 
 		$html = '<div>' . Form::checkbox_with_label($label, $name, $value, $checked, $attributes, $options) . '</div>';
 
@@ -544,7 +544,7 @@ class XM_Form extends Kohana_Form {
 	public static function checkbox_layout_table($name, & $col, $label = '', $value, $checked = FALSE, array $attributes = NULL, array $options = array()) {
 		$html = '';
 
-		$attributes = Form::set_attribute_id($attributes);
+		$attributes = Form::set_attribute_id((array) $attributes);
 
 		if ($col == 1) $html .= '<tr>';
 
@@ -1405,7 +1405,7 @@ class XM_Form extends Kohana_Form {
 		);
 		$options += $default_options;
 
-		$attributes = Form::set_attribute_id($attributes);
+		$attributes = Form::set_attribute_id((array) $attributes);
 
 		$radios = array();
 		foreach ($source as $radio_key => $radio_value) {

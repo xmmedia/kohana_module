@@ -9,6 +9,14 @@ class Model_XM_User extends Model_Auth_User {
 	// don't reload the user object every time it's reloaded from the sessions for 2 reasons: (1) it fails, and (2) it's an extra unnecessary query
 	protected $_reload_on_wakeup = FALSE;
 
+	/**
+	 * Set to TRUE when being used for the user's profile edit.
+	 * Set to TRUE in set_for_profile_edit().
+	 *
+	 * @var  boolean
+	 */
+	protected $_for_profile_edit = FALSE;
+
 	protected $_table_columns = array(
 		'id' => array(
 			'field_type'     => 'Hidden',
@@ -215,7 +223,7 @@ class Model_XM_User extends Model_Auth_User {
 	public function rules() {
 		$password_min_length = (int) Kohana::$config->load('auth.password_min_length');
 
-		return array(
+		$rules = array(
 			'username' => array(
 				array('not_empty'),
 				array('min_length', array(':value', 6)),
@@ -239,7 +247,13 @@ class Model_XM_User extends Model_Auth_User {
 				array('min_length', array(':value', $password_min_length)),
 			),
 		);
-	} // function rules
+
+		if ($this->_for_profile_edit) {
+			unset($rules['password']);
+		}
+
+		return $rules;
+	}
 
 	/**
 	 * Labels for columns
@@ -252,6 +266,7 @@ class Model_XM_User extends Model_Auth_User {
 			'expiry_date'                 => 'Date Expired',
 			'username'                    => 'Email (Username)',
 			'password'                    => 'Password',
+			// password_confirm is used by the user admin
 			'password_confirm'            => 'Confirm Password',
 			'first_name'                  => 'First Name',
 			'last_name'                   => 'Last Name',
@@ -263,7 +278,7 @@ class Model_XM_User extends Model_Auth_User {
 			'force_update_password_flag'  => 'Force Password Update',
 			'force_update_profile_flag'   => 'Force Profile Update',
 		);
-	} // function labels
+	}
 
 	/**
 	 * Filter definitions, run everytime a field is set
@@ -272,11 +287,22 @@ class Model_XM_User extends Model_Auth_User {
 	 */
 	public function filters() {
 		return array(
-			'username' => array(array('trim')),
-			'first_name' => array(array('trim')),
-			'last_name' => array(array('trim')),
-			'password' => array(array(array($this, 'hash_password'))),
-			'password_confirm' => array(array(array($this, 'hash_password'))),
+			'username' => array(
+				array('trim'),
+			),
+			'first_name' => array(
+				array('trim'),
+			),
+			'last_name' => array(
+				array('trim'),
+			),
+			'password' => array(
+				array(array($this, 'hash_password')),
+			),
+			// password_confirm is used by the user admin
+			'password_confirm' => array(
+				array(array($this, 'hash_password')),
+			),
 		);
 	} // function filters
 
@@ -505,5 +531,28 @@ class Model_XM_User extends Model_Auth_User {
 		} else {
 			return UTF8::trim($this->first_name . ' ' . $this->last_name);
 		}
+	}
+
+	/**
+	 * Gets the model ready for use on the user's profile edit.
+	 * Sets `_for_profile_edit` to TRUE and sets the `edit_flag` to FALSE
+	 * on any fields not shown on the profile edit.
+	 *
+	 * @return  Model_User
+	 */
+	public function set_for_profile_edit() {
+		$this->_for_profile_edit = TRUE;
+
+		$this->_table_columns['id']['edit_flag'] = FALSE;
+		$this->_table_columns['active_flag']['edit_flag'] = FALSE;
+		$this->_table_columns['password']['edit_flag'] = FALSE;
+		$this->_table_columns['login_count']['edit_flag'] = FALSE;
+		$this->_table_columns['last_login']['edit_flag'] = FALSE;
+		$this->_table_columns['failed_login_count']['edit_flag'] = FALSE;
+		$this->_table_columns['last_failed_login']['edit_flag'] = FALSE;
+		$this->_table_columns['force_update_profile_flag']['edit_flag'] = FALSE;
+		$this->_table_columns['force_update_password_flag']['edit_flag'] = FALSE;
+
+		return $this;
 	}
 }

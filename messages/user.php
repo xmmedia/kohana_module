@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 /**
-* These messages are for the user model (including user_profile and user_password)
+* These messages are for the user model.
 *
 * see /system/messages/validation.php for the defaults for each rule. These can be overridden on a per-field/message basis.
 */

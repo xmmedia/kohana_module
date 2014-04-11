@@ -5,7 +5,7 @@
 
 	<div class="field">
 		<?php echo Form::label('current_password', 'Current Password'),
-			Form::password('current_password', '', array('size' => 30, 'maxlength' => 255)); ?>
+			Form::password('current_password', '', array('size' => 30, 'maxlength' => 255, 'autofocus')); ?>
 	</div>
 	<div class="field">
 		<?php echo Form::label('new_password', 'New Password'),

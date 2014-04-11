@@ -10,11 +10,11 @@
 		<?php echo Form::password('password', NULL, array('size' => 20, 'maxlength' => 255, 'id' => 'password', 'autofocus')); ?>
 	</div>
 	<div class="field">
-		<label for="password_confirm" class="block">Retype Password</label>
+		<label for="password_confirm" class="block">Confirm New Password</label>
 		<?php echo Form::password('password_confirm', NULL, array('size' => 20, 'maxlength' => 255, 'id' => 'password_confirm')); ?>
 	</div>
 
-	<?php echo Form::submit(NULL, 'Submit'),
+	<?php echo Form::submit(NULL, 'Change Password'),
 		Form::close(); ?>
 
 	<div class="go_link"><?php echo HTML::anchor(Route::get('login')->uri(), 'Login') ?></div>

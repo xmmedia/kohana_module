@@ -151,6 +151,10 @@ class Controller_XM_Account extends Controller_Private {
 				// reload the user in the session
 				Auth::instance()->get_user()->reload();
 
+				// send an email to the user notifying them of the password change
+				$uri = $this->current_route()->uri();
+				$user->send_password_changed_email($uri);
+
 				Message::message('account', 'password_changed', NULL, Message::$notice);
 				// redirect and exit
 				$this->redirect($this->default_uri);

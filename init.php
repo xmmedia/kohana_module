@@ -37,11 +37,11 @@ if ($routes['login']) {
 }
 
 if ($routes['account']) {
-	// account: profile, change password, forgot, register
+	// account: profile and change password
 	Route::set('account', 'account(/<action>)', array('action' => '[a-z_]{0,}',))
 	->defaults(array(
 		'controller' => 'Account',
-		'action' => 'index',
+		'action' => 'profile',
 	));
 }
 

@@ -1,48 +1,16 @@
-<h1>Edit Profile</h1>
+<h1 class="account_page_title">Your Profile</h1>
 
-<p>To change your name or email address/username, use the form below:</p>
+<div class="account_form">
+	<?php echo $form_open; ?>
 
-<?php echo $edit_fields; ?>
+	<?php foreach ($columns as $column_name) : ?>
+		<div class="field"><?php echo $user->get_field_layout($column_name); ?></div>
+		<?php if ($column_name == 'username') : ?>
+			<div class="field"><label>Password</label><?php echo HTML::anchor($password_uri, 'Change password'); ?></div>
+		<?php endif ?>
+	<?php endforeach ?>
 
-<br><br>
-<h1>Change Password</h1>
-<p>To change your password, use the form below:</p>
+	<div class="buttons"><?php echo Form::submit(NULL, 'Save'), HTML::anchor($default_uri, 'Reset'); ?></div>
 
-<?php echo Form::open(URL::site(Route::get(Route::name(Request::current()->route()))->uri(array('action' => 'password'))));
-	echo Form::hidden('form', 'password');
-
-$table = new HTMLTable(array(
-	'table_attributes' => array(
-		'class' => 'xm_form',
-	),
-));
-
-$table->add_row(array(
-	'<label>Your Current Password</label>',
-	Form::password('current_password', '', array('class' => 'text', 'size' => 30, 'maxlength' => 255)),
-));
-$table->add_row(array(
-	'<label>New Password</label>',
-	Form::password('new_password', '', array('class' => 'text', 'size' => 30, 'maxlength' => 255)),
-));
-$table->add_row(array(
-	'<label>Confirm New Password</label>',
-	Form::password('new_password_confirm', '', array('class' => 'text', 'size' => 30, 'maxlength' => 255)),
-));
-
-echo $table->get_html();
-
-?>
-
-<div class="xm_buttons">
-<?php
-echo Form::submit('xm_submit', 'Save');
-echo Form::input('xm_cancel', __('Cancel'), array(
-	'type' => 'button',
-	'class' => 'js_xm_button_link',
-	'data-xm_link' => URL::site(Route::get(Route::name(Request::current()->route()))->uri(array('action' => 'cancel'))),
-));
-?>
+	</form>
 </div>
-
-<?php echo Form::close();

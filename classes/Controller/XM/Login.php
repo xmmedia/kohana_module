@@ -407,21 +407,9 @@ class Controller_XM_Login extends Controller_Private {
 								$_reset->delete();
 							}
 
-							$mail = new Mail();
-							$mail->IsHTML();
-							$mail->AddUser($user->pk());
-							$mail->Subject = LONG_NAME . ' New Password Confirmation';
-
-							// provide a link to the user including their username
-							$url = URL::site($this->current_route()->uri() . '?' . http_build_query(array('username' => $user->username)), FALSE);
-
-							$mail->Body = View::factory('xm/login/forgot_confirm_email')
-								->set('app_name', LONG_NAME)
-								->set('username', $user->username)
-								->set('url', $url)
-								->set('admin_email', ADMIN_EMAIL);
-
-							$mail->Send();
+							// send an email to the user notifying them of the password change
+							$uri = $this->current_route()->uri();
+							$user->send_password_changed_email($uri);
 
 							Session::instance()->set_path($this->login_config['session_key'] . '.force_captcha', FALSE);
 							Session::instance()->set_path($this->login_config['session_key'] . '.attempts', 0);

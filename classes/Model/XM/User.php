@@ -555,4 +555,32 @@ class Model_XM_User extends Model_Auth_User {
 
 		return $this;
 	}
+
+	/**
+	 * Sends an email to the user notifying them that their password has changed.
+	 * This is just in case someone else has gained access to their account.
+	 *
+	 * @param   string  $uri  The URI where the user can login.
+	 *
+	 * @return  Model_User
+	 */
+	public function send_password_changed_email($uri) {
+		$mail = new Mail();
+		$mail->IsHTML();
+		$mail->AddUser($this->pk());
+		$mail->Subject = LONG_NAME . ' New Password Confirmation';
+
+		// provide a link to the user including their username
+		$url = URL::site($uri . '?' . http_build_query(array('username' => $this->username)), FALSE);
+
+		$mail->Body = View::factory('xm/login/forgot_confirm_email')
+			->set('app_name', LONG_NAME)
+			->set('username', $this->username)
+			->set('url', $url)
+			->set('admin_email', ADMIN_EMAIL);
+
+		$mail->Send();
+
+		return $this;
+	}
 }

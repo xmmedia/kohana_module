@@ -352,10 +352,11 @@ class Controller_XM_Login extends Controller_Private {
 	} // function action_forgot
 
 	/**
-	* A basic version of "reset password" functionality.
-	*
-	* @todo consider changing this to not send the password, but instead allow them enter a new password right there; this might be more secure, but since we've sent them a link anyway, it's probably too late for security; the only thing is email is insecure (not HTTPS)
-	*/
+	 * Displays and processes the change password form for users that are not logged in,
+	 * coming from a forgot/reset password email.
+	 *
+	 * @return  void
+	 */
 	public function action_reset() {
 		// If user already signed-in to redirect them to the default page
 		if (Auth::instance()->logged_in()) {
@@ -464,14 +465,5 @@ class Controller_XM_Login extends Controller_Private {
 		} else {
 			return '';
 		}
-	}
-
-	/**
-	 * Returns the current route object.
-	 *
-	 * @return  Route
-	 */
-	protected function current_route() {
-		return Route::get(Route::name($this->request->route()));
 	}
 }

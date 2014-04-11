@@ -441,4 +441,13 @@ class Controller_XM_Base extends Controller_Template {
 
 		return $compiled;
 	} // function compile_assets
+
+	/**
+	 * Returns the current route object.
+	 *
+	 * @return  Route
+	 */
+	protected function current_route() {
+		return Route::get(Route::name($this->request->route()));
+	}
 }

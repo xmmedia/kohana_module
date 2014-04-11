@@ -30,7 +30,7 @@ class Controller_XM_Account extends Controller_Private {
 			$this->add_style('account', 'xm/css/account.css');
 		}
 
-		$this->default_uri = Route::get(Route::name($this->request->route()))->uri(array('action' => 'profile'));
+		$this->default_uri = $this->current_route()->uri(array('action' => 'profile'));
 	}
 
 	/**
@@ -87,7 +87,7 @@ class Controller_XM_Account extends Controller_Private {
 		}
 
 		$form_open = Form::open($this->default_uri, array('method' => 'post'));
-		$password_uri = Route::get(Route::name($this->request->route()))->uri(array('action' => 'password'));
+		$password_uri = $this->current_route()->uri(array('action' => 'password'));
 
 		$this->template->page_title = 'Profile Edit - ' . $this->page_title_append;
 		$this->template->body_html = View::factory('xm/account/profile')
@@ -162,7 +162,7 @@ class Controller_XM_Account extends Controller_Private {
 			}
 		}
 
-		$form_open = Form::open(Route::get(Route::name($this->request->route()))->uri(array('action' => 'password')), array('method' => 'post'));
+		$form_open = Form::open($this->current_route()->uri(array('action' => 'password')), array('method' => 'post'));
 
 		$this->template->page_title = 'Change Password - ' . $this->page_title_append;
 		$this->template->body_html = View::factory('xm/account/password')

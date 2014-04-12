@@ -1,6 +1,3 @@
-<?php
-$logout_uri = Route::get(Route::name(Request::current()->route()))->uri(array('action' => 'logout'));
-?>
 <div class="login_box timed_out_wrapper">
 	<h1>Timed Out</h1>
 	<p>Your login has timed out. To continue using your current login, enter your password.</p>
@@ -15,7 +12,7 @@ $logout_uri = Route::get(Route::name(Request::current()->route()))->uri(array('a
 	</div>
 	<div class="field">
 		<label for="password">Password</label>
-		<?php echo Form::password('password', '', array('size' => 20, 'maxlength' => 255, 'id' => 'password', 'autofocus')) ?>
+		<?php echo Form::password('password', '', array('size' => 20, 'maxlength' => 255, 'id' => 'password', 'autofocus')); ?>
 	</div>
 
 	<?php echo Form::submit(NULL, 'Login'),

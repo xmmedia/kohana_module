@@ -12,7 +12,7 @@
 	</div>
 	<div class="field">
 		<label for="password">Password</label>
-		<?php echo Form::password('password', '', array('size' => 20, 'maxlength' => 255, 'id' => 'password', 'autofocus')) ?>
+		<?php echo Form::password('password', '', array('size' => 20, 'maxlength' => 255, 'id' => 'password', 'autofocus')); ?>
 	</div>
 
 	<?php echo Form::submit(NULL, 'Login'),

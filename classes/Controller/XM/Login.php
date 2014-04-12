@@ -80,8 +80,8 @@ class Controller_XM_Login extends Controller_Private {
 				// if the captcha is required but we have not verified the human
 				if ($captcha_required && ! $human_verified) {
 					// increment the failed login count on the user
-					$user = ORM::factory('User');
-					$user->add_login_where($username)
+					$user = ORM::factory('User')
+						->add_login_where($username)
 						->find();
 
 					// increment the login count and record the login attempt

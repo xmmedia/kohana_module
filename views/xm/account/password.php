@@ -5,15 +5,15 @@
 
 		<div class="field">
 			<?php echo Form::label('current_password', 'Current Password'),
-				Form::password('current_password', '', array('size' => 30, 'maxlength' => 255, 'autofocus')); ?>
+				Form::password('current_password', '', array('size' => 30, 'maxlength' => 255, 'autofocus', 'id' => 'current_password')); ?>
 		</div>
 		<div class="field">
 			<?php echo Form::label('new_password', 'New Password'),
-				Form::password('new_password', '', array('size' => 30, 'maxlength' => 255)); ?>
+				Form::password('new_password', '', array('size' => 30, 'maxlength' => 255, 'id' => 'new_password')); ?>
 		</div>
 		<div class="field">
 			<?php echo Form::label('new_password_confirm', 'Confirm New Password'),
-				Form::password('new_password_confirm', '', array('size' => 30, 'maxlength' => 255)); ?>
+				Form::password('new_password_confirm', '', array('size' => 30, 'maxlength' => 255, 'id' => 'new_password_confirm')); ?>
 		</div>
 
 		<div class="buttons"><?php echo Form::button(NULL, 'Change Password'), HTML::anchor($default_uri, 'Cancel'); ?></div>

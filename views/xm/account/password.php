@@ -16,7 +16,7 @@
 			Form::password('new_password_confirm', '', array('size' => 30, 'maxlength' => 255)); ?>
 	</div>
 
-	<div class="buttons"><?php echo Form::submit(NULL, 'Change Password'), HTML::anchor($default_uri, 'Cancel'); ?></div>
+	<div class="buttons"><?php echo Form::button(NULL, 'Change Password'), HTML::anchor($default_uri, 'Cancel'); ?></div>
 
 	</form>
 </div>

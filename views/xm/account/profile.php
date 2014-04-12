@@ -10,7 +10,7 @@
 		<?php endif ?>
 	<?php endforeach ?>
 
-	<div class="buttons"><?php echo Form::submit(NULL, 'Save'), HTML::anchor($default_uri, 'Reset'); ?></div>
+	<div class="buttons"><?php echo Form::button(NULL, 'Save'), HTML::anchor($default_uri, 'Reset'); ?></div>
 
 	</form>
 </div>

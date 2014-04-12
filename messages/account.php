@@ -13,7 +13,7 @@ return array(
 		'max_length' => 'Your new password must be less than :param2 characters long.',
 	),
 	'new_password_confirm' => array(
-		'matches' => 'Both the new passwords must be the same.',
+		'matches' => 'Both new passwords must be the same.',
 	),
 	'current_password' => array(
 		'not_the_same' => 'Your current password is incorrect.',

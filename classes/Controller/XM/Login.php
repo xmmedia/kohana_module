@@ -219,10 +219,11 @@ class Controller_XM_Login extends Controller_Private {
 		$user = Auth::instance()->get_user();
 
 		$max_lifetime = Kohana::$config->load('auth.timed_out_max_lifetime');
+		$logout_uri = $this->current_route()->uri(array('action' => 'logout')) . $this->get_redirect_query();
 
 		if ( ! $user || ($max_lifetime > 0 && Auth::instance()->timed_out($max_lifetime))) {
 			// user is not logged in at all or they have reached the maximum amount of time we allow sometime to stay logged in, so redirect them to the login page
-			$this->redirect($this->current_route()->uri(array('action' => 'logout')) . $this->get_redirect_query());
+			$this->redirect($logout_uri);
 		}
 
 		$timeout_post = Session::instance()->get(Kohana::$config->load('xm_login.timeout_post_session_key'));
@@ -236,6 +237,7 @@ class Controller_XM_Login extends Controller_Private {
 		$this->template->page_title = 'Timed Out - ' . $this->page_title_append;
 		$this->template->body_html = View::factory('xm/login/timed_out')
 			->set('redirect', $redirect)
+			->set('logout_uri', $logout_uri)
 			->set('username', $user->username);
 
 		$this->add_on_load_js('$(\'#password\').focus();');

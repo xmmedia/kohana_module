@@ -1544,12 +1544,13 @@ class XM_ORM extends Kohana_ORM {
 	} // function get_table_records_from_post
 
 	/**
-	* Set all values from the $_POST or passed array using the model rules (field_type, edit_flag, ignored_columns, etc.)
-	* By default it will use $_POST if nothing is passed
-	*
-	* @param   array  $post  The values to use instead of post
-	* @return  ORM
-	*/
+	 * Set all values from the $_POST or passed array using the model rules (field_type, edit_flag, ignored_columns, etc.).
+	 * By default it will use $_POST if nothing is passed.
+	 * Doesn't allow setting the primary key.
+	 *
+	 * @param   array  $post  The values to use instead of post
+	 * @return  ORM
+	 */
 	public function save_values($post = NULL) {
 		// grab the values from the POST if the values have not been passed
 		if ($post === NULL) {
@@ -1559,18 +1560,11 @@ class XM_ORM extends Kohana_ORM {
 		$original_post = $post;
 		$post = (array) $this->get_table_records_from_post($post);
 
-		// get the id from the post and set it in the object (if there is one, won't be one in 'add' case)
-		if ( ! empty($post[$this->_primary_key])) {
-			$this->clear();
-			$this->where($this->_object_name . '.' . $this->_primary_key, '=', $post[$this->_primary_key])->find();
-
+		// make sure the primary key is not in the post
+		if (isset($post[$this->_primary_key])) {
 			// remove the id as we don't want to risk changing it
 			unset($post[$this->_primary_key]);
-		} // if
-
-		// make sure the model is loaded
-		// this is determine if it has already been loaded, if the primary key has been set
-		$this->loaded();
+		}
 
 		// loop through the columns in the model and only process/set columns that have a field_type and editable (edit_flag)
 		foreach ($this->_table_columns as $column_name => $column_meta) {
@@ -1594,11 +1588,11 @@ class XM_ORM extends Kohana_ORM {
 			} // if
 		} // foreach
 
-		// save the related
+		// save the the related values
 		$this->save_values_related($original_post);
 
 		return $this;
-	} // function save_values
+	}
 
 	/**
 	* Adds the data from the post in to _related_save_data based on the options in the relationship

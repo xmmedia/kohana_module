@@ -14,6 +14,7 @@ class XM_Model_Create {
 	protected $table_name;
 	protected $columns;
 	protected $first_text_column_name;
+	protected $text_columns = array();
 
 	public function __construct($table_name, $options = array()) {
 		$this->table_name = $table_name;
@@ -312,6 +313,9 @@ class XM_Model_Create {
 			if (empty($this->first_text_column_name)) {
 				$this->first_text_column_name = $column_name;
 			}
+
+			// add text fields to array of fields that will be all added to list of filters
+			$this->text_columns[] = $column_name;
 		}
 
 		$meta_data['is_nullable'] = $column_data['is_nullable'];
@@ -575,9 +579,17 @@ class XM_Model_Create {
 		$model_code .= TAB . ' */' . EOL;
 		$model_code .= TAB . '/*public function filters() {' . EOL;
 		$model_code .= TAB . TAB . 'return array(' . EOL;
-		$model_code .= TAB . TAB . TAB . ( ! empty($this->first_text_column_name) ? '\'' . $this->first_text_column_name . '\'' : 'TRUE') . ' => array(' . EOL;
-		$model_code .= TAB . TAB . TAB . TAB . 'array(\'trim\'),' . EOL;
-		$model_code .= TAB . TAB . TAB . '),' . EOL;
+		if ( ! empty($this->text_columns)) {
+			foreach ($this->text_columns as $column_name) {
+				$model_code .= TAB . TAB . TAB . '\'' . $column_name . '\' => array(' . EOL;
+				$model_code .= TAB . TAB . TAB . TAB . 'array(\'trim\'),' . EOL;
+				$model_code .= TAB . TAB . TAB . '),' . EOL;
+			}
+		} else {
+			$model_code .= TAB . TAB . TAB . 'TRUE => array(' . EOL;
+			$model_code .= TAB . TAB . TAB . TAB . 'array(\'trim\'),' . EOL;
+			$model_code .= TAB . TAB . TAB . '),' . EOL;
+		}
 		$model_code .= TAB . TAB . ');' . EOL;
 		$model_code .= TAB . '}*/' . EOL;
 

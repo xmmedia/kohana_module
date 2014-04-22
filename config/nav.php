@@ -86,12 +86,6 @@ return array(
 							'class' => 'model_create',
 							'order' => 800,
 						),
-						'DB Change' => array(
-							'route' => 'db_change',
-							'perm' => 'db_change/index',
-							'class' => 'db_change',
-							'order' => 900,
-						),
 					),
 				),
 			),

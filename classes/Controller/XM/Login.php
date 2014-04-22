@@ -206,8 +206,14 @@ class Controller_XM_Login extends Controller_Private {
 			$this->login_success_redirect();
 		} // try
 
-		// redirect to the user account and then the signin page if logout worked as expected
-		$this->redirect($this->current_route()->uri() . $this->get_redirect_query());
+		// check to see if the config has a route to redirect to first
+		$logout_route = Kohana::$config->load('xm_login.logout_route');
+		if ( ! empty($logout_route)) {
+			$this->redirect(Route::get($logout_route)->uri(Kohana::$config->load('xm_login.logout_params')));
+		} else {
+			// redirect to the user account and then the signin page if logout worked as expected
+			$this->redirect($this->current_route()->uri() . $this->get_redirect_query());
+		}
 	}
 
 	/**

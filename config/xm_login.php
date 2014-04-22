@@ -17,4 +17,7 @@ return array(
 	// the amount of time reset tokens are valid for
 	// a "-" will be added in front and used within Date::formatted_time()
 	'reset_valid_time' => '24 hours',
+
+	'logout_route' => NULL,
+	'logout_route_params' => array(),
 );

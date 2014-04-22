@@ -7,7 +7,6 @@ return array(
 		'xm_db_admin' => TRUE,
 		'model_create' => TRUE,
 		'content_admin' => FALSE,
-		'db_change' => TRUE,
 		'user_admin' => TRUE,
 		'change_script' => FALSE,
 		'error_admin' => TRUE,

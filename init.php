@@ -99,11 +99,3 @@ if ($routes['error_admin']) {
 			'action' => NULL,
 	));
 }
-
-if ($routes['db_change']) {
-	Route::set('db_change', 'db_change(/<action>)')
-		->defaults(array(
-			'controller' => 'DB_Change',
-			'action' => NULL,
-	));
-}

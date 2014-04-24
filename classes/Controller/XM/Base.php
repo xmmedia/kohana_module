@@ -345,6 +345,24 @@ class Controller_XM_Base extends Controller_Template {
 	}
 
 	/**
+	 * Removes 1 or more style files.
+	 * Just checks to see if the key exists in the `styles` array and then unsets it.
+	 *
+	 * @param   string/array  $names  One style key or multiple in an array.
+	 *
+	 * @return  Controller_Base
+	 */
+	protected function remove_style($names) {
+		foreach ((array) $names as $name) {
+			if (isset($this->styles[$name])) {
+				unset($this->styles[$name]);
+			}
+		}
+
+		return $this;
+	}
+
+	/**
 	 * Adds a script file.
 	 * If $replace is FALSE, the script file will not be added again based on the name.
 	 * If $replace is TRUE, the script file will replace the existing script file.
@@ -361,6 +379,24 @@ class Controller_XM_Base extends Controller_Template {
 				'path' => $path,
 				'dependencies' => $dependencies,
 			);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Removes 1 or more script files.
+	 * Just checks to see if the key exists in the `scripts` array and then unsets it.
+	 *
+	 * @param   string/array  $names  One script key or multiple in an array.
+	 *
+	 * @return  Controller_Base
+	 */
+	protected function remove_script($names) {
+		foreach ((array) $names as $name) {
+			if (isset($this->scripts[$name])) {
+				unset($this->scripts[$name]);
+			}
 		}
 
 		return $this;

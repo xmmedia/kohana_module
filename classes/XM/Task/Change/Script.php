@@ -109,7 +109,7 @@ class XM_Task_Change_Script extends Minion_Task {
 		$GLOBALS['cfg']['DBG']['sql'] = FALSE;
 		$GLOBALS['server'] = (string) Database::instance();
 		$GLOBALS['charset'] = Kohana::$config->load('database.' . (string) Database::instance() . '.charset');
-		$GLOBALS['cfg']['Server']['extension'] = 'mysql';
+		$GLOBALS['cfg']['Server']['extension'] = strtolower(Kohana::$config->load('database.' . (string) Database::instance() . '.type'));
 		$GLOBALS['cfg']['MaxCharactersInDisplayedSQL'] = 1000;
 		$GLOBALS['is_ajax_request'] = FALSE;
 

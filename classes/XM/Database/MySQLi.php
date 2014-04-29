@@ -110,6 +110,18 @@ class XM_Database_MySQLi extends Database {
 		return $status;
 	}
 
+	/**
+	 * Returns the current connection resource.
+	 *
+	 * @return  The MySQL connection resource.
+	 */
+	public function connection() {
+		// Make sure the database is connected
+		$this->_connection or $this->connect();
+
+		return $this->_connection;
+	}
+
 	public function set_charset($charset)
 	{
 		// Make sure the database is connected

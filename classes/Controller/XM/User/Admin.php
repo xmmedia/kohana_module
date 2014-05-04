@@ -545,7 +545,7 @@ class Controller_XM_User_Admin extends Controller_Private {
 			$new_user = ! $user->loaded();
 			// if it's a new user and they didn't enter a password, generate a password
 			if ($new_user && empty($user->password)) {
-				$new_password = Text::random('distinct');
+				$new_password = Text::random('distinct', (int) Kohana::$config->load('auth.password_min_length'));
 				$user->values(array(
 					'password' => $new_password,
 					'password_confirm' => $new_password,

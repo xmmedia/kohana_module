@@ -9,5 +9,7 @@ return array(
 	'timestamp_key' => 'auth_timestamp',
 	'default_login_redirect' => 'xm_db_admin', // the route to redirect the user after they login; used within Controller_XM_login::login_success_redirect()
 	'default_login_redirect_params' => array(), // the parameters to pass to the Route for the default login redirect
-	'password_min_length' => 8, // the minimum length of a user's password
+	// the minimum length of a user's password
+	// also used in the user admin for the default length for an auto generated password
+	'password_min_length' => 8,
 );

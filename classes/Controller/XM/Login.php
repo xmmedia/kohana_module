@@ -191,29 +191,39 @@ class Controller_XM_Login extends Controller_Private {
 	}
 
 	/**
-	* Log the user out and redirect to the login page.
-	*/
+	 * Log the user out and redirect them to the default logout page,
+	 * which defaults to the login page.
+	 *
+	 * @return  void
+	 */
 	public function action_logout() {
-		try {
-			if (Auth::instance()->logout()) {
-				Message::add(__(Kohana::message('user', 'username.logged_out')), Message::$notice);
-			} // if
-		} catch (Exception $e) {
-			Kohana_Exception::handler_continue($e);
-			Message::add(__(Kohana::message('user', 'username.not_logged_out')), Message::$error);
+		if (Auth::instance()->logged_in()) {
+			try {
+				if (Auth::instance()->logout()) {
+					Message::add(__(Kohana::message('user', 'username.logged_out')), Message::$notice);
+				// failed to logout the user, so redirect them back to login page so they'll clue in
+				} else {
+					$this->login_success_redirect();
+				}
+			} catch (Exception $e) {
+				Kohana_Exception::handler_continue($e);
+				Message::add(__(Kohana::message('user', 'username.not_logged_out')), Message::$error);
 
-			// redirect them to the default page
-			$this->login_success_redirect();
-		} // try
+				// redirect them to the default page
+				$this->login_success_redirect();
+			}
+		}
 
 		// check to see if the config has a route to redirect to first
-		$logout_route = Kohana::$config->load('xm_login.logout_route');
+		$logout_route = $this->login_config['logout_route'];
 		if ( ! empty($logout_route)) {
-			$this->redirect(Route::get($logout_route)->uri(Kohana::$config->load('xm_login.logout_params')));
+			$logout_redirect = Route::get($logout_route)->uri($this->login_config['logout_route_params']);
 		} else {
 			// redirect to the user account and then the signin page if logout worked as expected
-			$this->redirect($this->current_route()->uri() . $this->get_redirect_query());
+			$logout_redirect = $this->current_route()->uri() . $this->get_redirect_query();
 		}
+
+		$this->redirect($logout_redirect);
 	}
 
 	/**

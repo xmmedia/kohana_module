@@ -3,7 +3,7 @@
 return array(
 	'error' => 'There was a problem logging in or preparing the login form. Please try again.',
 	// forgot password
-	'reset_send_error' => 'There was a problem sending your password reset link. The administrators have been notified.',
+	'reset_send_error' => 'There was a problem sending your password reset link. The administrator has been notified.',
 	'reset_admin_account' => 'This password for this account cannot be reset using this method.',
 	'reset_not_found' => 'The username cannot be found.',
 	'reset_error' => 'There was a problem with the forgot password. Please try again later.',

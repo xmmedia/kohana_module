@@ -352,8 +352,7 @@ class Controller_XM_Login extends Controller_Private {
 
 				$mail->Send();
 
-				Message::add(__(Kohana::message('login', 'reset_link_sent')), Message::$notice);
-				$this->redirect($this->current_route()->uri());
+				$this->redirect($this->current_route()->uri(array('action' => 'forgot_sent')));
 
 			} else if (in_array($user->username, $this->login_config['admin_accounts'])) {
 				Message::add(__(Kohana::message('login', 'reset_admin_account')), Message::$warning);
@@ -367,6 +366,16 @@ class Controller_XM_Login extends Controller_Private {
 
 		$this->template->page_title = 'Reset Your Password - ' . $this->page_title_append;
 		$this->template->body_html = View::factory('xm/login/forgot');
+	}
+
+	/**
+	 * Redirected to after the reset password link is sent.
+	 *
+	 * @return  void
+	 */
+	public function action_forgot_sent() {
+		$this->template->page_title = 'Reset Your Password - ' . $this->page_title_append;
+		$this->template->body_html = View::factory('xm/login/forgot_sent');
 	}
 
 	/**

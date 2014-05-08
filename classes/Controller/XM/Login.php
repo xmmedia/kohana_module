@@ -75,7 +75,7 @@ class Controller_XM_Login extends Controller_Private {
 					$resp = recaptcha_check_answer(RECAPTCHA_PRIVATE_KEY, $_SERVER['REMOTE_ADDR'], $_POST['recaptcha_challenge_field'], $_POST['recaptcha_response_field']);
 					$human_verified = $resp->is_valid;
 					Message::add('ReCAPTCHA valid: ' . ($human_verified ? 'Yes' : 'No'), Message::$debug);
-				} // if
+				}
 
 				// if the captcha is required but we have not verified the human
 				if ($captcha_required && ! $human_verified) {
@@ -103,7 +103,7 @@ class Controller_XM_Login extends Controller_Private {
 
 						// instead of redirecting them to the location they requested, redirect them to the profile page
 						$redirect = Route::get('account')->uri(array('action' => 'profile'));
-					} // if
+					}
 
 					if ( ! empty($redirect) && is_string($redirect)) {
 						// loop through the routes till we find one that matches
@@ -257,7 +257,7 @@ class Controller_XM_Login extends Controller_Private {
 			->set('username', $user->username);
 
 		$this->add_on_load_js('$(\'#password\').focus();');
-	} // function action_timedout
+	}
 
 	/**
 	* Creates a form with all the fields from the GET and POST and then submits the form
@@ -294,7 +294,7 @@ class Controller_XM_Login extends Controller_Private {
 			Kohana_Exception::handler_continue($e);
 			$this->login_success_redirect();
 		}
-	} // function action_timeoutpost
+	}
 
 	/**
 	* View: Access not allowed.
@@ -363,11 +363,11 @@ class Controller_XM_Login extends Controller_Private {
 			}
 		} else if ($forgot_submitted) {
 			Message::add(__(Kohana::message('login', 'reset_email_empty')), Message::$error);
-		} // if post
+		}
 
 		$this->template->page_title = 'Reset Your Password - ' . $this->page_title_append;
 		$this->template->body_html = View::factory('xm/login/forgot');
-	} // function action_forgot
+	}
 
 	/**
 	 * Displays and processes the change password form for users that are not logged in,
@@ -454,7 +454,7 @@ class Controller_XM_Login extends Controller_Private {
 			Message::add(__(Kohana::message('login', 'password_email_partial')), Message::$error);
 			$this->redirect($this->current_route()->uri(array('action' => 'forgot')));
 		}
-	} // function action_reset
+	}
 
 	/**
 	* Returns the redirect value as a query string ready to use in a direct

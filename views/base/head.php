@@ -20,9 +20,11 @@ echo HTML::chars($page_title);
 foreach ($styles as $file => $type) {
 	echo TAB, HTML::style($file, array('media' => $type)), EOL;
 }
-
-echo TAB, HTML::script('js/modernizr.min.js'), EOL;
 ?>
+
+	<!--[if lt IE 9]>
+	<script><?php echo include(DOCROOT . 'js' . DIRECTORY_SEPARATOR . 'html5shiv.min.js'); ?></script>
+	<![endif]-->
 	<script>
 		var in_debug = <?php echo (int) DEBUG_FLAG; ?>;
 	</script>

@@ -773,12 +773,7 @@ class XM_ORM extends Kohana_ORM {
 				}
 
 				// determine the value of the field based on the default value
-				$pk = $this->pk();
-				if ($this->_options['load_defaults'] && $this->_mode == 'add' && empty($pk) && empty($this->$column_name)) {
-					$field_value = $column_info['field_options']['default_value'];
-				} else {
-					$field_value = $this->$column_name;
-				}
+				$field_value = $this->field_value($column_name);
 
 				if (($this->_mode == 'edit' && $column_info['view_in_edit_mode']) || ($this->_mode == 'add' && $column_info['view_in_add_mode'])) {
 					$_field_type_class_function = 'view_html';
@@ -915,6 +910,23 @@ class XM_ORM extends Kohana_ORM {
 
 		return $this;
 	} // function prepare_form
+
+	/**
+	 * Returns the field value based on the mode.
+	 * If the mode is `add`, `load_defaults` is enabled, the model is not loaded and the column value is `NULL`
+	 * then the default value in the `field_options` will be used.
+	 *
+	 * @param   string  $column_name  The column name
+	 *
+	 * @return  unknown
+	 */
+	public function field_value($column_name) {
+		if ($this->_mode == 'add' && $this->_options['load_defaults'] && ! $this->loaded() && $this->$column_name === NULL) {
+			return Arr::path($this->_table_columns, $column_name . '.field_options.default_value');
+		} else {
+			return $this->$column_name;
+		}
+	}
 
 	/**
 	* Returns the View (by default xm/field_help) for the field help

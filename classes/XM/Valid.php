@@ -45,7 +45,38 @@ class XM_Valid extends Kohana_Valid {
 	 * @return  boolean
 	 */
 	public static function selected($value) {
-		// Value must be > 0
 		return $value > 0;
+	}
+
+	/**
+	 * Checks if the phone number is a valid phone number and attempts to take into account an extension.
+	 * Basically checks first if the regular phone number validation works.
+	 * If not, then it attempts to remove the extension (piece after last special char)
+	 * and then re-checks with regular phone validation.
+	 *
+	 * @param   string  $number     phone number to check
+	 * @param   array   $lengths
+	 * @return  boolean
+	 */
+	public static function phone_with_ext($number, $lengths = NULL) {
+		if (Valid::phone($number, $lengths)) {
+			return TRUE;
+		}
+
+		$last_pos = FALSE;
+		foreach (array('-', 'ext', ' ') as $char) {
+			$pos = UTF8::strrpos($number, $char);
+			if ($pos > 0 && $pos > $last_pos) {
+				$last_pos = $pos;
+			}
+		}
+
+		if ($last_pos === FALSE) {
+			return FALSE;
+		}
+
+		$_number = UTF8::substr($number, 0, $last_pos);
+
+		return Valid::phone($_number, $lengths);
 	}
 }

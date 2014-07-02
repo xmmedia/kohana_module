@@ -176,7 +176,7 @@ class XM_Form extends Kohana_Form {
 
 		$time_fields = array('hour', 'min', 'sec');
 		foreach ($time_fields as $field_name) {
-			$attributes = Form::increment_tabindex($attributes);
+			$attributes = Form::increment_tabindex((array) $attributes);
 			$attributes['size'] = 2;
 			$attributes['maxlength'] = 2;
 			$_attributes = $attributes;
@@ -205,7 +205,7 @@ class XM_Form extends Kohana_Form {
 		}
 
 		if ( ! $options['24_hour']) {
-			$attributes = Form::increment_tabindex($attributes);
+			$attributes = Form::increment_tabindex((array) $attributes);
 			$modulation_attributes = HTML::set_class_attribute($attributes, 'xm_date_field-modulation');
 			if ( ! empty($modulation_attributes['id'])) $modulation_attributes['id'] .= '-modulation';
 			$fields['am_pm'] = Form::radios($name . '[modulation]', array('am' => 'AM', 'pm' => 'PM'), strtolower($modulation), $modulation_attributes);
@@ -694,7 +694,7 @@ class XM_Form extends Kohana_Form {
 
 		if ($options['day']) {
 			// add to the existing id in the attributes to make the day field ID
-			$day_attributes = Form::increment_tabindex($attributes);
+			$day_attributes = Form::increment_tabindex((array) $attributes);
 			$day_attributes['id'] .= '_day';
 
 			if ($options['field_type'] == 'Text') {
@@ -711,7 +711,7 @@ class XM_Form extends Kohana_Form {
 
 		if ($options['year']) {
 			// add to the existing id in the attributes to make the year field ID
-			$year_attributes = Form::increment_tabindex($attributes);
+			$year_attributes = Form::increment_tabindex((array) $attributes);
 			$year_attributes['id'] .= '_year';
 
 			if ($options['field_type'] == 'Text') {
@@ -1067,7 +1067,7 @@ class XM_Form extends Kohana_Form {
 		}
 
 		// add the area code
-		$attributes = Form::increment_tabindex($attributes);
+		$attributes = Form::increment_tabindex((array) $attributes);
 		$_attributes = $attributes;
 		if ($set_title_attribute) {
 			$_attributes['title'] = 'Area Code';
@@ -1075,7 +1075,7 @@ class XM_Form extends Kohana_Form {
 		$html .= ' (' . Form::input_with_suffix_size($name, $default_data['area_code'], $_attributes, 'xm_phone_field', 'area_code', $options['area_code_size'], $options['area_code_max_length']) . ')';
 
 		// add the exchange field
-		$attributes = Form::increment_tabindex($attributes);
+		$attributes = Form::increment_tabindex((array) $attributes);
 		$_attributes = $attributes;
 		if ($set_title_attribute) {
 			$_attributes['title'] = 'Phone Number Part 1 (Exchange)';
@@ -1083,7 +1083,7 @@ class XM_Form extends Kohana_Form {
 		$html .= ' ' . Form::input_with_suffix_size($name, $default_data['exchange'], $_attributes, 'xm_phone_field', 'exchange', $options['exchange_size'], $options['exchange_max_length']);
 
 		// add the line field
-		$attributes = Form::increment_tabindex($attributes);
+		$attributes = Form::increment_tabindex((array) $attributes);
 		$_attributes = $attributes;
 		if ($set_title_attribute) {
 			$_attributes['title'] = 'Phone Number Part 2 (Line)';
@@ -1092,7 +1092,7 @@ class XM_Form extends Kohana_Form {
 
 		if ($options['show_extension']) {
 			// add the extension field
-			$attributes = Form::increment_tabindex($attributes);
+			$attributes = Form::increment_tabindex((array) $attributes);
 			$_attributes = $attributes;
 			if ($set_title_attribute) {
 				$_attributes['title'] = 'Extension';
@@ -1239,7 +1239,7 @@ class XM_Form extends Kohana_Form {
 	* @param mixed $attributes
 	* @return array
 	*/
-	protected static function increment_tabindex($attributes) {
+	protected static function increment_tabindex(array $attributes) {
 		if (array_key_exists('tabindex', $attributes)) {
 			$attributes['tabindex'] = ((int) $attributes['tabindex']) + 1;
 		}

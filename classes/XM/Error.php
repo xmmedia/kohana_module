@@ -65,17 +65,20 @@ class XM_Error {
 		foreach ($files as $file) {
 			$error_log_file = Error::error_log_file($file);
 			if (empty($error_log_file)) {
-				throw new Kohana_Exception('The error log file could not be found: :file', array(':file' => Debug::path($file)));
+				Kohana::$log->add(Log::DEBUG, 'The error log file could not be found: :file', array(':file' => Debug::path($file)));
+				continue;
 			}
 
 			$error_log = file_get_contents($error_log_file);
 			if (empty($error_log)) {
-				throw new Kohana_Exception('The error log file is empty: :file', array(':file' => Debug::path($file)));
+				Kohana::$log->add(Log::DEBUG, 'The error log file is empty: :file', array(':file' => Debug::path($file)));
+				continue;
 			}
 
 			$error_log = UTF8::substr($error_log, strlen(Error::error_log_file_prefix()));
 			if (empty($error_log)) {
-				throw new Kohana_Exception('The error data could not be found in :file', array(':file' => Debug::path($file)));
+				Kohana::$log->add(Log::DEBUG, 'The error data could not be found in :file', array(':file' => Debug::path($file)));
+				continue;
 			}
 
 			$error_data = json_decode($error_log, TRUE);

@@ -8,7 +8,6 @@ return array(
 		'model_create' => TRUE,
 		'content_admin' => FALSE,
 		'user_admin' => TRUE,
-		'change_script' => FALSE,
 		'error_admin' => TRUE,
 	),
 

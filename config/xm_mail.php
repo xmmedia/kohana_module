@@ -2,7 +2,7 @@
 
 return array(
 	'default' => array(
-		'debug' => DEBUG_FLAG, // If we should be performing debug actions
+		'debug' => (KOHANA_ENVIRONMENT > Kohana::PRODUCTION), // If we should be performing debug actions
 		'language' => 'en', // The language to send emails in
 		'from' => 'webmaster@example.com', // The email from which all emails will come from, if not sent then will use SITE::$emailFrom if it's set.
 		'from_name' => 'Website', // The name from which the email will come from (attached to the email address), if not sent then will use SITE::$emailFromName if it's set

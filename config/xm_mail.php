@@ -4,9 +4,9 @@ return array(
 	'default' => array(
 		'debug' => (KOHANA_ENVIRONMENT > Kohana::PRODUCTION), // If we should be performing debug actions
 		'language' => 'en', // The language to send emails in
-		'from' => 'webmaster@example.com', // The email from which all emails will come from, if not sent then will use SITE::$emailFrom if it's set.
-		'from_name' => 'Website', // The name from which the email will come from (attached to the email address), if not sent then will use SITE::$emailFromName if it's set
 		'error_email' => 'webmaster@example.com', // The email address to send error emails to while in production
+		'from' => 'webmaster@example.com', // The email from which all emails will come from
+		'from_name' => 'Website', // The name from which the email will come from (attached to the email address)
 		'log_email' => NULL, // The email address to BCC all emails to when not in debug.
 		'debug_email' => NULL, // The email address to send to when the email is not in `$allowed_debug_emails`.
 		'allowed_debug_emails' => array(), // The email addresses that can be sent to while in debug mode (so users don't get test emails).

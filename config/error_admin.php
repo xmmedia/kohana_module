@@ -10,4 +10,6 @@ return array(
 	// the maximum number of errors clicking the "parse" link will parse
 	// this is to avoid taking too much memory and/or too long
 	'web_parse_limit' => 25,
+	// The email address to send error emails to
+	'error_email' => NULL,
 );

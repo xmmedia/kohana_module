@@ -182,6 +182,11 @@ class XM_Kohana_Exception extends Kohana_Kohana_Exception {
 	 */
 	public static function notify(Exception $e) {
 		try {
+			$error_email_address = XM::get_error_email();
+			if (empty($error_email)) {
+				return;
+			}
+
 			// Get the exception information
 			$class   = get_class($e);
 			$code    = $e->getCode();
@@ -244,7 +249,7 @@ class XM_Kohana_Exception extends Kohana_Kohana_Exception {
 
 			// Create an email about this error to send out
 			$error_email = new Mail();
-			$error_email->AddAddress(XM::get_error_email());
+			$error_email->AddAddress($error_email_address);
 			$error_email->Subject = 'Error on ' . LONG_NAME;
 			$error_email->MsgHTML(HTML::chars(Kohana_Exception::text($e)));
 

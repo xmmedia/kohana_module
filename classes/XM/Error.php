@@ -158,6 +158,12 @@ class XM_Error {
 				$send_email = TRUE;
 			}
 
+			// can't send an email if there's no error email
+			$error_email_address = XM::get_error_email();
+			if (empty($error_email_address)) {
+				$send_email = FALSE;
+			}
+
 			if ($send_email) {
 				$error_log_model = ORM::factory('Error_Log', $_error_log_ids[0]);
 				if ( ! $error_log_model->loaded()) {
@@ -188,7 +194,7 @@ class XM_Error {
 				}
 
 				$error_email = new Mail();
-				$error_email->AddAddress(XM::get_error_email());
+				$error_email->AddAddress($error_email_address);
 				$error_email->Subject = 'Error on ' . LONG_NAME . Text::limit_chars($additional_subject);
 				$error_email->MsgHTML((string) View::factory('error_admin/notification_email')
 					->bind('error_log_model', $error_log_model)

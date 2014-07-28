@@ -2,14 +2,12 @@
 
 class XM_Core extends Kohana_Core {
 	/**
-	* Returns the email address the error messages should be sent to
-	* By default it uses the xm_mail config, default.error_email
+	* Returns the email address the error messages should be sent to.
 	*
-	* @param  string  $mail_config  The config in mail_config to use, default: default
 	* @return  string
 	*/
-	public static function get_error_email($mail_config = 'default') {
-		return Kohana::$config->load('xm_mail.' . $mail_config . '.error_email');
+	public static function get_error_email() {
+		return Kohana::$config->load('error_admin.error_email');
 	}
 
 	/**

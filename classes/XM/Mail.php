@@ -29,19 +29,35 @@ class XM_Mail extends PHPMailer {
 	);
 
 	/**
-	*   The email to send emails to when in debug
-	*   @var    string
-	*/
+	 * The email address to BCC all emails to when not in debug.
+	 *
+	 * @var  string
+	 */
 	protected $log_email;
+
+	/**
+	 * The email address to send to when the email is not in `$allowed_debug_emails`.
+	 *
+	 * @var  string
+	 */
+	protected $debug_email;
+
+	/**
+	 * The email addresses that can be sent to while in debug mode (so users don't get test emails).
+	 *
+	 * @var  array
+	 */
+	protected $allowed_debug_emails;
 
 	/**
 	* Constructor, sets up smtp using config
 	*
 	* @param string $config The config in config/xm_orm to use (defaults to Mail::$default)
 	* @param      array       $options    Options for the object
-	*           ['from'] => the email from which all emails will come from, if not sent then will use SITE::$emailFrom if it's set
-	*           ['from_name'] => the name from which the email will come from (attached to the email address), if not sent then will use SITE::$emailFromName if it's set
-	*           ['log_email'] => the email address to send emails to while in dev, if not sent then will use SITE::$logEmail if it's set
+	*           ['from'] => the email from which all emails will come from
+	*           ['from_name'] => the name from which the email will come from (attached to the email address)
+	*           ['log_email'] => the email address to send emails to while in dev
+	*           ['debug_emails'] => The email addresses that can be sent to while in debug/dev
 	*           ['model'] => Table where the email address for a person (likely a user) is stored; default user
 	*           ['email_field'] => The field where the email address is stored, default username
 	*           ['first_name_field'] => Field that contains the person's first name; default first_name
@@ -76,6 +92,8 @@ class XM_Mail extends PHPMailer {
 		if ( ! empty($options['from'])) $this->From = $options['from'];
 		if ( ! empty($options['from_name'])) $this->FromName = $options['from_name'];
 		if ( ! empty($options['log_email'])) $this->log_email = $options['log_email'];
+		if ( ! empty($options['debug_email'])) $this->debug_email = $options['debug_email'];
+		if ( ! empty($options['allowed_debug_emails'])) $this->allowed_debug_emails = (array) $options['allowed_debug_emails'];
 		if ( ! empty($options['reply_to']['email'])) $this->AddReplyTo($options['reply_to']['email'], $options['reply_to']['name']);
 
 		// Set the values of the user table where the user's email and name can be retrieved from
@@ -118,14 +136,16 @@ class XM_Mail extends PHPMailer {
 	public function AddUser($user_id) {
 		$user = ORM::factory('User', $user_id);
 
-		$add_status = false;
+		$add_status = FALSE;
 
 		if ($user->loaded()) {
 			$email_field = $this->user_table['email_field'];
 			$first_name_field = $this->user_table['first_name_field'];
 			$last_name_field = $this->user_table['last_name_field'];
 			$add_status = $this->AddAddress($user->$email_field, $user->$first_name_field . ' ' . $user->$last_name_field);
-			if ( ! empty($this->log_email)) $this->AddBCC($this->log_email);
+			if ( ! empty($this->log_email)) {
+				$this->AddLogBCC($this->log_email);
+			}
 		} else {
 			throw new phpmailerException('Unable to find user to add');
 		}
@@ -140,11 +160,7 @@ class XM_Mail extends PHPMailer {
 	*   @param      string      $name
 	*/
 	public function AddBCC($address, $name = '') {
-		if ($this->debug) {
-			return parent::AddBCC($this->log_email, $name);
-		} else {
-			return parent::AddBCC($address, $name);
-		}
+		return parent::AddBCC($this->filter_email($address), $name);
 	}
 
 	/**
@@ -154,11 +170,7 @@ class XM_Mail extends PHPMailer {
 	*   @param      string      $name
 	*/
 	public function AddAddress($address, $name = '') {
-		if ($this->debug) {
-			return parent::AddAddress($this->log_email, $name);
-		} else {
-			return parent::AddAddress($address, $name);
-		}
+		return parent::AddAddress($this->filter_email($address), $name);
 	}
 
 	/**
@@ -168,10 +180,28 @@ class XM_Mail extends PHPMailer {
 	*   @param      string      $name
 	*/
 	public function AddCC($address, $name = '') {
+		return parent::AddCC($this->filter_email($address), $name);
+	}
+
+	/**
+	 * Checks if we're allowed to send to the passed email address.
+	 * If we're in debug, check if the address is in the `allowed_debug_emails`.
+	 * If it isn't, then send to `debug_email`.
+	 * Will return the "filtered" email address.
+	 *
+	 * @param   string  $address  The email address we're attempting to send to.
+	 *
+	 * @return  string
+	 */
+	protected function filter_email($address) {
 		if ($this->debug) {
-			return parent::AddCC($this->log_email, $name);
+			if ( ! empty($this->allowed_debug_emails) && in_array(strtolower($address), (array) $this->allowed_debug_emails)) {
+				return $address;
+			} else {
+				return $this->debug_email;
+			}
 		} else {
-			return parent::AddCC($address, $name);
+			return $address;
 		}
 	}
 

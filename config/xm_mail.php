@@ -6,8 +6,10 @@ return array(
 		'language' => 'en', // The language to send emails in
 		'from' => 'webmaster@example.com', // The email from which all emails will come from, if not sent then will use SITE::$emailFrom if it's set.
 		'from_name' => 'Website', // The name from which the email will come from (attached to the email address), if not sent then will use SITE::$emailFromName if it's set
-		'log_email' => 'webmaster@example.com', // The email address to send emails to while in dev, if not sent then will use SITE::$logEmail if it's set.
 		'error_email' => 'webmaster@example.com', // The email address to send error emails to while in production
+		'log_email' => NULL, // The email address to BCC all emails to when not in debug.
+		'debug_email' => NULL, // The email address to send to when the email is not in `$allowed_debug_emails`.
+		'allowed_debug_emails' => array(), // The email addresses that can be sent to while in debug mode (so users don't get test emails).
 		'mailer' => 'smtp', // SMTP or sendmail
 		'char_set' => 'utf-8', // The character set for the emails
 		// Configuration options for STMP server

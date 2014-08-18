@@ -42,9 +42,22 @@ class XM_Valid extends Kohana_Valid {
 	/**
 	 * Checks if a value been selected for a field, such as radios or a checkbox.
 	 *
+	 * @param   int  $value  The radio or checkbox value.
+	 *
 	 * @return  boolean
 	 */
 	public static function selected($value) {
+		return $value > 0;
+	}
+
+	/**
+	 * The value must be > 0 or "checked", such as for a checkbox.
+	 *
+	 * @param   int  $value  The checkbox value.
+	 *
+	 * @return  boolean
+	 */
+	public static function checked($value) {
 		return $value > 0;
 	}
 

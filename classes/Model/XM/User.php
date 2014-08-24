@@ -27,7 +27,7 @@ class Model_XM_User extends Model_Auth_User {
 			'is_nullable'    => FALSE,
 		),
 		'expiry_date' => array(
-			'field_type'     => 'DatetTime',
+			'field_type'     => 'DateTime',
 			'list_flag'      => FALSE,
 			'edit_flag'      => FALSE,
 			'search_flag'    => FALSE,

@@ -1,8 +1,10 @@
 <?php
 // Javascript, put all javascript here or in $on_load_js if possible
-foreach ($scripts as $file) :
-	echo HTML::script($file), EOL;
-endforeach;
+if ( ! empty($scripts)) :
+	foreach ($scripts as $file) :
+		echo HTML::script($file), EOL;
+	endforeach;
+endif;
 ?>
 
 <?php

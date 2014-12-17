@@ -358,11 +358,14 @@ class XM_Kohana_Exception extends Kohana_Kohana_Exception {
 				'html' => (string) View::factory(Kohana_Exception::$error_view, get_defined_vars()),
 			);
 
-			if (isset($_SERVER)) {
-				$error_data['server'] = $_SERVER;
-			}
-
-			foreach (array('_GET' => 'get', '_POST' => 'post', '_FILES' => 'files', '_COOKIE' => 'cookie') as $global_var => $_var) {
+			$global_vars = array(
+				'_SERVER' => 'server',
+				'_GET' => 'get',
+				'_POST' => 'post',
+				'_FILES' => 'files',
+				'_COOKIE' => 'cookie',
+			);
+			foreach ($global_vars as $global_var => $_var) {
 				if (empty($GLOBALS[$global_var]) || ! is_array($GLOBALS[$global_var])) {
 					continue;
 				}

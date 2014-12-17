@@ -278,6 +278,9 @@ class XM_Kohana_Exception extends Kohana_Kohana_Exception {
 	 */
 	public static function store(Exception $e) {
 		try {
+			// store the defined vars so we don't get any extras
+			$defined_vars = get_defined_vars();
+
 			// Get the exception information
 			$class   = get_class($e);
 			$code    = $e->getCode();
@@ -355,7 +358,6 @@ class XM_Kohana_Exception extends Kohana_Kohana_Exception {
 				'file' => $file,
 				'line' => $line,
 				'trace' => $_trace,
-				'html' => (string) View::factory(Kohana_Exception::$error_view, get_defined_vars()),
 			);
 
 			$global_vars = array(
@@ -386,7 +388,21 @@ class XM_Kohana_Exception extends Kohana_Kohana_Exception {
 				}
 			}
 
-			file_put_contents($error_log_filename, Error::error_log_file_prefix() . json_encode($error_data));
+			// create the json data limiting it to the max length
+			// if it's less then 30,000,000 (30 billion) characters long then add the HTML to it
+			// provided the HTML is less than the remaining up to 30,000,000
+			$json_max_length = 30000000;
+			$json_data = json_encode($error_data);
+			$json_length = strlen($json_data);
+			if ($json_length < $json_max_length) {
+				$var_html = (string) View::factory(Kohana_Exception::$error_view, $defined_vars);
+				if (strlen($var_html) + $json_length < $json_max_length) {
+					$error_data['html'] = $var_html;
+					$json_data = json_encode($error_data);
+				}
+			}
+
+			file_put_contents($error_log_filename, Error::error_log_file_prefix() . $json_data);
 
 		// catch a PhpMailer exception
 		} catch (phpmailerException $e) {

@@ -1219,7 +1219,7 @@ class XM_ORM extends Kohana_ORM {
 
 			$submit_button_options = array(
 				'class' => 'js_xm_button_link ' . Arr::get($this->_options, 'button_class', ''),
-				'data-xm_link' => URL::site(Route::get($this->_options['target_route'])->uri(array('model' => $this->_object_name))),
+				'data-xm_link' => URL::site(Route::get($this->_options['target_route'])->uri(array('model' => $this->model_name()))),
 			);
 			if ( ! empty($this->_options['submit_button_options'])) {
 				$submit_button_options = HTML::merge_attributes($submit_button_options, $this->_options['submit_button_options']);

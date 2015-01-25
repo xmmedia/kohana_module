@@ -363,12 +363,11 @@ class XM_Form extends Kohana_Form {
 			'group_header_close' => '</strong>',
 			'order_vertically' => TRUE,
 		);
-		$options += $default_options;
-
-		// don't order vertically when we're doing a vertical list
-		if ($options['orientation'] == 'vertical') {
-			$options['order_vertically'] = FALSE;
+		// determine if we should default order_vertically to false as it should only default to o
+		if ( ! isset($options['order_vertically']) && isset($options['orientation']) && $options['orientation'] != 'table') {
+			$default_options['order_vertically'] = FALSE;
 		}
+		$options += $default_options;
 
 		if (substr($name, -2, 2) != '[]') {
 			throw new Kohana_Exception('Input Error: The field name (:name) for checkboxes was missing the square brackets required', array(':name' => $name));
@@ -400,13 +399,23 @@ class XM_Form extends Kohana_Form {
 				);
 			}
 
-			for ($row = 0; $row < $max_rows; $row ++) {
-				for ($i = $row; $i < $source_count; $i += $max_rows) {
-					$checkbox_value = $numeric_array[$i]['key'];
-					$label = $numeric_array[$i]['value'];
+			// got this from: http://stackoverflow.com/a/3040722/5441
+			for ($i = 0; $i < $max_rows * $options['columns']; $i ++) {
+				$index = ($i % $options['columns']) * $max_rows + floor($i / $options['columns']);
+				if ($index < $source_count) {
+					$checkbox_value = $numeric_array[$index]['key'];
+					$label = $numeric_array[$index]['value'];
 
 					$html .= Form::_checkbox_build_simple($name, $col, $first_checkbox, $checkbox_value, $label, $checked, $attributes, $options);
 					$first_checkbox = FALSE;
+
+				// if table orientation: close the tr if applicable
+				} else if ($options['orientation'] == 'table') {
+					++ $col;
+					if ($col == ($options['columns'] + 1)) {
+						$html .= '</tr>' . EOL;
+						$col = 1;
+					}
 				}
 			}
 

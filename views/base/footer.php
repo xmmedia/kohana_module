@@ -1,4 +1,4 @@
 	<div id="xm_ajax_errors"></div>
 	<footer>
-		©<?php echo date('Y'); ?> Company Name <?php echo HTML::chars(__('All Rights Reserved')); ?>
+		©<?php echo date('Y'); ?> Company Name All Rights Reserved
 	</footer>

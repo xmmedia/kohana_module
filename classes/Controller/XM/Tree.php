@@ -85,7 +85,7 @@ class Controller_XM_Tree extends Controller_Private {
 				if ($counter > 0) $tree_html .= '</li>';
 
 			} else if ($node_depth > $current_depth) {
-				$tree_html .= '<ul>';
+				if ($counter > 0) $tree_html .= '<ul>';
 				$current_depth = $current_depth + ($node_depth - $current_depth);
 
 			} else if ($node_depth < $current_depth) {
@@ -109,8 +109,7 @@ class Controller_XM_Tree extends Controller_Private {
 
 			++ $counter;
 		} // foreach
-		$tree_html .= str_repeat('</li></ul>', $node_depth) . '</li>'
-			. '</ul>';
+		$tree_html .= str_repeat('</li></ul>', $node_depth);
 
 		$root_node = ORM::factory($this->model_name)
 			->where('lft', '=', 1)

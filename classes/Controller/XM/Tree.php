@@ -128,60 +128,54 @@ class Controller_XM_Tree extends Controller_Private {
 	 * @return void
 	 */
 	public function action_add() {
-		try {
-			$is_ajax = (bool) Arr::get($_REQUEST, 'c_ajax', FALSE);
-			$parent_id = Arr::get($_REQUEST, 'parent_id', $this->request->param('id'));
+		$is_ajax = (bool) Arr::get($_REQUEST, 'c_ajax', FALSE);
+		$parent_id = Arr::get($_REQUEST, 'parent_id', $this->request->param('id'));
 
-			$parent_node = ORM::factory($this->model_name, $parent_id);
-			if ( ! $parent_node->loaded()) {
-				throw new Kohana_Exception('The parent ID was not received');
-			}
-
-			if ( ! empty($_POST)) {
-				$new_node = ORM::factory($this->model_name)
-					->set_edit_fields()
-					->save_values()
-					->save();
-
-				$sibling_id = Arr::get($_REQUEST, 'sibling_id');
-				if ( ! empty($sibling_id) && strtolower($sibling_id) != 'start') {
-					$after_node_id = intval($sibling_id);
-				} else if ($sibling_id == 'start') {
-					$after_node_id = NULL;
-				} else {
-					$after_node_id = $this->get_auto_after_id($parent_node, $new_node);
-				} // if
-
-				Tree::add_node($new_node, $parent_id, $after_node_id);
-
-				Message::add('The new node <em>' . HTML::chars($new_node->name()) . '</em> has been added.', Message::$notice);
-				$this->default_redirect();
-			} // if post
-
-			$tree_node = ORM::factory($this->model_name)
-				->set_mode('add');
-
-			$_parent_subs = Tree::immediate_nodes($this->table_name, $parent_node->id)
-				->as_array('id', 'name');
-
-			$add_values = array(
-				'' => '-- Automatic (Alphabetically) --',
-				'start' => '-- At the Beginning --',
-			);
-			$sibling_select = Form::select('sibling_id', $_parent_subs, NULL, array('id' => 'sibling_id'), array('add_values' => $add_values));
-
-			AJAX_Status::echo_json(AJAX_Status::ajax(array(
-				'html' => (string) View::factory($this->view_path . '/add')
-					->bind('route_name', $this->route_name)
-					->bind('parent_node', $parent_node)
-					->bind('tree_node', $tree_node)
-					->bind('sibling_select', $sibling_select),
-			)));
-
-		} catch (Exception $e) {
-			$msg = 'There was a problem adding a node or loading the add node.';
-			$this->exception($e, $msg, $is_ajax);
+		$parent_node = ORM::factory($this->model_name, $parent_id);
+		if ( ! $parent_node->loaded()) {
+			throw new Kohana_Exception('The parent ID was not received');
 		}
+
+		if ( ! empty($_POST)) {
+			$new_node = ORM::factory($this->model_name)
+				->set_edit_fields()
+				->save_values()
+				->save();
+
+			$sibling_id = Arr::get($_REQUEST, 'sibling_id');
+			if ( ! empty($sibling_id) && strtolower($sibling_id) != 'start') {
+				$after_node_id = intval($sibling_id);
+			} else if ($sibling_id == 'start') {
+				$after_node_id = NULL;
+			} else {
+				$after_node_id = $this->get_auto_after_id($parent_node, $new_node);
+			} // if
+
+			Tree::add_node($new_node, $parent_id, $after_node_id);
+
+			Message::add('The new node <em>' . HTML::chars($new_node->name()) . '</em> has been added.', Message::$notice);
+			$this->default_redirect();
+		} // if post
+
+		$tree_node = ORM::factory($this->model_name)
+			->set_mode('add');
+
+		$_parent_subs = Tree::immediate_nodes($this->table_name, $parent_node->id)
+			->as_array('id', 'name');
+
+		$add_values = array(
+			'' => '-- Automatic (Alphabetically) --',
+			'start' => '-- At the Beginning --',
+		);
+		$sibling_select = Form::select('sibling_id', $_parent_subs, NULL, array('id' => 'sibling_id'), array('add_values' => $add_values));
+
+		AJAX_Status::echo_json(AJAX_Status::ajax(array(
+			'html' => (string) View::factory($this->view_path . '/add')
+				->bind('route_name', $this->route_name)
+				->bind('parent_node', $parent_node)
+				->bind('tree_node', $tree_node)
+				->bind('sibling_select', $sibling_select),
+		)));
 	} // function action_add
 
 	protected function get_auto_after_id($parent_node, $new_node) {
@@ -214,57 +208,51 @@ class Controller_XM_Tree extends Controller_Private {
 	 * @return void
 	 */
 	public function action_edit() {
-		try {
-			$is_ajax = (bool) Arr::get($_REQUEST, 'c_ajax', FALSE);
-			$node_id = $this->request->param('id');
+		$is_ajax = (bool) Arr::get($_REQUEST, 'c_ajax', FALSE);
+		$node_id = $this->request->param('id');
 
-			$node = ORM::factory($this->model_name, $node_id);
-			if ( ! $node->loaded()) {
-				throw new Kohana_Exception('The node could not be found');
-			}
-
-			$parent_node = Tree::immediate_parent($this->table_name, $node->id);
-
-			if ( ! empty($_POST)) {
-				/*$sibling_id = Arr::get($_REQUEST, 'sibling_id');
-				// move the node to somewhere else on it's current branch
-				if ( ! empty($sibling_id) && strtolower($sibling_id) != 'start') {
-					$after_node_id = intval($sibling_id);
-				} else if ($sibling_id == 'start') {
-					$after_node_id = NULL;
-				}*/
-
-				$node->set_edit_fields()
-					->save_values()
-					->save();
-
-				Message::add('The node was saved successfully.', Message::$notice);
-				$this->default_redirect();
-			}
-
-			/*$_parent_subs = Tree::immediate_nodes($this->table_name, $parent_node['id'])
-				->as_array('id', 'name');
-			if (isset($_parent_subs[$node->id])) {
-				unset($_parent_subs[$node->id]);
-			}
-
-			$add_values = array(
-				'' => '-- Leave Where It Is --',
-				'start' => '-- Move to the Beginning --',
-			);
-			$sibling_select = Form::select('sibling_id', $_parent_subs, NULL, array('id' => 'sibling_id'), array('add_values' => $add_values));*/
-
-			AJAX_Status::echo_json(AJAX_Status::ajax(array(
-				'html' => (string) View::factory($this->view_path . '/edit')
-					->bind('route_name', $this->route_name)
-					->bind('node', $node)
-					->bind('sibling_select', $sibling_select),
-			)));
-
-		} catch (Exception $e) {
-			$msg = 'There was a problem edit a node or loading the edit node.';
-			$this->exception($e, $msg, $is_ajax);
+		$node = ORM::factory($this->model_name, $node_id);
+		if ( ! $node->loaded()) {
+			throw new Kohana_Exception('The node could not be found');
 		}
+
+		$parent_node = Tree::immediate_parent($this->table_name, $node->id);
+
+		if ( ! empty($_POST)) {
+			/*$sibling_id = Arr::get($_REQUEST, 'sibling_id');
+			// move the node to somewhere else on it's current branch
+			if ( ! empty($sibling_id) && strtolower($sibling_id) != 'start') {
+				$after_node_id = intval($sibling_id);
+			} else if ($sibling_id == 'start') {
+				$after_node_id = NULL;
+			}*/
+
+			$node->set_edit_fields()
+				->save_values()
+				->save();
+
+			Message::add('The node was saved successfully.', Message::$notice);
+			$this->default_redirect();
+		}
+
+		/*$_parent_subs = Tree::immediate_nodes($this->table_name, $parent_node['id'])
+			->as_array('id', 'name');
+		if (isset($_parent_subs[$node->id])) {
+			unset($_parent_subs[$node->id]);
+		}
+
+		$add_values = array(
+			'' => '-- Leave Where It Is --',
+			'start' => '-- Move to the Beginning --',
+		);
+		$sibling_select = Form::select('sibling_id', $_parent_subs, NULL, array('id' => 'sibling_id'), array('add_values' => $add_values));*/
+
+		AJAX_Status::echo_json(AJAX_Status::ajax(array(
+			'html' => (string) View::factory($this->view_path . '/edit')
+				->bind('route_name', $this->route_name)
+				->bind('node', $node)
+				->bind('sibling_select', $sibling_select),
+		)));
 	} // function action_edit
 
 	/**
@@ -273,37 +261,31 @@ class Controller_XM_Tree extends Controller_Private {
 	 * @return void
 	 */
 	public function action_delete() {
-		try {
-			$is_ajax = (bool) Arr::get($_REQUEST, 'c_ajax', FALSE);
-			$node_id = $this->request->param('id');
+		$is_ajax = (bool) Arr::get($_REQUEST, 'c_ajax', FALSE);
+		$node_id = $this->request->param('id');
 
-			$node = ORM::factory($this->model_name, $node_id);
-			if ( ! $node->loaded()) {
-				throw new Kohana_Exception('The node could not be found');
-			}
-
-			if ( ! empty($_POST)) {
-				$keep_children = Arr::get($_REQUEST, 'keep_children', FALSE);
-
-				Tree::delete_node($node, $keep_children);
-
-				Message::add('<em>' . HTML::chars($node->name()) . '</em> was deleted' . ($keep_children ? ' and it\'s children were kept' : '') . '.', Message::$notice);
-				$this->default_redirect();
-			} // if post
-
-			$parent = Tree::immediate_parent($this->table_name, $node->id);
-
-			AJAX_Status::echo_json(AJAX_Status::ajax(array(
-				'html' => (string) View::factory($this->view_path . '/delete')
-					->bind('route_name', $this->route_name)
-					->bind('parent', $parent)
-					->bind('node', $node),
-			)));
-
-		} catch (Exception $e) {
-			$msg = 'There was a problem deleting a node or loading the delete confirmation.';
-			$this->exception($e, $msg, $is_ajax);
+		$node = ORM::factory($this->model_name, $node_id);
+		if ( ! $node->loaded()) {
+			throw new Kohana_Exception('The node could not be found');
 		}
+
+		if ( ! empty($_POST)) {
+			$keep_children = Arr::get($_REQUEST, 'keep_children', FALSE);
+
+			Tree::delete_node($node, $keep_children);
+
+			Message::add('<em>' . HTML::chars($node->name()) . '</em> was deleted' . ($keep_children ? ' and it\'s children were kept' : '') . '.', Message::$notice);
+			$this->default_redirect();
+		} // if post
+
+		$parent = Tree::immediate_parent($this->table_name, $node->id);
+
+		AJAX_Status::echo_json(AJAX_Status::ajax(array(
+			'html' => (string) View::factory($this->view_path . '/delete')
+				->bind('route_name', $this->route_name)
+				->bind('parent', $parent)
+				->bind('node', $node),
+		)));
 	} // function action_delete
 
 	/**

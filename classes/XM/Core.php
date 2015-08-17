@@ -162,11 +162,27 @@ class XM_Core extends Kohana_Core {
 	* @param mixed $maxLength
 	* @return mixed
 	*/
-	public static function make_slug($phrase, $maxLength = 255) {
-		$result = UTF8::strtolower(UTF8::trim($phrase));
-		$result = preg_replace(array('/\s/', '/[$.+!*\'(),"]/'), array('-', ""), $result);
+	public static function make_slug($phrase) {
+		// replace non letter or digits by -
+		$phrase = preg_replace('~[^\\pL\d]+~u', '-', $phrase);
 
-		return $result;
+		// trim
+		$phrase = trim($phrase, '-');
+
+		// transliterate
+		$phrase = iconv('utf-8', 'us-ascii//TRANSLIT', $phrase);
+
+		// lowercase
+		$phrase = strtolower($phrase);
+
+		// remove unwanted characters
+		$phrase = preg_replace('~[^-\w]+~', '', $phrase);
+
+		if (empty($phrase)) {
+			return 'n-a';
+		}
+
+		return $phrase;
 	} // function
 
 	/**
